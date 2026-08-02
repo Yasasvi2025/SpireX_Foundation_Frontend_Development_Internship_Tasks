@@ -1,6 +1,6 @@
-# 🚀 Task 1: Personal Portfolio Card | SpireX Foundation
+# 🚀 Task 1: Personal Portfolio Card
 
-A clean, modern, and responsive single-page personal portfolio website built using HTML5, CSS3, and JavaScript as part of the **SpireX Foundation Frontend Development Internship**. The portfolio showcases technical skills, featured projects, certifications, internship experience, and contact information through an interactive and user-friendly interface.
+A modern and responsive personal portfolio website built using HTML5, CSS3, and JavaScript to showcase my technical skills, projects, certifications, internship experience, and contact information.
 
 ---
 
