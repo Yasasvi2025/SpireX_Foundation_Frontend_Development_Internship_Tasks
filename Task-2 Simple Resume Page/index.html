@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nune Venkata Yasasvi - Resume</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Variables for Dynamic Theme Switching */
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --divider-color: #e2e8f0;
+            --section-border: #f1f5f9;
+            --skill-bg: #f8fafc;
+            --badge-bg: #eff6ff;
+            --badge-text: #1d4ed8;
+            --badge-border: #bfdbfe;
+            --icon-green: #10b981;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark Mode Override Colors */
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border-color: #334155;
+            --divider-color: #334155;
+            --section-border: #334155;
+            --skill-bg: #0f172a;
+            --badge-bg: #1e3a8a;
+            --badge-text: #93c5fd;
+            --badge-border: #1d4ed8;
+            --icon-green: #34d399;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .resume-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* Action Bar (Theme Toggle & Print Button) */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 9px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .action-btn.primary {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            background-color: var(--accent-hover);
+            color: #ffffff;
+        }
+
+        /* Resume Main Card */
+        .resume-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* HEADER (Photo, Name, Role) */
+        .resume-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .profile-photo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            background-color: var(--skill-bg);
+        }
+
+        .header-text h1 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .header-text .role {
+            font-size: 1.05rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid var(--divider-color);
+            margin: 25px 0;
+        }
+
+        /* SECTIONS */
+        .resume-section {
+            margin-bottom: 25px;
+        }
+
+        .resume-section h2 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--section-border);
+            padding-bottom: 6px;
+        }
+
+        .resume-section p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* EXPERIENCE & EDUCATION ITEMS */
+        .item {
+            margin-bottom: 16px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .item-header h3 {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .date-badge {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .item p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* TECHNICAL SKILLS */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 12px;
+        }
+
+        .skill-box {
+            background-color: var(--skill-bg);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .skill-box strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        /* PROJECTS */
+        .project-card {
+            background: var(--skill-bg);
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-card h3 {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        /* CERTIFICATIONS & LISTS */
+        .bullet-list {
+            list-style: none;
+        }
+
+        .bullet-list li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bullet-list i {
+            color: var(--icon-green);
+        }
+
+        /* STRENGTHS & LANGUAGES BADGES */
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border: 1px solid var(--badge-border);
+        }
+
+        /* CONTACT INFORMATION & LINKS */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-item i {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .contact-item a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* FOOTER */
+        .resume-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* RESPONSIVE & PRINT STYLES */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .resume-card { padding: 20px; }
+            .resume-header { flex-direction: column; text-align: center; }
+            .item-header { flex-direction: column; align-items: flex-start; }
+            .skills-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; padding: 0; }
+            .no-print { display: none !important; }
+            .resume-card { box-shadow: none !important; padding: 0 !important; border: none !important; background: #ffffff !important; }
+            .resume-section { page-break-inside: avoid; }
+            .skill-box, .project-card { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; color: #000000 !important; }
+            .badge { background: #eff6ff !important; color: #1d4ed8 !important; border: 1px solid #bfdbfe !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="resume-container">
+        
+        <!-- Action Bar (Theme Switcher + Print Button) -->
+        <div class="action-bar no-print">
+            <button id="themeToggleBtn" class="action-btn">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <button id="printBtn" class="action-btn primary">
+                <i class="fa-solid fa-print"></i>
+                <span>Print / Save as PDF</span>
+            </button>
+        </div>
+
+        <!-- Resume Main Card -->
+        <main class="resume-card">
+
+            <!-- HEADER (Photo, Name, Professional Title) -->
+            <header class="resume-header">
+                <img src="Image/Profile.jpg" alt="Nune Venkata Yasasvi" class="profile-photo" onerror="this.style.display='none'">
+                <div class="header-text">
+                    <h1>Nune Venkata Yasasvi</h1>
+                    <p class="role">Python Developer • Backend Developer • AI/ML Enthusiast</p>
+                </div>
+            </header>
+
+            <hr class="divider">
+
+            <!-- CAREER OBJECTIVE -->
+            <section class="resume-section">
+                <h2>📌 Career Objective</h2>
+                <p>
+                    Passionate Information Technology graduate seeking opportunities to apply my skills in Python, Backend Development, Frontend Development, and Artificial Intelligence while continuously learning and contributing to innovative software solutions.
+                </p>
+            </section>
+
+            <!-- INTERNSHIP EXPERIENCE -->
+            <section class="resume-section">
+                <h2>💼 Internship Experience</h2>
+                
+                <div class="item">
+                    <div class="item-header">
+                        <h3>Frontend Development Intern <span class="company-name">– SpireX Foundation</span></h3>
+                        <span class="date-badge">Aug 2026 – Present</span>
+                    </div>
+                    <p>Building responsive single-page applications using modern HTML5, CSS3, JavaScript, and managing project repositories on GitHub.</p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3>AI & Machine Learning Intern <span class="company-name">– Codomax Digital Solutions</span></h3>
+                        <span class="date-badge">Jul 2026 – Aug 2026</span>
+                    </div>
+                    <p>Worked on machine learning model development, data preprocessing pipelines, and intelligent automation workflows.</p>
+                </div>
+
+                <div class="item">
+                    <div class="item-header">
+                        <h3>AI & Machine Learning Intern <span class="company-name">– Venura Tech</span></h3>
+                        <span class="date-badge">May 2026 – Jun 2026</span>
+                    </div>
+                    <p>Implemented core Python scripts for machine learning tasks, mini-projects, and algorithm evaluation.</p>
+                </div>
+            </section>
+
+            <!-- EDUCATION -->
+            <section class="resume-section">
+                <h2>🎓 Education</h2>
+                <div class="item">
+                    <div class="item-header">
+                        <h3>Bachelor of Technology (B.Tech) in Information Technology</h3>
+                        <span class="date-badge">2019 – 2023</span>
+                    </div>
+                    <p class="company-name">Vignan's Foundation for Science, Technology & Research (VFSTR), Guntur</p>
+                </div>
+            </section>
+
+            <!-- TECHNICAL SKILLS -->
+            <section class="resume-section">
+                <h2>💻 Technical Skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-box">
+                        <strong>Programming & Backend:</strong>
+                        Python, Django, FastAPI, RESTful APIs, MVC Architecture, Asynchronous Development, Uvicorn
+                    </div>
+                    <div class="skill-box">
+                        <strong>AI, ML & Data Science:</strong>
+                        Scikit-learn, NumPy, Pandas, OpenAI CLIP, PyTorch, Hugging Face Transformers, Deep Learning, Computer Vision, TextBlob, NLTK
+                    </div>
+                    <div class="skill-box">
+                        <strong>Web Technologies & Databases:</strong>
+                        HTML5, CSS3, JavaScript (Basic), React.js (Basic), Streamlit, SQL, Database Schema Design, Query Optimization
+                    </div>
+                    <div class="skill-box">
+                        <strong>Tools & Environment:</strong>
+                        Git, GitHub, VS Code, Jupyter Notebook, Streamlit Community Cloud, MS Office (Word, Excel, PowerPoint)
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROJECTS -->
+            <section class="resume-section">
+                <h2>🚀 Projects</h2>
+                
+                <div class="project-card">
+                    <h3>VisionSort</h3>
+                    <p>AI-powered waste classification system built using Python, FastAPI, OpenAI CLIP, and PyTorch.</p>
+                </div>
+
+                <div class="project-card">
+                    <h3>AI Autocorrect Tool</h3>
+                    <p>NLP-based text correction application built using Python, TextBlob, and NLTK.</p>
+                </div>
+            </section>
+
+            <!-- CERTIFICATIONS -->
+            <section class="resume-section">
+                <h2>📜 Certifications</h2>
+                <ul class="bullet-list">
+                    <li><i class="fa-solid fa-certificate"></i> <strong>Infosys Springboard:</strong> Introduction to Artificial Intelligence</li>
+                    <li><i class="fa-solid fa-certificate"></i> <strong>Infosys Springboard:</strong> Introduction to Deep Learning</li>
+                </ul>
+            </section>
+
+            <!-- STRENGTHS -->
+            <section class="resume-section">
+                <h2>⭐ Strengths</h2>
+                <div class="badge-container">
+                    <span class="badge">Quick Learner</span>
+                    <span class="badge">Creative Thinker</span>
+                    <span class="badge">Problem-Solving Skills</span>
+                    <span class="badge">Hardworking</span>
+                </div>
+            </section>
+
+            <!-- LANGUAGES KNOWN -->
+            <section class="resume-section">
+                <h2>🌐 Languages Known</h2>
+                <div class="badge-container">
+                    <span class="badge">English</span>
+                    <span class="badge">Telugu</span>
+                </div>
+            </section>
+
+            <!-- CONTACT INFORMATION & LINKS -->
+            <section class="resume-section">
+                <h2>📞 Contact Information</h2>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>nunevenkatayasasvi@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+91 94944 14404</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Guntur, Andhra Pradesh, India</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-brands fa-linkedin"></i>
+                        <a href="https://www.linkedin.com/in/nune-venkata-yasasvi-a907b9246/" target="_blank">LinkedIn Profile</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-brands fa-github"></i>
+                        <a href="https://github.com/Yasasvi2025" target="_blank">GitHub Profile</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="resume-footer">
+                <p>© 2026 Nune Venkata Yasasvi | All Rights Reserved</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- JavaScript for Theme Toggle & Print/PDF Generation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const printBtn = document.getElementById('printBtn');
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            // Handle Print
+            if (printBtn) {
+                printBtn.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            // Handle Dark/Light Theme Switching
+            const savedTheme = localStorage.getItem('resume-theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeUI(savedTheme);
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('resume-theme', newTheme);
+                    updateThemeUI(newTheme);
+                });
+            }
+
+            function updateThemeUI(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'fa-solid fa-sun';
+                    themeText.textContent = 'Light Mode';
+                } else {
+                    themeIcon.className = 'fa-solid fa-moon';
+                    themeText.textContent = 'Dark Mode';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
