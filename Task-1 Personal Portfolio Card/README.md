@@ -1,4 +1,4 @@
-# 🚀 Task 1: Personal Portfolio Card
+# 🚀 Task-1: Personal Portfolio Card
 
 A modern and responsive personal portfolio website built using HTML5, CSS3, and JavaScript to showcase my technical skills, projects, certifications, internship experience, and contact information.
 
