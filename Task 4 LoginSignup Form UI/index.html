@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup UI - Task 4</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: url('Image/Purple Mountains Wallpapers.png') no-repeat center center/cover;
+            background-attachment: fixed;
+            padding: 20px 15px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 0;
+        }
+
+        .glass-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            padding: 32px 30px 24px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+            color: #ffffff;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .glass-container:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .form-box {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-box.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 14px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.25);
+            font-size: 30px;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-add-btn {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: #9333ea;
+            border: 2px solid #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .avatar-add-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header-text h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-text p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .input-group i.field-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+
+        .input-group i.toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 9.5px 36px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            outline: none;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 400;
+            transition: all 0.3s;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-group input:focus {
+            border-color: #b86cff;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 15px rgba(184, 108, 255, 0.45);
+        }
+
+        .strength-container {
+            display: none;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .strength-bar-bg {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .strength-checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-top: 6px;
+            font-size: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .check-item.valid {
+            color: #4ade80;
+        }
+
+        .check-item.invalid {
+            color: #ff6b6b;
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 10px;
+            margin-top: 3px;
+            padding-left: 4px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            margin: 10px 0 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .remember-me input[type="checkbox"] {
+            accent-color: #b86cff;
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .forgot-pass, .terms-link {
+            color: #e9d5ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .forgot-pass:hover, .terms-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10.5px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #ff5ca8 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 30px rgba(160, 80, 255, 0.45);
+        }
+
+        .btn-group-dash {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .edit-btn {
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .logout-btn {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            margin-top: 8px;
+            font-size: 11px;
+            padding: 8px;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #ffffff;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 14px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 7.5px 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 10.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toggle-text {
+            text-align: center;
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+
+        .toggle-text a {
+            color: #f472b6;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 3px;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        .dash-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .dash-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 4px;
+        }
+
+        .dash-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .dash-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .dash-val {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: rgba(30, 20, 50, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-card h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .modal-card p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .swal2-input-custom {
+            width: 80% !important;
+            margin: 8px auto !important;
+            padding: 8px 12px !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: #fff !important;
+            border-radius: 8px !important;
+            font-size: 12px !important;
+        }
+
+        .site-footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 18px;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        <!-- LOGIN FORM -->
+        <div class="form-box active" id="loginForm">
+            <div class="avatar-wrapper">
+                <img src="Image/Profile.jpg" alt="Profile" class="avatar avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="avatar avatar-fallback" style="display: none;"><i class="fa-regular fa-user"></i></div>
+            </div>
+            
+            <div class="header-text">
+                <h2>Welcome Back 👋</h2>
+                <p>Login with Username or Email</p>
+            </div>
+
+            <form id="login" onsubmit="return validateLogin(event)" novalidate>
+                <div class="input-group">
+                    <i class="fa-regular fa-user field-icon"></i>
+                    <input type="text" id="loginUserOrEmail" placeholder="Username or Email" required autocomplete="username" aria-label="Username or Email">
+                    <div class="error-msg" id="loginUserOrEmailErr"></div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required autocomplete="current-password" aria-label="Password">
+                    <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('loginPassword', this)" aria-label="Toggle password visibility"></i>
+                    <div class="error-msg" id="loginPasswordErr"></div>
+                </div>
+
+                <div class="options-row">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMeCheck" aria-label="Remember Me"> Remember Me
+                    </label>
+                    <a href="javascript:void(0)" onclick="handleForgotPassword()" class="forgot-pass">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn" id="loginSubmitBtn">Login <i class="fa-solid fa-arrow-right"></i></button>
+
+                <div class="divider"><span>OR</span></div>
+
+                <div class="social-buttons">
+                    <a href="javascript:void(0)" onclick="handleSocialLogin('Google')" class="social-btn" aria-label="Sign in with Google">
+                        <i class="fa-brands fa-google" style="color: #ea4335;"></i> Google
+                    </a>
+                    <a href="https://github.com/Yasasvi2025" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub Profile">
+                        <i class="fa-brands fa-github" style="color: #ffffff;"></i> GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/nune-venkata-yasasvi-a907b9246/" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn Profile">
+                        <i class="fa-brands fa-linkedin" style="color: #38bdf8;"></i> LinkedIn
+                    </a>
+                </div>
+
+                <div class="toggle-text">
+                    Don't have an account? <a href="javascript:void(0)" onclick="switchForm('signupForm')">Sign Up</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="form-box" id="signupForm">
+            <div class="avatar-wrapper">
+                <img src="Image/Profile.jpg" alt="Profile" class="avatar avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="avatar avatar-fallback" style="display: none;"><i class="fa-regular fa-user"></i></div>
+                <label for="avatarInput" class="avatar-add-btn" title="Upload Photo">
+                    <i class="fa-solid fa-plus"></i>
+                </label>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+            </div>
+
+            <div class="header-text">
+                <h2>Create Account ✨</h2>
+                <p>Fill in the details to get started</p>
+            </div>
+
+            <form id="signup" onsubmit="return validateSignup(event)" novalidate>
+                <div class="input-group">
+                    <i class="fa-regular fa-user field-icon"></i>
+                    <input type="text" id="signupFullName" placeholder="Full Name" required autocomplete="name" aria-label="Full Name">
+                    <div class="error-msg" id="signupFullNameErr"></div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-regular fa-envelope field-icon"></i>
+                    <input type="email" id="signupEmail" placeholder="Email" required autocomplete="email" aria-label="Email Address">
+                    <div class="error-msg" id="signupEmailErr"></div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-regular fa-user field-icon"></i>
+                    <input type="text" id="signupUsername" placeholder="Username" required autocomplete="username" aria-label="Username">
+                    <div class="error-msg" id="signupUsernameErr"></div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" id="signupPassword" placeholder="Password" required autocomplete="new-password" aria-label="Password" oninput="evalPasswordStrength(this.value)">
+                    <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('signupPassword', this)" aria-label="Toggle password visibility"></i>
+                    <div class="error-msg" id="signupPasswordErr"></div>
+                </div>
+
+                <div class="strength-container" id="strengthMeter">
+                    <div class="strength-bar-bg">
+                        <div class="strength-bar-fill" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-checklist">
+                        <span class="check-item" id="chkLen"><i class="fa-solid fa-circle-xmark"></i> 8+ Chars</span>
+                        <span class="check-item" id="chkUpper"><i class="fa-solid fa-circle-xmark"></i> Uppercase</span>
+                        <span class="check-item" id="chkNum"><i class="fa-solid fa-circle-xmark"></i> Number</span>
+                        <span class="check-item" id="chkSpec"><i class="fa-solid fa-circle-xmark"></i> Special Char</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required autocomplete="new-password" aria-label="Confirm Password">
+                    <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('signupConfirmPassword', this)" aria-label="Toggle password visibility"></i>
+                    <div class="error-msg" id="signupConfirmPasswordErr"></div>
+                </div>
+
+                <div class="options-row" style="margin: 6px 0 10px;">
+                    <label class="remember-me">
+                        <input type="checkbox" id="termsCheck" aria-label="Agree to Terms & Conditions"> I agree to the <a href="javascript:void(0)" onclick="openTermsModal()" class="terms-link">Terms & Conditions</a>
+                    </label>
+                </div>
+                <div class="error-msg" id="termsErr" style="margin-top: -6px; margin-bottom: 8px;"></div>
+
+                <button type="submit" class="submit-btn">Create Account <i class="fa-solid fa-arrow-right"></i></button>
+
+                <div class="toggle-text" style="margin-top: 12px;">
+                    Already have an account? <a href="javascript:void(0)" onclick="switchForm('loginForm')">Login</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div class="form-box" id="dashboardView">
+            <div class="avatar-wrapper">
+                <img src="Image/Profile.jpg" id="dashAvatar" alt="Profile" class="avatar avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="avatar avatar-fallback" style="display: none;"><i class="fa-regular fa-user"></i></div>
+            </div>
+            
+            <div class="header-text">
+                <h2 id="welcomeUserHeader">Welcome, Nune Venkata Yasasvi! 👋</h2>
+                <p>User Dashboard Overview</p>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-row">
+                    <span class="dash-label">Full Name:</span>
+                    <span class="dash-val" id="dashFullName">Nune Venkata Yasasvi</span>
+                </div>
+                <div class="dash-row">
+                    <span class="dash-label">Username:</span>
+                    <span class="dash-val" id="dashUsername">padma</span>
+                </div>
+                <div class="dash-row">
+                    <span class="dash-label">Email:</span>
+                    <span class="dash-val" id="dashEmail">yasasvi2yasasvi@gmail.com</span>
+                </div>
+                <div class="dash-row">
+                    <span class="dash-label">Last Login:</span>
+                    <span class="dash-val" id="dashLastLogin">03:14 AM</span>
+                </div>
+            </div>
+
+            <div class="btn-group-dash">
+                <button type="button" class="submit-btn edit-btn" onclick="handleEditProfile()">
+                    <i class="fa-solid fa-user-pen"></i> Edit Profile
+                </button>
+                <button type="button" class="submit-btn logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+
+            <button type="button" class="submit-btn delete-btn" onclick="handleDeleteAccount()">
+                <i class="fa-solid fa-trash-can"></i> Delete Account
+            </button>
+        </div>
+    </div>
+
+    <!-- TERMS & CONDITIONS MODAL -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal-card">
+            <h3>Terms & Conditions</h3>
+            <p>By registering on this portal, you agree to secure data processing practices, local credential caching policies, and respectful usage of platform assets.</p>
+            <button class="submit-btn" onclick="closeTermsModal()">I Understand</button>
+        </div>
+    </div>
+
+    <footer class="site-footer"></footer>
+
+    <script>
+        let currentUploadedAvatar = null;
+        let loginAttempts = 0;
+        let lockoutTimer = null;
+
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Enhanced Footer
+            document.querySelector('.site-footer').innerHTML = 
+                `© ${new Date().getFullYear()} Nune Venkata Yasasvi. All Rights Reserved<br>` +
+                `<span style="font-size: 10px; opacity: 0.8;">Built with ❤️ using HTML • CSS • JavaScript</span>`;
+
+            // Restore Avatar
+            const savedAvatar = localStorage.getItem('app_user_avatar');
+            if (savedAvatar) {
+                currentUploadedAvatar = savedAvatar;
+                applyAvatarToUI(savedAvatar);
+            }
+
+            // Restore Remembered User
+            const rememberedUser = localStorage.getItem('app_remembered_user');
+            if (rememberedUser) {
+                document.getElementById('loginUserOrEmail').value = rememberedUser;
+                document.getElementById('rememberMeCheck').checked = true;
+            }
+
+            // Session Restore Check
+            if (localStorage.getItem('app_loggedIn') === 'true') {
+                const activeUserData = JSON.parse(localStorage.getItem('app_active_user_data') || '{}');
+                showDashboard(activeUserData);
+                preventBackToAuth();
+            }
+        });
+
+        function preventBackToAuth() {
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                if (localStorage.getItem('app_loggedIn') === 'true') {
+                    history.go(1);
+                }
+            };
+        }
+
+        function applyAvatarToUI(src) {
+            document.querySelectorAll('.avatar-img').forEach(img => {
+                img.src = src;
+                img.style.display = 'block';
+            });
+            document.querySelectorAll('.avatar-fallback').forEach(fb => {
+                fb.style.display = 'none';
+            });
+        }
+
+        function showPopup(icon, title, text) {
+            return Swal.fire({
+                icon: icon,
+                title: title,
+                text: text,
+                width: '350px',
+                padding: '1.2em',
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff',
+                confirmButtonColor: '#8b5cf6'
+            });
+        }
+
+        function showLoading(title = 'Please wait...') {
+            Swal.fire({
+                title: title,
+                allowOutsideClick: false,
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff',
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        function sanitizeInput(str) {
+            return str.replace(/[<>"'&]/g, "");
+        }
+
+        function hashPassword(str) {
+            return btoa(str);
+        }
+
+        function switchForm(targetFormId) {
+            clearErrors();
+            document.querySelectorAll('.form-box').forEach(form => form.classList.remove('active'));
+            document.getElementById(targetFormId).classList.add('active');
+        }
+
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function showError(id, message) {
+            const errEl = document.getElementById(id);
+            errEl.innerText = message;
+            errEl.style.display = 'block';
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error-msg').forEach(el => {
+                el.innerText = '';
+                el.style.display = 'none';
+            });
+        }
+
+        function getStoredUsers() {
+            const users = localStorage.getItem('app_users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function evalPasswordStrength(password) {
+            const meter = document.getElementById('strengthMeter');
+            const bar = document.getElementById('strengthBar');
+
+            if (!password) {
+                meter.style.display = 'none';
+                return;
+            }
+
+            meter.style.display = 'block';
+
+            const hasLen = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasNum = /[0-9]/.test(password);
+            const hasSpec = /[@$!%*?&]/.test(password);
+
+            updateCheckItem('chkLen', hasLen);
+            updateCheckItem('chkUpper', hasUpper);
+            updateCheckItem('chkNum', hasNum);
+            updateCheckItem('chkSpec', hasSpec);
+
+            const score = [hasLen, hasUpper, hasNum, hasSpec].filter(Boolean).length;
+
+            if (score <= 2) {
+                bar.style.width = '33%';
+                bar.style.backgroundColor = '#ff6b6b';
+            } else if (score === 3) {
+                bar.style.width = '66%';
+                bar.style.backgroundColor = '#facc15';
+            } else {
+                bar.style.width = '100%';
+                bar.style.backgroundColor = '#4ade80';
+            }
+        }
+
+        function updateCheckItem(id, isValid) {
+            const el = document.getElementById(id);
+            if (isValid) {
+                el.className = 'check-item valid';
+                el.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${el.innerText.split(' ').slice(1).join(' ')}`;
+            } else {
+                el.className = 'check-item invalid';
+                el.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${el.innerText.split(' ').slice(1).join(' ')}`;
+            }
+        }
+
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUploadedAvatar = e.target.result;
+                    localStorage.setItem('app_user_avatar', currentUploadedAvatar);
+                    applyAvatarToUI(currentUploadedAvatar);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openTermsModal() {
+            document.getElementById('termsModal').style.display = 'flex';
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').style.display = 'none';
+        }
+
+        function validateSignup(e) {
+            e.preventDefault();
+            clearErrors();
+
+            const fullName = sanitizeInput(document.getElementById('signupFullName').value.trim());
+            const email = sanitizeInput(document.getElementById('signupEmail').value.trim().toLowerCase());
+            const username = sanitizeInput(document.getElementById('signupUsername').value.trim().toLowerCase());
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const termsChecked = document.getElementById('termsCheck').checked;
+
+            let isValid = true;
+
+            if (!fullName) { showError('signupFullNameErr', 'Full Name is required'); isValid = false; }
+            
+            if (!email) { 
+                showError('signupEmailErr', 'Email is required'); isValid = false; 
+            } else if (!emailPattern.test(email)) { 
+                showError('signupEmailErr', 'Invalid email format'); isValid = false; 
+            }
+
+            if (!username) { showError('signupUsernameErr', 'Username is required'); isValid = false; }
+
+            if (!password) { 
+                showError('signupPasswordErr', 'Password is required'); isValid = false; 
+            } else if (!strongPasswordPattern.test(password)) {
+                showError('signupPasswordErr', 'Password does not meet requirements'); isValid = false;
+            }
+
+            if (password !== confirmPassword) {
+                showError('signupConfirmPasswordErr', 'Passwords do not match'); isValid = false;
+            }
+
+            if (!termsChecked) {
+                showError('termsErr', 'You must agree to the Terms & Conditions'); isValid = false;
+            }
+
+            if (!isValid) return false;
+
+            const users = getStoredUsers();
+            if (users.some(u => u.username === username)) {
+                showError('signupUsernameErr', 'Username already taken');
+                return false;
+            }
+            if (users.some(u => u.email === email)) {
+                showError('signupEmailErr', 'Email already registered');
+                return false;
+            }
+
+            const newUser = {
+                fullName,
+                email,
+                username,
+                password: hashPassword(password),
+                lastLogin: 'Just registered'
+            };
+
+            users.push(newUser);
+            localStorage.setItem('app_users', JSON.stringify(users));
+
+            showLoading('Creating Account...');
+            setTimeout(() => {
+                Swal.close();
+                showPopup('success', 'Account Created!', 'You can now log in with your credentials.');
+                document.getElementById('signup').reset();
+                document.getElementById('strengthMeter').style.display = 'none';
+                switchForm('loginForm');
+            }, 1000);
+
+            return false;
+        }
+
+        function validateLogin(e) {
+            e.preventDefault();
+            clearErrors();
+
+            if (loginAttempts >= 3) {
+                showPopup('error', 'Account Locked', 'Too many failed attempts. Please wait 30 seconds.');
+                return false;
+            }
+
+            const userOrEmail = sanitizeInput(document.getElementById('loginUserOrEmail').value.trim().toLowerCase());
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMeCheck').checked;
+
+            let isValid = true;
+            if (!userOrEmail) { showError('loginUserOrEmailErr', 'Please enter username or email'); isValid = false; }
+            if (!password) { showError('loginPasswordErr', 'Please enter password'); isValid = false; }
+
+            if (!isValid) return false;
+
+            const users = getStoredUsers();
+            const matchedUser = users.find(u => 
+                (u.username === userOrEmail || u.email === userOrEmail) && u.password === hashPassword(password)
+            );
+
+            if (matchedUser) {
+                loginAttempts = 0;
+                const formattedTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                matchedUser.lastLogin = formattedTime;
+                
+                const userIdx = users.findIndex(u => u.username === matchedUser.username);
+                if (userIdx !== -1) {
+                    users[userIdx].lastLogin = formattedTime;
+                    localStorage.setItem('app_users', JSON.stringify(users));
+                }
+
+                if (rememberMe) {
+                    localStorage.setItem('app_remembered_user', userOrEmail);
+                } else {
+                    localStorage.removeItem('app_remembered_user');
+                }
+
+                localStorage.setItem('app_loggedIn', 'true');
+                localStorage.setItem('app_active_user_data', JSON.stringify(matchedUser));
+
+                showLoading('Authenticating...');
+                setTimeout(() => {
+                    Swal.close();
+                    showDashboard(matchedUser);
+                    preventBackToAuth();
+                }, 1000);
+
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    const btn = document.getElementById('loginSubmitBtn');
+                    btn.disabled = true;
+                    let sec = 30;
+                    showPopup('error', 'Locked Out', `3 failed attempts. Locked for ${sec} seconds.`);
+                    lockoutTimer = setInterval(() => {
+                        sec--;
+                        if (sec <= 0) {
+                            clearInterval(lockoutTimer);
+                            loginAttempts = 0;
+                            btn.disabled = false;
+                        }
+                    }, 1000);
+                } else {
+                    showError('loginPasswordErr', `Invalid credentials (${loginAttempts}/3 attempts)`);
+                }
+            }
+
+            return false;
+        }
+
+        function showDashboard(user) {
+            document.getElementById('welcomeUserHeader').innerHTML = `Welcome, ${user.fullName || 'Nune Venkata Yasasvi'}! 👋`;
+            document.getElementById('dashFullName').innerText = user.fullName || 'Nune Venkata Yasasvi';
+            document.getElementById('dashUsername').innerText = user.username || 'padma';
+            document.getElementById('dashEmail').innerText = user.email || 'yasasvi2yasasvi@gmail.com';
+            document.getElementById('dashLastLogin').innerText = user.lastLogin || '03:14 AM';
+
+            switchForm('dashboardView');
+        }
+
+        function handleLogout() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You will be logged out of your session.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#8b5cf6',
+                confirmButtonText: 'Yes, Logout',
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('app_loggedIn');
+                    localStorage.removeItem('app_active_user_data');
+                    switchForm('loginForm');
+                    window.onpopstate = null;
+                    showPopup('success', 'Logged Out', 'You have been safely logged out.');
+                }
+            });
+        }
+
+        async function handleForgotPassword() {
+            const { value: email } = await Swal.fire({
+                title: 'Reset Password',
+                input: 'email',
+                inputLabel: 'Enter your registered email address',
+                inputPlaceholder: 'user@example.com',
+                showCancelButton: true,
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff',
+                confirmButtonColor: '#8b5cf6'
+            });
+
+            if (email) {
+                const users = getStoredUsers();
+                const userIndex = users.findIndex(u => u.email === email.toLowerCase().trim());
+
+                if (userIndex === -1) {
+                    showPopup('error', 'Not Found', 'No account associated with this email.');
+                    return;
+                }
+
+                const { value: formValues } = await Swal.fire({
+                    title: 'Enter New Password',
+                    html:
+                        '<input id="swal-new-pass" type="password" placeholder="New Password" class="swal2-input-custom">' +
+                        '<input id="swal-confirm-pass" type="password" placeholder="Confirm Password" class="swal2-input-custom">',
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    background: 'rgba(30, 20, 50, 0.95)',
+                    color: '#ffffff',
+                    confirmButtonColor: '#8b5cf6',
+                    preConfirm: () => {
+                        return [
+                            document.getElementById('swal-new-pass').value,
+                            document.getElementById('swal-confirm-pass').value
+                        ];
+                    }
+                });
+
+                if (formValues) {
+                    const [newPassword, confirmPassword] = formValues;
+
+                    if (!newPassword || !confirmPassword) {
+                        showPopup('error', 'Required', 'All fields are required.');
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        showPopup('error', 'Mismatch', 'Passwords do not match.');
+                        return;
+                    }
+
+                    if (!strongPasswordPattern.test(newPassword)) {
+                        showPopup('error', 'Weak Password', 'Password must have 8+ chars, Uppercase, Number, & Special Char.');
+                        return;
+                    }
+
+                    users[userIndex].password = hashPassword(newPassword);
+                    localStorage.setItem('app_users', JSON.stringify(users));
+                    showPopup('success', 'Updated!', 'Password has been successfully updated.');
+                }
+            }
+        }
+
+        async function handleEditProfile() {
+            const activeUser = JSON.parse(localStorage.getItem('app_active_user_data') || '{}');
+            const users = getStoredUsers();
+
+            const { value: formValues } = await Swal.fire({
+                title: 'Edit Profile',
+                html:
+                    `<input id="swal-edit-name" type="text" value="${activeUser.fullName || ''}" placeholder="Full Name" class="swal2-input-custom">` +
+                    `<input id="swal-edit-email" type="email" value="${activeUser.email || ''}" placeholder="Email" class="swal2-input-custom">`,
+                focusConfirm: false,
+                showCancelButton: true,
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff',
+                confirmButtonColor: '#8b5cf6',
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-edit-name').value.trim(),
+                        document.getElementById('swal-edit-email').value.trim().toLowerCase()
+                    ];
+                }
+            });
+
+            if (formValues) {
+                const [newName, newEmail] = formValues;
+
+                if (!newName || !newEmail) {
+                    showPopup('error', 'Invalid Input', 'Fields cannot be empty.');
+                    return;
+                }
+
+                if (!emailPattern.test(newEmail)) {
+                    showPopup('error', 'Invalid Email', 'Please enter a valid email address.');
+                    return;
+                }
+
+                const duplicateEmail = users.some(u => u.email === newEmail && u.username !== activeUser.username);
+                if (duplicateEmail) {
+                    showPopup('error', 'Duplicate Email', 'This email is already in use by another user.');
+                    return;
+                }
+
+                const uIndex = users.findIndex(u => u.username === activeUser.username);
+                if (uIndex !== -1) {
+                    users[uIndex].fullName = newName;
+                    users[uIndex].email = newEmail;
+                    localStorage.setItem('app_users', JSON.stringify(users));
+
+                    activeUser.fullName = newName;
+                    activeUser.email = newEmail;
+                    localStorage.setItem('app_active_user_data', JSON.stringify(activeUser));
+
+                    showDashboard(activeUser);
+                    showPopup('success', 'Updated!', 'Profile details updated successfully.');
+                }
+            }
+        }
+
+        function handleDeleteAccount() {
+            const activeUser = JSON.parse(localStorage.getItem('app_active_user_data') || '{}');
+
+            Swal.fire({
+                title: 'Delete Account?',
+                text: 'This action is permanent and cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#8b5cf6',
+                confirmButtonText: 'Yes, Delete',
+                background: 'rgba(30, 20, 50, 0.95)',
+                color: '#ffffff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let users = getStoredUsers();
+                    users = users.filter(u => u.username !== activeUser.username);
+                    localStorage.setItem('app_users', JSON.stringify(users));
+
+                    localStorage.removeItem('app_loggedIn');
+                    localStorage.removeItem('app_active_user_data');
+                    switchForm('loginForm');
+                    window.onpopstate = null;
+                    showPopup('success', 'Deleted', 'Your account has been deleted.');
+                }
+            });
+        }
+
+        function handleSocialLogin(provider) {
+            showLoading(`Connecting to ${provider}...`);
+            setTimeout(() => {
+                Swal.close();
+                showPopup('info', `${provider} Authentication`, 'Social single sign-on is connected for demonstration.');
+            }, 800);
+        }
+    </script>
+</body>
+</html>
