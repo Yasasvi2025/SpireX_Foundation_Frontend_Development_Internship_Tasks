@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="A modern, interactive Rock Paper Scissors game built with HTML5, CSS3, and JavaScript featuring statistics tracking, sound effects, and dark mode.">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="author" content="Nune Venkata Yasasvi">
+
+    <title>Mini Project 1 | Rock Paper Scissors Game</title>
+    
+    <!-- Multi-Browser & Mobile Favicon Support -->
+    <link rel="icon" type="image/png" sizes="32x32" href="Image/favicon.png">
+    <link rel="shortcut icon" href="Image/favicon.png">
+    <link rel="apple-touch-icon" href="Image/favicon.png">
+    <link rel="icon" sizes="192x192" href="Image/favicon.png">
+    
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Play:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Early Theme Detection (Prevents Light-Mode Flash) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('rps_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
+    <style>
+        :root {
+            --bg-color: #fff8eb;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(255, 255, 255, 0.95);
+            --card-shadow: 0 20px 50px rgba(255, 120, 150, 0.12), 0 10px 25px rgba(0, 0, 0, 0.04);
+            --sub-title: #7c3aed;
+            --box-bg: rgba(255, 255, 255, 0.85);
+            --text-dark: #0f172a;
+            --divider: #cbd5e1;
+            --circle-bg: #ffffff;
+            --footer-bg: rgba(255, 255, 255, 0.9);
+            --footer-text: #1e1b4b;
+            --footer-border: #e2e8f0;
+            --scrollbar-thumb: #cbd5e1;
+            --overlay-bg: rgba(0, 0, 0, 0.05);
+            --focus-ring: #38bdf8;
+            --winner-glow: 0 0 25px #16a34a;
+        }
+
+        html.dark-mode, body.dark-mode {
+            --bg-color: #090a16;
+            --card-bg: rgba(10, 14, 35, 0.8);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --card-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 217, 255, 0.2);
+            --sub-title: #ffffff;
+            --box-bg: rgba(15, 23, 42, 0.65);
+            --text-dark: #ffffff;
+            --divider: rgba(255, 255, 255, 0.2);
+            --circle-bg: #0f172a;
+            --footer-bg: rgba(15, 23, 42, 0.8);
+            --footer-text: #ffffff;
+            --footer-border: rgba(255, 255, 255, 0.15);
+            --scrollbar-thumb: #334155;
+            --overlay-bg: rgba(0, 0, 0, 0.45);
+            --focus-ring: #c084fc;
+            --winner-glow: 0 0 25px #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        button, .game-card, .section-box, .action-btn, .option-card, .history-item {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.25s ease, transform 0.25s ease;
+        }
+
+        img {
+            user-drag: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Page Preloader Overlay */
+        #loaderOverlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-dark);
+            font-weight: 800;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #loaderOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--divider);
+            border-top: 4px solid #0284c7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+
+            background-color: var(--bg-color);
+            background-image: url("Image/Rock Paper Scissors Game.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+
+            animation: fadeIn 0.6s ease, backgroundMove 25s linear infinite;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: center top; }
+            50% { background-position: center center; }
+            100% { background-position: center top; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 3px;
+            border-radius: 12px;
+        }
+
+        .game-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 2.5px solid var(--card-border);
+            border-radius: 32px;
+            box-shadow: var(--card-shadow);
+            padding: 22px 20px;
+            text-align: center;
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .round-badge {
+            background: var(--box-bg);
+            border: 1.5px solid var(--card-border);
+            color: var(--text-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .theme-btn {
+            background: var(--box-bg);
+            border: 1.5px solid var(--card-border);
+            color: var(--text-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-btn:hover { transform: scale(1.05); }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .title-rock { color: #0284c7; }
+        .title-paper { color: #ec4899; }
+        .title-scissors { color: #eab308; }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: var(--sub-title);
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .section-box {
+            background: var(--box-bg);
+            border-radius: 20px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+
+        .border-purple { border: 2px dashed #c084fc; }
+        .border-blue { border: 2px dashed #38bdf8; }
+        .border-green { border: 2px dashed #4ade80; }
+
+        /* Scoreboard */
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .score-item { flex: 1; }
+
+        .score-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .player-label { color: #0284c7; }
+        .comp-label { color: #ec4899; }
+
+        .score-value {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            font-family: 'Play', sans-serif;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        .score-divider {
+            width: 2px;
+            height: 32px;
+            background: var(--divider);
+        }
+
+        /* Choice Buttons */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .option-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+        }
+
+        .option-card:hover:not(:disabled) { transform: translateY(-4px) scale(1.05); }
+        .option-card:active:not(:disabled) { transform: translateY(0) scale(0.95); }
+
+        .option-card:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+            filter: grayscale(80%);
+        }
+
+        .icon-circle {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: var(--circle-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-circle i { font-size: 1.6rem; }
+        .rock-circle { border: 3px solid #38bdf8; color: #0284c7; }
+        .paper-circle { border: 3px solid #f472b6; color: #db2777; }
+        .scissors-circle { border: 3px solid #facc15; color: #ca8a04; }
+
+        .option-card span { font-size: 0.7rem; font-weight: 800; }
+        .rock-text { color: #0284c7; }
+        .paper-text { color: #db2777; }
+        .scissors-text { color: #ca8a04; }
+
+        /* Dual Arena Display & Winner Highlight Glow */
+        .arena-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .arena-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .arena-title {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .arena-choice-display {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid #38bdf8;
+            background: var(--circle-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0284c7;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+        .arena-choice-display.winner-glow {
+            box-shadow: var(--winner-glow);
+            border-color: #22c55e;
+            transform: scale(1.1);
+        }
+
+        .arena-vs {
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: #ec4899;
+            font-style: italic;
+        }
+
+        /* Result Box */
+        .result-box {
+            font-size: 1.15rem;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 42px;
+        }
+
+        .result-box .reason-text {
+            font-size: 0.72rem;
+            font-weight: 700;
+            opacity: 0.85;
+        }
+
+        .result-box.win { color: #16a34a; }
+        .result-box.lose { color: #e11d48; }
+        .result-box.draw { color: #d97706; }
+        .result-box.initial { color: #0284c7; }
+
+        /* Statistics Board */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card {
+            background: var(--box-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 6px 2px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 0.85rem;
+            font-weight: 900;
+            color: var(--text-dark);
+        }
+
+        .stat-lbl {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--sub-title);
+            text-transform: uppercase;
+        }
+
+        /* Match History Section */
+        .history-section {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .history-title {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-height: 105px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 20px;
+        }
+
+        .history-item {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: var(--circle-bg);
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark);
+            border-left: 3px solid #cbd5e1;
+        }
+
+        .history-item.win { border-left-color: #16a34a; }
+        .history-item.lose { border-left-color: #e11d48; }
+        .history-item.draw { border-left-color: #d97706; }
+
+        /* Modal Popups */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 28px;
+            padding: 24px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: scale(0.5);
+            opacity: 0;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+            opacity: 1;
+            animation: popup 0.35s ease;
+        }
+
+        @keyframes popup {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--sub-title);
+            margin-bottom: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        /* Controls */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: var(--circle-bg);
+            border-radius: 14px;
+            padding: 10px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover { transform: translateY(-2px); }
+
+        .btn-play { border: 2px solid #38bdf8; color: #0284c7; }
+        .btn-play:hover { background: #0284c7; color: #ffffff; }
+
+        .btn-reset { border: 2px solid #f472b6; color: #db2777; }
+        .btn-reset:hover { background: #db2777; color: #ffffff; }
+
+        .footer-banner {
+            margin-top: 10px;
+            background: var(--footer-bg);
+            border-radius: 18px;
+            padding: 8px 10px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--footer-text);
+            border: 1.5px solid var(--footer-border);
+        }
+
+        .shortcut-hint {
+            font-size: 0.65rem;
+            opacity: 0.75;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .tech-stack {
+            font-size: 0.65rem;
+            color: var(--sub-title);
+            margin-top: 2px;
+            font-weight: 800;
+        }
+
+        .heart-icon {
+            color: #e11d48;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .pop { animation: bounce 0.35s ease; }
+        
+        @keyframes bounce {
+            0% { transform: scale(0.5); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .thinking { animation: spin 0.8s linear infinite; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Page Preloader (Accessibility Enhanced) -->
+    <div id="loaderOverlay" aria-hidden="false">
+        <div class="spinner"></div>
+        <div>Loading Game Engine...</div>
+    </div>
+
+    <div class="game-card">
+        <!-- Header & Theme Switch -->
+        <div class="theme-toggle-container">
+            <div class="round-badge" id="roundBadge">Round : 0</div>
+            <button type="button" class="theme-btn" id="themeToggleBtn" aria-label="Toggle Theme" aria-pressed="false">
+                <i class="fa-solid fa-moon"></i> <span>Dark Mode</span>
+            </button>
+        </div>
+
+        <h1 class="header-title">
+            <span class="title-rock">ROCK</span>
+            <span class="title-paper">PAPER</span>
+            <span class="title-scissors">SCISSORS</span>
+        </h1>
+        <p class="header-subtitle">☆ First to 5 Points Wins the Match! ☆</p>
+
+        <!-- Scoreboard -->
+        <div class="section-box border-purple">
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-label player-label">
+                        <i class="fa-solid fa-user"></i> PLAYER
+                    </div>
+                    <div class="score-value" id="userScore">00</div>
+                </div>
+                <div class="score-divider"></div>
+                <div class="score-item">
+                    <div class="score-label comp-label">
+                        <i class="fa-solid fa-robot"></i> COMPUTER
+                    </div>
+                    <div class="score-value" id="compScore">00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Choice Buttons -->
+        <div class="section-box border-purple">
+            <div class="options-grid">
+                <button type="button" class="option-card" id="rockBtn" aria-label="Rock" aria-pressed="false" title="Rock">
+                    <div class="icon-circle rock-circle">
+                        <i class="fa-solid fa-hand-back-fist"></i>
+                    </div>
+                    <span class="rock-text">ROCK [R]</span>
+                </button>
+
+                <button type="button" class="option-card" id="paperBtn" aria-label="Paper" aria-pressed="false" title="Paper">
+                    <div class="icon-circle paper-circle">
+                        <i class="fa-solid fa-hand"></i>
+                    </div>
+                    <span class="paper-text">PAPER [P]</span>
+                </button>
+
+                <button type="button" class="option-card" id="scissorsBtn" aria-label="Scissors" aria-pressed="false" title="Scissors">
+                    <div class="icon-circle scissors-circle">
+                        <i class="fa-solid fa-hand-scissors"></i>
+                    </div>
+                    <span class="scissors-text">SCISSORS [S]</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dual Choice Display Arena -->
+        <div class="section-box border-blue">
+            <div class="arena-grid">
+                <div class="arena-column">
+                    <div class="arena-title"><i class="fa-solid fa-user"></i> YOU</div>
+                    <div class="arena-choice-display" id="playerChoiceDisplay">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+                <div class="arena-vs">VS</div>
+                <div class="arena-column">
+                    <div class="arena-title"><i class="fa-solid fa-robot"></i> BOT</div>
+                    <div class="arena-choice-display" id="compChoiceDisplay">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Box (Accessible Screen Reader Live Region) -->
+        <div class="section-box border-green">
+            <div class="result-box initial" id="resultDisplay" role="status" aria-live="polite">
+                👋 Choose Rock, Paper, or Scissors to Start!
+            </div>
+        </div>
+
+        <!-- Real-Time Game Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-val" id="statWins">0</div>
+                <div class="stat-lbl">Wins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="statLosses">0</div>
+                <div class="stat-lbl">Losses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="statDraws">0</div>
+                <div class="stat-lbl">Draws</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="statWinRate">0%</div>
+                <div class="stat-lbl">Win Rate</div>
+            </div>
+        </div>
+
+        <!-- Match History -->
+        <div class="history-section">
+            <div class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Rounds</div>
+            <div class="history-list" id="historyList">
+                <div class="history-item"><span>No rounds played yet</span></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="buttons-grid">
+            <button type="button" class="action-btn btn-play" id="newMatchBtn" aria-label="Start New Match" title="Start New Match">
+                <i class="fa-solid fa-rotate-right"></i> NEW MATCH
+            </button>
+            <button type="button" class="action-btn btn-reset" id="resetScoreBtn" aria-label="Reset All Progress" title="Reset All Progress">
+                <i class="fa-solid fa-trash"></i> RESET SCORE
+            </button>
+        </div>
+
+        <!-- Footer Banner -->
+        <div class="footer-banner">
+            ✨ Challenge the Computer and Become the Champion! ✨
+            <div class="shortcut-hint">Keyboard: R • P • S</div>
+            <div class="tech-stack">Version 1.0.0 | HTML5 • CSS3 • Modern JS</div>
+            <div class="shortcut-hint">Designed & Developed with <span class="heart-icon">❤️</span> by Nune Venkata Yasasvi</div>
+        </div>
+    </div>
+
+    <!-- Match Winner Popup Modal -->
+    <div class="modal-overlay" id="winnerModal" role="dialog" aria-modal="true">
+        <div class="modal-card">
+            <div class="modal-title" id="modalTitle">🏆 YOU ARE THE CHAMPION!</div>
+            <div class="modal-desc" id="modalDesc">You defeated the computer in an epic battle!</div>
+            <div class="modal-buttons">
+                <button type="button" class="action-btn btn-play" id="modalPlayAgainBtn">
+                    <i class="fa-solid fa-play"></i> Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true">
+        <div class="modal-card">
+            <div class="modal-title">⚠️ RESET ALL PROGRESS?</div>
+            <div class="modal-desc">Are you sure you want to completely clear your score, stats, and round history?</div>
+            <div class="modal-buttons">
+                <button type="button" class="action-btn btn-play" id="confirmResetBtn">YES, RESET</button>
+                <button type="button" class="action-btn btn-reset" id="cancelResetBtn">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. GAME CONSTANTS & SOUNDS
+        // ==========================================
+        const WINNING_SCORE = 5;
+        const THINKING_DELAY_MS = 500;
+        const PRELOADER_DELAY_MS = 500;
+
+        const soundEffects = {
+            click: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
+            win: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+            lose: new Audio('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'),
+            draw: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3')
+        };
+
+        function playSound(type) {
+            if (soundEffects[type]) {
+                soundEffects[type].currentTime = 0;
+                soundEffects[type].play().catch(() => {});
+            }
+        }
+
+        // ==========================================
+        // 2. STATE PERSISTENCE
+        // ==========================================
+        let pScore = parseInt(localStorage.getItem('rps_playerScore')) || 0;
+        let cScore = parseInt(localStorage.getItem('rps_compScore')) || 0;
+        let roundCount = parseInt(localStorage.getItem('rps_roundCount')) || 0;
+        let matchHistory = JSON.parse(localStorage.getItem('rps_matchHistory')) || [];
+        let isMatchOver = false;
+        let isProcessingTurn = false;
+
+        const iconMap = {
+            rock: '<i class="fa-solid fa-hand-back-fist" style="color: #0284c7;"></i>',
+            paper: '<i class="fa-solid fa-hand" style="color: #db2777;"></i>',
+            scissors: '<i class="fa-solid fa-hand-scissors" style="color: #ca8a04;"></i>'
+        };
+
+        const emojiMap = {
+            rock: '🪨 Rock',
+            paper: '📄 Paper',
+            scissors: '✂️ Scissors'
+        };
+
+        const winRules = {
+            rock: { beats: 'scissors', verb: 'crushes' },
+            paper: { beats: 'rock', verb: 'covers' },
+            scissors: { beats: 'paper', verb: 'cuts' }
+        };
+
+        // ==========================================
+        // 3. DOM ELEMENTS
+        // ==========================================
+        const userScoreEl = document.getElementById('userScore');
+        const compScoreEl = document.getElementById('compScore');
+        const roundBadge = document.getElementById('roundBadge');
+        const playerChoiceDisplay = document.getElementById('playerChoiceDisplay');
+        const compChoiceDisplay = document.getElementById('compChoiceDisplay');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const optionCards = document.querySelectorAll('.option-card');
+        const historyListEl = document.getElementById('historyList');
+
+        // Modals
+        const winnerModal = document.getElementById('winnerModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const resetModal = document.getElementById('resetModal');
+
+        // Statistics
+        const statWinsEl = document.getElementById('statWins');
+        const statLossesEl = document.getElementById('statLosses');
+        const statDrawsEl = document.getElementById('statDraws');
+        const statWinRateEl = document.getElementById('statWinRate');
+
+        // ==========================================
+        // 4. THEME & INITIALIZATION
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            // Preloader hiding + Accessibility update
+            setTimeout(() => {
+                const loader = document.getElementById('loaderOverlay');
+                if (loader) {
+                    loader.classList.add('hidden');
+                    loader.setAttribute('aria-hidden', 'true');
+                }
+            }, PRELOADER_DELAY_MS);
+
+            // Synchronize Theme Button State
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeBtn.setAttribute('aria-pressed', 'true');
+                themeBtn.querySelector('span').textContent = 'Light Mode';
+                themeBtn.querySelector('i').className = 'fa-solid fa-sun';
+            }
+
+            userScoreEl.textContent = formatScore(pScore);
+            compScoreEl.textContent = formatScore(cScore);
+            roundBadge.textContent = `Round : ${roundCount}`;
+            renderHistory();
+            calculateStatistics();
+            checkMatchStatus();
+            bindEventListeners();
+        });
+
+        // ==========================================
+        // 5. EVENT LISTENERS
+        // ==========================================
+        function bindEventListeners() {
+            themeBtn.addEventListener('click', toggleTheme);
+
+            document.getElementById('rockBtn').addEventListener('click', () => { playSound('click'); playTurn('rock'); });
+            document.getElementById('paperBtn').addEventListener('click', () => { playSound('click'); playTurn('paper'); });
+            document.getElementById('scissorsBtn').addEventListener('click', () => { playSound('click'); playTurn('scissors'); });
+
+            // Separate Behavior for New Match vs Reset Score
+            document.getElementById('newMatchBtn').addEventListener('click', () => { 
+                playSound('click'); 
+                startNewMatch(); 
+            });
+            document.getElementById('resetScoreBtn').addEventListener('click', () => { 
+                playSound('click'); 
+                openResetModal(); 
+            });
+
+            document.getElementById('modalPlayAgainBtn').addEventListener('click', () => {
+                winnerModal.classList.remove('active');
+                startNewMatch();
+            });
+            
+            document.getElementById('confirmResetBtn').addEventListener('click', () => { playSound('click'); confirmResetAll(); });
+            document.getElementById('cancelResetBtn').addEventListener('click', () => { playSound('click'); closeResetModal(); });
+
+            winnerModal.addEventListener('click', (e) => { 
+                if (e.target === winnerModal) {
+                    winnerModal.classList.remove('active');
+                    startNewMatch();
+                } 
+            });
+            resetModal.addEventListener('click', (e) => { if (e.target === resetModal) closeResetModal(); });
+
+            // Keyboard Shortcuts
+            window.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") {
+                    if (winnerModal.classList.contains("active")) {
+                        winnerModal.classList.remove('active');
+                        startNewMatch();
+                    }
+                    if (resetModal.classList.contains("active")) closeResetModal();
+                    return;
+                }
+
+                if (isMatchOver || isProcessingTurn) return;
+                if (["input", "textarea"].includes(document.activeElement.tagName.toLowerCase())) return;
+
+                const key = e.key.toLowerCase();
+                if (['r', 'p', 's'].includes(key)) {
+                    e.preventDefault();
+                    playSound('click');
+                    if (key === 'r') playTurn('rock');
+                    if (key === 'p') playTurn('paper');
+                    if (key === 's') playTurn('scissors');
+                }
+            });
+        }
+
+        // ==========================================
+        // 6. THEME FUNCTIONS
+        // ==========================================
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+            localStorage.setItem('rps_theme', isDark ? 'dark' : 'light');
+            themeBtn.querySelector('span').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            themeBtn.querySelector('i').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        // ==========================================
+        // 7. GAME LOGIC & ANIMATION
+        // ==========================================
+        function formatScore(num) {
+            return num < 10 ? `0${num}` : num;
+        }
+
+        function toggleButtonsState(disabled) {
+            optionCards.forEach(btn => btn.disabled = disabled);
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 60,
+                            spread: 80,
+                            origin: { y: 0.6 }
+                        });
+                    }, i * 250);
+                }
+            }
+        }
+
+        function animateScore(element, targetScore) {
+            element.textContent = formatScore(targetScore);
+            element.classList.remove('pop');
+            void element.offsetWidth;
+            element.classList.add('pop');
+        }
+
+        function clearGlows() {
+            playerChoiceDisplay.classList.remove('winner-glow');
+            compChoiceDisplay.classList.remove('winner-glow');
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function playTurn(userChoice) {
+            if (isMatchOver || isProcessingTurn) return;
+
+            isProcessingTurn = true;
+            toggleButtonsState(true);
+            clearGlows();
+
+            optionCards.forEach(card => card.setAttribute('aria-pressed', 'false'));
+            const activeCard = document.getElementById(`${userChoice}Btn`);
+            if (activeCard) activeCard.setAttribute('aria-pressed', 'true');
+
+            playerChoiceDisplay.innerHTML = iconMap[userChoice];
+            playerChoiceDisplay.classList.remove('pop');
+            void playerChoiceDisplay.offsetWidth;
+            playerChoiceDisplay.classList.add('pop');
+
+            compChoiceDisplay.innerHTML = '<i class="fa-solid fa-spinner thinking"></i>';
+            resultDisplay.className = 'result-box initial';
+            resultDisplay.innerHTML = '🤖 Computer is thinking...';
+
+            setTimeout(() => {
+                roundCount++;
+                roundBadge.textContent = `Round : ${roundCount}`;
+
+                const choices = ['rock', 'paper', 'scissors'];
+                const compChoice = choices[Math.floor(Math.random() * 3)];
+
+                compChoiceDisplay.innerHTML = iconMap[compChoice];
+                compChoiceDisplay.classList.remove('pop');
+                void compChoiceDisplay.offsetWidth;
+                compChoiceDisplay.classList.add('pop');
+
+                if (userChoice === compChoice) {
+                    resultDisplay.className = 'result-box draw';
+                    resultDisplay.innerHTML = `🤝 Draw!<div class="reason-text">${capitalize(userChoice)} vs ${capitalize(compChoice)}</div>`;
+                    addHistoryRecord(userChoice, compChoice, 'draw');
+                    playSound('draw');
+                } else if (winRules[userChoice].beats === compChoice) {
+                    pScore++;
+                    animateScore(userScoreEl, pScore);
+                    playerChoiceDisplay.classList.add('winner-glow');
+                    resultDisplay.className = 'result-box win';
+                    resultDisplay.innerHTML = `🎉 You Win!<div class="reason-text">${capitalize(userChoice)} ${winRules[userChoice].verb} ${capitalize(compChoice)}</div>`;
+                    addHistoryRecord(userChoice, compChoice, 'win');
+                    playSound('win');
+                } else {
+                    cScore++;
+                    animateScore(compScoreEl, cScore);
+                    compChoiceDisplay.classList.add('winner-glow');
+                    resultDisplay.className = 'result-box lose';
+                    resultDisplay.innerHTML = `😢 You Lose!<div class="reason-text">${capitalize(compChoice)} ${winRules[compChoice].verb} ${capitalize(userChoice)}</div>`;
+                    addHistoryRecord(userChoice, compChoice, 'lose');
+                    playSound('lose');
+                }
+
+                calculateStatistics();
+                updateLocalStorage();
+                checkMatchStatus();
+                isProcessingTurn = false;
+
+                if (!isMatchOver) {
+                    toggleButtonsState(false);
+                }
+            }, THINKING_DELAY_MS);
+        }
+
+        function checkMatchStatus() {
+            if (pScore >= WINNING_SCORE || cScore >= WINNING_SCORE) {
+                isMatchOver = true;
+
+                if (pScore >= WINNING_SCORE) {
+                    modalTitle.innerHTML = `🏆 YOU ARE THE CHAMPION!`;
+                    modalDesc.innerHTML = `You won the match ${pScore} - ${cScore}! Excellent gameplay.`;
+                    triggerConfetti();
+                } else {
+                    modalTitle.innerHTML = `🤖 GAME OVER!`;
+                    modalDesc.innerHTML = `The computer won the match ${cScore} - ${pScore}. Better luck next time!`;
+                }
+
+                winnerModal.classList.add('active');
+                document.getElementById('modalPlayAgainBtn').focus(); // Focus trap helper
+            }
+            toggleButtonsState(isMatchOver);
+        }
+
+        // ==========================================
+        // 8. STATISTICS & HISTORY
+        // ==========================================
+        function calculateStatistics() {
+            const wins = matchHistory.filter(h => h.outcome === 'win').length;
+            const losses = matchHistory.filter(h => h.outcome === 'lose').length;
+            const draws = matchHistory.filter(h => h.outcome === 'draw').length;
+            const totalRounds = matchHistory.length;
+            const winRate = totalRounds > 0 ? Math.round((wins / totalRounds) * 100) : 0;
+
+            statWinsEl.textContent = wins;
+            statLossesEl.textContent = losses;
+            statDrawsEl.textContent = draws;
+            statWinRateEl.textContent = `${winRate}%`;
+        }
+
+        function addHistoryRecord(userChoice, compChoice, outcome) {
+            matchHistory.unshift({
+                round: roundCount,
+                userChoice: userChoice,
+                compChoice: compChoice,
+                outcome: outcome
+            });
+            if (matchHistory.length > 5) matchHistory.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            if (matchHistory.length === 0) {
+                historyListEl.innerHTML = '<div class="history-item"><span>No rounds played yet</span></div>';
+                return;
+            }
+
+            historyListEl.innerHTML = matchHistory.map(item => {
+                let badge = '🏆 Win';
+                if (item.outcome === 'lose') badge = '❌ Lose';
+                if (item.outcome === 'draw') badge = '🤝 Draw';
+
+                return `
+                    <div class="history-item ${item.outcome}">
+                        <span>Round ${item.round}</span>
+                        <span>${emojiMap[item.userChoice]} ↓ ${emojiMap[item.compChoice]}</span>
+                        <span><strong>${badge}</strong></span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // 9. LOCAL STORAGE MANAGEMENT
+        // ==========================================
+        function updateLocalStorage() {
+            localStorage.setItem('rps_playerScore', pScore);
+            localStorage.setItem('rps_compScore', cScore);
+            localStorage.setItem('rps_roundCount', roundCount);
+            localStorage.setItem('rps_matchHistory', JSON.stringify(matchHistory));
+        }
+
+        function clearLocalStorage() {
+            localStorage.removeItem('rps_playerScore');
+            localStorage.removeItem('rps_compScore');
+            localStorage.removeItem('rps_roundCount');
+            localStorage.removeItem('rps_matchHistory');
+        }
+
+        // ==========================================
+        // 10. DISTINCT CONTROLS & MODALS
+        // ==========================================
+        
+        // "New Match" -> Resets current game score only (Keeps stats/history)
+        function startNewMatch() {
+            pScore = 0;
+            cScore = 0;
+            isMatchOver = false;
+            isProcessingTurn = false;
+
+            localStorage.setItem('rps_playerScore', pScore);
+            localStorage.setItem('rps_compScore', cScore);
+
+            clearGlows();
+
+            userScoreEl.textContent = '00';
+            compScoreEl.textContent = '00';
+
+            playerChoiceDisplay.innerHTML = '<i class="fa-solid fa-user"></i>';
+            compChoiceDisplay.innerHTML = '<i class="fa-solid fa-robot"></i>';
+
+            resultDisplay.className = 'result-box initial';
+            resultDisplay.innerHTML = '👋 Choose Rock, Paper, or Scissors to Start!';
+
+            optionCards.forEach(card => card.setAttribute('aria-pressed', 'false'));
+            toggleButtonsState(false);
+        }
+
+        // "Reset Score" -> Full Reset Confirmation Flow
+        function openResetModal() {
+            resetModal.classList.add('active');
+            document.getElementById('confirmResetBtn').focus(); // Focus trap helper
+        }
+
+        function closeResetModal() {
+            resetModal.classList.remove('active');
+        }
+
+        function confirmResetAll() {
+            closeResetModal();
+            pScore = 0;
+            cScore = 0;
+            roundCount = 0;
+            matchHistory = [];
+            isMatchOver = false;
+            isProcessingTurn = false;
+
+            clearLocalStorage();
+            clearGlows();
+
+            userScoreEl.textContent = '00';
+            compScoreEl.textContent = '00';
+            roundBadge.textContent = 'Round : 0';
+
+            playerChoiceDisplay.innerHTML = '<i class="fa-solid fa-user"></i>';
+            compChoiceDisplay.innerHTML = '<i class="fa-solid fa-robot"></i>';
+
+            resultDisplay.className = 'result-box initial';
+            resultDisplay.innerHTML = '👋 Choose Rock, Paper, or Scissors to Start!';
+
+            optionCards.forEach(card => card.setAttribute('aria-pressed', 'false'));
+
+            renderHistory();
+            calculateStatistics();
+            toggleButtonsState(false);
+        }
+    </script>
+</body>
+</html>
