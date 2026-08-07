@@ -1,0 +1,2361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrashOut Enterprise - Smart Waste Management Platform</title>
+  
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <!-- Chart.js Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet GIS Map Engine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Export Engines: jsPDF, SheetJS, html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <style>
+    /* --- CSS SYSTEM VARIABLES & THEMES --- */
+    :root[data-theme="midnight"] {
+      --bg-dark: #020408; --bg-sidebar: #050811; --bg-card: rgba(10, 15, 26, 0.9);
+      --bg-card-hover: rgba(15, 23, 42, 0.95); --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #e2e8f0; --text-muted: #475569; --glass-header: rgba(5, 8, 17, 0.85);
+      --accent-blue: #3b82f6;
+    }
+    :root[data-theme="dark"] {
+      --bg-dark: #07090e; --bg-sidebar: #0b0f19; --bg-card: rgba(18, 24, 38, 0.85);
+      --bg-card-hover: rgba(26, 34, 52, 0.95); --border-color: rgba(255, 255, 255, 0.1);
+      --text-main: #f0f4f8; --text-muted: #64748b; --glass-header: rgba(11, 15, 25, 0.75);
+      --accent-blue: #00a3ff;
+    }
+    :root[data-theme="ocean"] {
+      --bg-dark: #0a1329; --bg-sidebar: #0f1c3f; --bg-card: rgba(20, 35, 71, 0.85);
+      --bg-card-hover: rgba(28, 48, 94, 0.95); --border-color: rgba(255, 255, 255, 0.12);
+      --text-main: #f0f6ff; --text-muted: #728cb8; --glass-header: rgba(15, 28, 63, 0.75);
+      --accent-blue: #38bdf8;
+    }
+    :root[data-theme="emerald"] {
+      --bg-dark: #061712; --bg-sidebar: #0b241c; --bg-card: rgba(15, 46, 36, 0.85);
+      --bg-card-hover: rgba(22, 64, 50, 0.95); --border-color: rgba(255, 255, 255, 0.12);
+      --text-main: #ecfdf5; --text-muted: #6ee7b7; --glass-header: rgba(11, 36, 28, 0.75);
+      --accent-blue: #10b981;
+    }
+    :root[data-theme="purple"] {
+      --bg-dark: #120b1f; --bg-sidebar: #191028; --bg-card: rgba(32, 20, 53, 0.85);
+      --bg-card-hover: rgba(41, 26, 69, 0.95); --border-color: rgba(255, 255, 255, 0.12);
+      --text-main: #f5f0ff; --text-muted: #a78bfa; --glass-header: rgba(25, 16, 40, 0.75);
+      --accent-blue: #a855f7;
+    }
+    :root[data-theme="light"] {
+      --bg-dark: #f1f5f9; --bg-sidebar: #ffffff; --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-card-hover: rgba(241, 245, 249, 1); --border-color: rgba(0, 0, 0, 0.1);
+      --text-main: #0f172a; --text-muted: #64748b; --glass-header: rgba(255, 255, 255, 0.85);
+      --accent-blue: #0284c7;
+    }
+
+    :root {
+      --accent-green: #00e699; --accent-purple: #9d50bb; --accent-amber: #f59e0b;
+      --accent-red: #ef4444; --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* --- BASE RESET & LAYOUT UTILITIES --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+    body {
+      background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-family);
+      display: flex; min-height: 100vh; overflow-x: hidden; position: relative;
+    }
+
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, div[tabindex="0"]:focus-visible {
+      outline: 2px solid var(--accent-blue) !important; outline-offset: 2px;
+    }
+
+    /* --- UTILITY CLASSES (REPLACES INLINE STYLES) --- */
+    .flex-row { display: flex; flex-direction: row; }
+    .flex-col { display: flex; flex-direction: column; }
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .align-center { display: flex; align-items: center; }
+    .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-5 { gap: 20px; }
+    .w-full { width: 100%; } .h-full { height: 100%; }
+    .text-muted { color: var(--text-muted); }
+    .text-main { color: var(--text-main); }
+    .text-red { color: var(--accent-red); }
+    .text-green { color: var(--accent-green); }
+    .text-blue { color: var(--accent-blue); }
+    .font-bold { font-weight: 700; }
+    .font-semi { font-weight: 600; }
+    .text-xs { font-size: 0.72rem; } .text-sm { font-size: 0.8rem; } .text-base { font-size: 0.95rem; }
+    .cursor-pointer { cursor: pointer; }
+    .border-top { border-top: 1px solid var(--border-color); }
+    .border-bottom { border-bottom: 1px solid var(--border-color); }
+    .p-1 { padding: 4px; } .p-2 { padding: 8px; } .p-3 { padding: 12px; } .p-4 { padding: 16px; }
+
+    /* --- COMPONENTS --- */
+    #offline-banner {
+      position: fixed; top: 0; left: 0; right: 0; background: var(--accent-red); color: white;
+      text-align: center; padding: 6px; font-size: 0.8rem; font-weight: 700; z-index: 30000;
+      display: none; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    .mesh-background { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.15; animation: float 20s infinite alternate ease-in-out; }
+    .blob-1 { width: 450px; height: 450px; background: var(--accent-blue); top: -100px; left: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent-purple); bottom: -100px; right: -100px; animation-delay: -5s; }
+    .blob-3 { width: 350px; height: 350px; background: var(--accent-green); top: 40%; left: 30%; animation-delay: -10s; }
+    @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(60px, 40px) scale(1.1); } }
+
+    #login-overlay {
+      position: fixed; inset: 0; background: var(--bg-dark); z-index: 20000;
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(20px);
+    }
+    .login-card {
+      background: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 20px;
+      padding: 32px; width: 420px; max-width: 90%; display: flex; flex-direction: column; gap: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+
+    #dashboard-loader {
+      position: fixed; inset: 0; background: var(--bg-dark); z-index: 10000;
+      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+      transition: opacity 0.5s ease;
+    }
+    .loader-title { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+    .loader-status { font-size: 0.82rem; color: var(--accent-blue); font-family: monospace; }
+    .loader-bar { width: 280px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+    .loader-progress { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); transition: width 0.3s ease; }
+
+    #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 95; display: none; }
+    #sidebar-overlay.active { display: block; }
+
+    aside {
+      width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; padding: 20px 16px; gap: 20px; flex-shrink: 0;
+      z-index: 100; transition: transform 0.3s ease, width 0.3s ease; position: relative;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
+    .brand-logo {
+      width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+      border-radius: 10px; display: grid; place-items: center; color: #fff; box-shadow: 0 0 15px rgba(0,163,255,0.4); flex-shrink: 0;
+    }
+    .brand-title { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.5px; }
+    .brand-subtitle { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: all 0.2s; backdrop-filter: blur(10px); position: relative;
+    }
+    .profile-card:hover { background: var(--bg-card-hover); border-color: var(--accent-blue); }
+    
+    .avatar-initials {
+      width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      display: grid; place-items: center; font-weight: 700; font-size: 0.9rem; color: #fff; position: relative; flex-shrink: 0;
+    }
+    .status-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid var(--bg-sidebar); box-shadow: 0 0 8px var(--accent-green); }
+
+    .profile-dropdown-menu {
+      position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--bg-sidebar);
+      border: 1px solid var(--border-color); border-radius: 12px; padding: 8px; display: none;
+      flex-direction: column; gap: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 500; backdrop-filter: blur(20px);
+    }
+    .profile-dropdown-menu.show { display: flex; }
+    .dropdown-menu-item { padding: 8px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+    .dropdown-menu-item:hover { background: var(--bg-card-hover); color: var(--accent-blue); }
+    .dropdown-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
+
+    nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.88rem; cursor: pointer; transition: all 0.2s ease; }
+    .nav-item:hover, .nav-item.active { background: rgba(0, 163, 255, 0.12); color: var(--accent-blue); font-weight: 600; }
+
+    .ticker-bar {
+      background: var(--glass-header); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color);
+      padding: 6px 32px; display: flex; gap: 18px; font-size: 0.75rem; color: var(--text-muted); overflow-x: auto; white-space: nowrap; align-items: center; z-index: 10;
+    }
+    .ticker-val { color: var(--text-main); font-weight: 600; }
+
+    .health-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; background: rgba(0,230,153,0.1); border: 1px solid rgba(0,230,153,0.3); color: var(--accent-green); font-size: 0.7rem; font-weight: 600; }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, rgba(0, 163, 255, 0.12), rgba(157, 80, 187, 0.12));
+      border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 24px; display: flex;
+      justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; backdrop-filter: blur(16px);
+    }
+    .welcome-text h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+    .welcome-text p { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    .refresh-timer-widget { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; }
+    .timer-ring { width: 14px; height: 14px; border: 2px solid var(--accent-blue); border-top-color: transparent; border-radius: 50%; animation: spinRing 5s linear infinite; }
+    @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
+    .heatmap-cell { height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: white; }
+
+    .fab-container { position: fixed; bottom: 25px; right: 85px; z-index: 1200; display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 10px; }
+    .fab-main {
+      width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border: none; color: white; display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,163,255,0.4);
+      transition: transform 0.2s ease;
+    }
+    .fab-main:hover { transform: scale(1.08); }
+    .fab-menu { display: none; flex-direction: column; gap: 8px; align-items: flex-end; }
+    .fab-menu.show { display: flex; }
+    .fab-item {
+      background: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 14px;
+      font-size: 0.78rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5); backdrop-filter: blur(12px);
+    }
+    .fab-item:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    main { flex: 1; padding: 20px 32px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; z-index: 10; position: relative; }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+      background: var(--glass-header); backdrop-filter: blur(20px); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 12px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 90;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .menu-toggle { display: none; background: none; border: none; color: var(--text-main); cursor: pointer; }
+    .breadcrumbs { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .breadcrumbs span.active { color: var(--accent-blue); font-weight: 600; }
+
+    .header-controls { display: flex; align-items: center; gap: 10px; position: relative; }
+    .weather-badge { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; color: var(--text-main); }
+
+    .search-box {
+      background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
+      padding: 8px 12px; display: flex; align-items: center; gap: 8px; color: var(--text-muted); width: 260px; position: relative;
+    }
+    .search-box input { background: transparent; border: none; outline: none; color: var(--text-main); font-size: 0.85rem; width: 100%; }
+    .shortcut-tag { font-size: 0.65rem; background: var(--border-color); padding: 2px 5px; border-radius: 4px; color: var(--text-muted); }
+
+    .search-dropdown {
+      position: absolute; top: 45px; left: 0; right: 0; background: var(--bg-sidebar); border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 8px; display: none; flex-direction: column; gap: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 500;
+    }
+    .search-dropdown.show { display: flex; }
+    .search-item { padding: 8px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; }
+    .search-item:hover { background: var(--bg-card-hover); color: var(--accent-blue); }
+
+    .btn-icon {
+      background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
+      padding: 8px 12px; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.82rem;
+      position: relative; transition: all 0.2s;
+    }
+    .btn-icon:hover { background: var(--bg-card-hover); border-color: var(--accent-blue); }
+    .btn-icon-static {
+      background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;
+      padding: 8px 12px; color: var(--text-main); display: flex; align-items: center; gap: 8px; font-size: 0.82rem;
+      cursor: default; opacity: 0.95;
+    }
+    
+    .badge-count { 
+      position: absolute; top: -4px; right: -4px; background: var(--accent-red); color: white; 
+      font-size: 0.62rem; border-radius: 50%; padding: 2px 5px; font-weight: 700; box-shadow: 0 0 8px var(--accent-red); 
+    }
+    .badge-count:empty, .badge-count[data-count="0"] { display: none; }
+
+    .action-toolbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 10px 16px;
+    }
+    .filter-bar-container {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: rgba(255,255,255,0.02);
+      padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.78rem;
+    }
+
+    .view-section { display: none; flex-direction: column; gap: 20px; opacity: 0; transform: translateY(10px) scale(0.99); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .view-section.active { display: flex; opacity: 1; transform: translateY(0) scale(1); }
+
+    .card {
+      background-color: var(--bg-card); backdrop-filter: blur(16px); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 18px; display: flex; flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden;
+    }
+    .card.clickable { cursor: pointer; }
+    .card.clickable:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 30px rgba(0, 163, 255, 0.15); border-color: rgba(0,163,255,0.4); }
+    .card.clickable:hover .card-icon { transform: rotate(10deg) scale(1.1); color: var(--accent-blue); }
+    .card-icon { transition: transform 0.3s ease; }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { font-size: 0.95rem; font-weight: 600; }
+    .card-subtitle { font-size: 0.72rem; color: var(--text-muted); }
+
+    .skeleton-box {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; border-radius: 8px;
+    }
+    @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .grid-main { display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
+    .grid-top { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .grid-bottom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .metric-value { font-size: 1.5rem; font-weight: 700; margin: 6px 0 2px 0; letter-spacing: -0.5px; }
+    .metric-change { font-size: 0.75rem; display: flex; align-items: center; gap: 4px; color: var(--accent-green); }
+    .sparkline-svg { width: 100%; height: 28px; margin-top: 6px; }
+
+    .status-badge { font-size: 0.68rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .status-overflow { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+    .status-normal { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+    .status-empty { background: rgba(0, 230, 153, 0.2); color: var(--accent-green); }
+
+    #leaflet-map, #leaflet-map-full { height: 380px; width: 100%; border-radius: 12px; z-index: 10; }
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-sidebar) !important; color: var(--text-main) !important; border: 1px solid var(--border-color); }
+    
+    .map-legend {
+      display: flex; gap: 12px; font-size: 0.72rem; padding: 8px 12px; background: rgba(0,0,0,0.5);
+      border-radius: 6px; position: absolute; bottom: 10px; left: 10px; z-index: 500; backdrop-filter: blur(8px);
+    }
+
+    .overflow-marker-pulse {
+      background: rgba(239, 68, 68, 0.9); border: 2px solid #ffffff; border-radius: 50%;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 1); animation: pulseGlow 1.2s infinite alternate ease-in-out;
+    }
+    @keyframes pulseGlow {
+      from { transform: scale(0.9); box-shadow: 0 0 5px rgba(239, 68, 68, 0.6); }
+      to { transform: scale(1.3); box-shadow: 0 0 20px rgba(239, 68, 68, 1); }
+    }
+
+    .empty-state-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 20px; text-align: center; gap: 10px; color: var(--text-muted); width: 100%;
+    }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 4px; }
+
+    .table-container { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem; }
+    th { padding: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); font-weight: 600; }
+    td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+    tr:hover { background: rgba(255,255,255,0.02); }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--accent-blue), #0072ff); color: white; border: none;
+      border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(0,163,255,0.3);
+    }
+    .btn-action:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: var(--bg-card-hover); color: var(--text-main); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-secondary:hover { background: var(--border-color); }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .form-group label { font-size: 0.75rem; color: var(--text-muted); }
+    .form-control { background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-main); font-size: 0.82rem; outline: none; }
+
+    .slide-drawer {
+      position: fixed; top: 0; right: -380px; width: 350px; height: 100vh; background: var(--bg-sidebar);
+      border-left: 1px solid var(--border-color); z-index: 9500; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .slide-drawer.open { right: 0; }
+
+    #notification-toast-area { position: fixed; top: 80px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; pointer-events: none; }
+    .live-toast {
+      background: var(--bg-sidebar); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-blue);
+      border-radius: 10px; padding: 12px 16px; font-size: 0.82rem; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: auto; animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 9000;
+      display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.show { display: flex; opacity: 1; }
+    .modal {
+      background: var(--bg-sidebar); border: 1px solid var(--border-color); border-radius: 16px;
+      width: 500px; max-width: 90%; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.25s ease; max-height: 85vh; overflow-y: auto;
+    }
+    .modal-backdrop.show .modal { transform: scale(1); }
+
+    .modal-tabs { display: flex; border-bottom: 1px solid var(--border-color); gap: 12px; margin-bottom: 8px; }
+    .modal-tab { padding: 6px 12px; font-size: 0.8rem; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; }
+    .modal-tab.active { color: var(--accent-blue); border-color: var(--accent-blue); font-weight: 600; }
+
+    #tour-popover {
+      position: fixed; z-index: 15000; background: var(--bg-sidebar); border: 2px solid var(--accent-blue);
+      border-radius: 14px; padding: 18px; width: 320px; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      display: none; flex-direction: column; gap: 10px; backdrop-filter: blur(20px);
+    }
+    #tour-popover-title { font-weight: 700; font-size: 0.95rem; color: var(--accent-blue); }
+    #tour-popover-body { font-size: 0.8rem; color: var(--text-main); line-height: 1.4; }
+
+    .ai-widget { position: fixed; bottom: 25px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; }
+    .ai-btn {
+      width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border: none; color: white; display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,163,255,0.4);
+      transition: transform 0.2s;
+    }
+    .ai-btn:hover { transform: scale(1.08); }
+    .ai-box {
+      width: 380px; height: 480px; background: var(--bg-sidebar); border: 1px solid var(--border-color);
+      border-radius: 16px; margin-bottom: 12px; display: none; flex-direction: column; overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6); backdrop-filter: blur(20px);
+    }
+    .ai-box.show { display: flex; }
+    .ai-header { background: rgba(255,255,255,0.03); padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+    .ai-chat { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.8rem; }
+    .chat-msg { padding: 10px 12px; border-radius: 12px; max-width: 90%; line-height: 1.4; }
+    .chat-msg.bot { background: rgba(0,163,255,0.1); color: var(--text-main); border: 1px solid rgba(0,163,255,0.2); align-self: flex-start; }
+    .chat-msg.user { background: var(--accent-blue); color: white; align-self: flex-end; }
+    .ai-card-response { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 6px; display: flex; flex-direction: column; gap: 6px; width: 100%; }
+    .ai-pills-container { display: flex; gap: 6px; padding: 8px 12px; overflow-x: auto; white-space: nowrap; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.2); }
+    .ai-pill { font-size: 0.7rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 4px 8px; border-radius: 12px; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
+    .ai-pill:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .ai-input { display: flex; border-top: 1px solid var(--border-color); padding: 10px; gap: 6px; }
+
+    .ai-typing-indicator { display: inline-flex; gap: 4px; align-items: center; padding: 8px 12px; background: rgba(0,163,255,0.1); border-radius: 12px; width: fit-content; }
+    .ai-typing-dot { width: 6px; height: 6px; background: var(--accent-blue); border-radius: 50%; animation: typingBounce 1.2s infinite ease-in-out; }
+    .ai-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+    .timeline { display: flex; flex-direction: column; gap: 14px; font-size: 0.78rem; position: relative; }
+    .timeline::before { content: ''; position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background: var(--border-color); }
+    .timeline-item { display: flex; gap: 12px; align-items: flex-start; position: relative; }
+    .timeline-icon { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-blue); margin-top: 4px; z-index: 2; margin-left: 14px; }
+
+    .mobile-bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-color); display: none; justify-content: space-around;
+      align-items: center; z-index: 900; backdrop-filter: blur(20px);
+    }
+    .mobile-nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-muted);
+      font-size: 0.65rem; border: none; background: transparent; cursor: pointer;
+    }
+    .mobile-nav-btn.active { color: var(--accent-blue); font-weight: 600; }
+
+    footer {
+      border-top: 1px solid var(--border-color); padding: 14px 0; margin-top: auto;
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); z-index: 10; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .status-indicator { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      aside { width: 80px; padding: 20px 10px; }
+      .brand-title, .brand-subtitle, .profile-info, nav .nav-item span { display: none; }
+      nav .nav-item { justify-content: center; padding: 12px; }
+      .profile-card { justify-content: center; padding: 8px; }
+    }
+
+    @media (max-width: 768px) {
+      .grid-main, .grid-top, .grid-stats, .grid-bottom, .grid-2col, .grid-3col { grid-template-columns: 1fr; }
+      aside { position: fixed; inset: 0 auto 0 0; transform: translateX(-100%); }
+      aside.open { transform: translateX(0); }
+      .menu-toggle { display: block; }
+      .mobile-bottom-nav { display: flex; }
+      body { padding-bottom: 60px; }
+      .ai-widget { bottom: 70px; }
+      .fab-container { bottom: 70px; right: 75px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OFFLINE NETWORK STATUS BANNER -->
+  <div id="offline-banner">⚠️ Connection Lost - Operating in Offline Mode</div>
+
+  <!-- MOBILE SIDEBAR OVERLAY -->
+  <div id="sidebar-overlay" data-action="toggleSidebar"></div>
+
+  <!-- GUIDED TOUR POPOVER -->
+  <div id="tour-popover">
+    <div id="tour-popover-title">Guided Tour</div>
+    <div id="tour-popover-body">Welcome to TrashOut Enterprise Platform.</div>
+    <div class="w-full h-full bg-card rounded-sm overflow-hidden" style="height:4px; margin-top:4px;">
+      <div id="tour-progress-bar-fill" style="width: 14%; height: 100%; background: var(--accent-blue); transition: width 0.3s ease;"></div>
+    </div>
+    <div class="flex-between" style="margin-top:6px;">
+      <span class="text-xs text-muted" id="tour-step-counter">Step 1 of 7</span>
+      <div class="flex-row gap-2">
+        <button type="button" class="btn-secondary p-1 text-xs" data-action="skipTour">Skip</button>
+        <button type="button" class="btn-action p-1 text-xs" data-action="nextTourStep">Next ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING QUICK ACTIONS SPEED DIAL (FAB) -->
+  <div class="fab-container">
+    <button type="button" class="fab-main" data-action="toggleFAB" aria-label="Quick Actions"><i data-feather="plus"></i></button>
+    <div class="fab-menu" id="fab-menu"></div>
+  </div>
+
+  <!-- AUTHENTICATION OVERLAY WITH STEPPING PROGRESS ANIMATION -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <div class="brand flex-center" style="margin-bottom: 4px;">
+        <div class="brand-logo"><i data-feather="trash-2"></i></div>
+        <div class="brand-title">TrashOut Enterprise</div>
+      </div>
+      <p class="text-sm text-muted text-center" id="login-subheading" data-i18n="login_subheading">Guntur Municipal Operations Authentication</p>
+      
+      <div id="login-form-body" class="flex-col gap-3">
+        <div class="form-group">
+          <label for="login-role" data-i18n="lbl_role">Select Role Permissions</label>
+          <select class="form-control" id="login-role">
+            <option value="admin">Administrator (Full Access)</option>
+            <option value="manager">Municipal Manager (No Settings/Disable Add Bin)</option>
+            <option value="driver">Fleet Driver (Operations Only: Dashboard, Fleet, Map)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="login-username" data-i18n="lbl_operator">Operator Name</label>
+          <input type="text" class="form-control" id="login-username" value="Nune Venkata Yasasvi" />
+        </div>
+
+        <div class="flex-between text-xs text-muted">
+          <label class="align-center gap-2 cursor-pointer">
+            <input type="checkbox" id="login-remember" checked /> <span data-i18n="lbl_remember">Remember this device</span>
+          </label>
+          <span><span data-i18n="lbl_last_login">Last Login</span>: <strong id="last-login-time-display" class="text-main">Today</strong></span>
+        </div>
+
+        <button type="button" class="btn-action flex-center p-3" style="margin-top: 4px;" data-action="executeLogin" data-i18n="btn_login">Authenticate & Launch</button>
+      </div>
+
+      <div id="login-progress-container" class="flex-col gap-2 text-center p-2" style="display:none;">
+        <div class="text-sm font-semi text-blue" id="login-stage-text">Authenticating Credentials...</div>
+        <div class="w-full bg-card rounded-sm overflow-hidden" style="height:6px;">
+          <div id="login-stage-bar" style="width:0%; height:100%; background:var(--accent-blue); transition:width 0.3s ease;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD STARTUP SPLASH SCREEN -->
+  <div id="dashboard-loader">
+    <div class="brand-logo" style="width: 52px; height: 52px;"><i data-feather="trash-2"></i></div>
+    <div class="loader-title">TrashOut Enterprise Platform</div>
+    <div class="loader-status" id="loader-text">Connecting API...</div>
+    <div class="loader-bar"><div class="loader-progress" id="loader-progress-bar"></div></div>
+  </div>
+
+  <!-- AMBIENT MESH BACKGROUND -->
+  <div class="mesh-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div id="notification-toast-area" aria-live="polite"></div>
+
+  <!-- REUSABLE MODAL CONTAINER -->
+  <div class="modal-backdrop" id="modal-backdrop" data-action="closeModalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="active-modal-box">
+      <div class="card-header">
+        <div class="card-title" id="modal-title">System Window</div>
+        <i data-feather="x" class="cursor-pointer" data-action="closeModal" aria-label="Close Modal" tabindex="0" role="button"></i>
+      </div>
+      <div id="modal-body"></div>
+      <div class="flex-row gap-2" style="justify-content: flex-end; margin-top: 12px;">
+        <button type="button" class="btn-secondary" data-action="closeModal" data-i18n="btn_close">Close</button>
+        <button type="button" class="btn-action" id="modal-submit-btn" data-action="submitModal" data-i18n="btn_confirm">Confirm Action</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION DRAWER -->
+  <div class="slide-drawer" id="notification-drawer">
+    <div class="card-header">
+      <div class="card-title" data-i18n="drawer_notif_title">Live Notification Center</div>
+      <i data-feather="x" class="cursor-pointer" data-action="toggleNotifDrawer" tabindex="0" role="button" aria-label="Close Notifications"></i>
+    </div>
+    <div class="flex-between border-bottom" style="padding-bottom:8px;">
+      <span class="text-xs text-muted" data-i18n="drawer_notif_subtitle">Real-Time Operational Alerts</span>
+      <div class="flex-row gap-2">
+        <button type="button" class="btn-secondary p-1 text-xs" data-action="markAllNotificationsRead" data-i18n="btn_mark_read">Mark Read</button>
+        <button type="button" class="btn-secondary p-1 text-xs text-red" data-action="clearAllNotifications" data-i18n="btn_clear_all">Clear All</button>
+      </div>
+    </div>
+    <div class="flex-col gap-2 overflow-y-auto" id="drawer-notif-list"></div>
+  </div>
+
+  <!-- DETAILED USER PROFILE DRAWER -->
+  <div class="slide-drawer" id="profile-drawer">
+    <div class="card-header">
+      <div class="card-title" data-i18n="drawer_profile_title">Operator Profile & Security</div>
+      <i data-feather="x" class="cursor-pointer" data-action="toggleProfileDrawer" tabindex="0" role="button" aria-label="Close Profile"></i>
+    </div>
+    <div class="flex-col align-center gap-2" style="margin: 10px 0;">
+      <div class="avatar-initials" style="width: 72px; height: 72px; font-size: 1.6rem;" id="drawer-avatar-initials">
+        NV
+      </div>
+      <strong id="drawer-user-name">Nune Venkata Yasasvi</strong>
+      <span class="text-xs text-muted" id="drawer-user-role">System Administrator</span>
+    </div>
+    <div class="flex-col gap-3 text-sm border-top" style="padding-top: 16px;">
+      <div><strong>Email:</strong> yasasvi@trashout.io</div>
+      <div><strong>Employee ID:</strong> EMP-GNT-2026-88</div>
+      <div><strong>Phone:</strong> +91 98765 43210</div>
+      <div><strong>Joined Date:</strong> 15 Jan 2024</div>
+      <div><strong>Department:</strong> Municipal Waste Operations</div>
+      <div><strong>Zone Scope:</strong> Guntur Circle, AP</div>
+      <div><strong>Permissions Scope:</strong> <span class="text-green" id="drawer-perm-scope">Full Control</span></div>
+      <div><strong>Last Authentication:</strong> <span class="text-main" id="drawer-last-login-time">Today 08:30 AM</span></div>
+      <div><strong>Session Security:</strong> <span class="text-green">256-bit Encrypted</span></div>
+    </div>
+    <button type="button" class="btn-action" style="margin-top: auto;" data-action="logoutSession" data-i18n="btn_logout">Terminate Session / Logout</button>
+  </div>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar" class="tour-sidebar-target">
+    <div class="brand">
+      <div class="brand-logo"><i data-feather="trash-2"></i></div>
+      <div>
+        <div class="brand-title">TrashOut</div>
+        <div class="brand-subtitle">Guntur Ecosystem</div>
+      </div>
+    </div>
+
+    <div class="profile-card" data-action="toggleProfileDropdown" aria-expanded="false" id="sidebar-profile-card" tabindex="0" role="button" aria-haspopup="true">
+      <div class="avatar-initials" id="sidebar-avatar-initials">
+        NV
+        <div class="status-dot"></div>
+      </div>
+      <div class="profile-info">
+        <h4 id="sidebar-profile-name">Nune Venkata Yasasvi</h4>
+        <p id="sidebar-profile-role">System Administrator</p>
+      </div>
+
+      <div class="profile-dropdown-menu" id="profile-context-menu">
+        <div class="dropdown-menu-item" data-action="toggleProfileDrawer" tabindex="0" role="button"><i data-feather="user" style="width:14px;height:14px;"></i> <span data-i18n="menu_profile">My Profile</span></div>
+        <div class="dropdown-menu-item" data-action="navSettings" tabindex="0" role="button"><i data-feather="settings" style="width:14px;height:14px;"></i> <span data-i18n="menu_settings">Account Settings</span></div>
+        <div class="dropdown-menu-item" data-action="openHotkeysModal" tabindex="0" role="button"><i data-feather="key" style="width:14px;height:14px;"></i> <span data-i18n="menu_hotkeys">Security & Hotkeys</span></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-menu-item text-red" data-action="logoutSession" tabindex="0" role="button"><i data-feather="log-out" style="width:14px;height:14px;"></i> <span data-i18n="btn_logout">Logout</span></div>
+      </div>
+    </div>
+
+    <nav aria-label="Main Dashboard Navigation">
+      <div class="nav-item active nav-dashboard-item" data-action="switchTab" data-target-view="dashboard" tabindex="0" role="button"><i data-feather="grid"></i> <span data-i18n="nav_dashboard">Dashboard</span></div>
+      <div class="nav-item nav-bins-item" data-action="switchTab" data-target-view="bins" tabindex="0" role="button"><i data-feather="trash"></i> <span data-i18n="nav_bins">Smart Bins</span></div>
+      <div class="nav-item nav-fleet-item" data-action="switchTab" data-target-view="collection" tabindex="0" role="button"><i data-feather="truck"></i> <span data-i18n="nav_fleet">Collection Log</span></div>
+      <div class="nav-item nav-analytics-item" data-action="switchTab" data-target-view="analytics" tabindex="0" role="button"><i data-feather="pie-chart"></i> <span data-i18n="nav_analytics">Analytics</span></div>
+      <div class="nav-item nav-map-item" data-action="switchTab" data-target-view="map" tabindex="0" role="button"><i data-feather="map-pin"></i> <span data-i18n="nav_map">Map</span></div>
+      <div class="nav-item nav-reports-item tour-reports-target" data-action="switchTab" data-target-view="reports" tabindex="0" role="button"><i data-feather="file-text"></i> <span data-i18n="nav_reports">Reports</span></div>
+      <div class="nav-item nav-settings-item tour-settings-target" data-action="switchTab" data-target-view="settings" tabindex="0" role="button"><i data-feather="settings"></i> <span data-i18n="nav_settings">Settings</span></div>
+    </nav>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main>
+    <!-- SYSTEM HEALTH INDICATOR PANEL TICKER -->
+    <div class="ticker-bar">
+      <div class="ticker-item"><span class="health-pill">🟢 API v3</span></div>
+      <div class="ticker-item"><span class="health-pill">🟢 Database</span></div>
+      <div class="ticker-item"><span class="health-pill">🟢 MQTT Broker</span></div>
+      <div class="ticker-item"><span class="health-pill">🟢 Redis Cache</span></div>
+      <div class="ticker-item"><span class="health-pill">🟢 Cloud Sync</span></div>
+      <div class="ticker-item"><span class="health-pill">🟢 Weather API</span></div>
+      <div class="ticker-item">
+        <div class="refresh-timer-widget">
+          <div class="timer-ring"></div>
+          <span><span data-i18n="lbl_next_sync">Next Sync</span>: <strong id="refresh-countdown-text" class="text-main">00:05</strong></span>
+        </div>
+      </div>
+      <div class="ticker-item" style="margin-left:auto;"><i data-feather="refresh-cw" class="text-green"></i> <span data-i18n="lbl_sync">Sync</span>: <span class="ticker-val" id="last-sync-time">Just Now</span></div>
+    </div>
+
+    <!-- GLASS HEADER -->
+    <header id="header-bar-tour">
+      <div class="header-left">
+        <button type="button" class="menu-toggle" data-action="toggleSidebar" aria-label="Toggle Navigation Menu"><i data-feather="menu"></i></button>
+        <div>
+          <div class="breadcrumbs">Home > <span id="crumb-active" class="active">Dashboard</span></div>
+          <h1 id="page-title" class="font-bold" style="font-size: 1.35rem;" data-i18n="title_dashboard">Smart Waste Management Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- LIVE WEATHER BADGE -->
+        <div class="weather-badge" id="weather-badge-container">
+          <span id="weather-icon-span">☀</span>
+          <span id="weather-text-span">Loading Guntur Weather...</span>
+        </div>
+
+        <!-- MULTI-LANGUAGE SELECTOR -->
+        <select class="form-control" style="width: auto; padding: 4px 8px;" id="lang-selector" aria-label="Language Selector">
+          <option value="en">English</option>
+          <option value="te">తెలుగు (Telugu)</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+        </select>
+
+        <!-- GLOBAL SEARCH -->
+        <div class="search-box">
+          <i data-feather="search"></i>
+          <input type="text" id="global-search" placeholder="Search Bins, Fleet, Drivers..." aria-label="Global Search" />
+          <span class="shortcut-tag">Ctrl + /</span>
+          <div class="search-dropdown" id="search-dropdown"></div>
+        </div>
+
+        <button type="button" class="btn-icon" data-action="toggleNotifDrawer" aria-label="Open Notifications" id="notif-bell-btn">
+          <i data-feather="bell"></i>
+          <span class="badge-count" id="notif-badge-count" data-count="4">4</span>
+        </button>
+
+        <button type="button" class="btn-icon" data-action="toggleFullscreen" aria-label="Toggle Fullscreen Mode"><i data-feather="maximize"></i></button>
+        <button type="button" class="btn-icon" data-action="startGuidedTour" aria-label="Guided Dashboard Tour" data-i18n="btn_tour">Tour</button>
+        <button type="button" class="btn-icon" data-action="openHotkeysModal" aria-label="Shortcuts Help">?</button>
+        
+        <div class="btn-icon-static"><i data-feather="clock"></i> <span id="live-clock">--:--:--</span></div>
+      </div>
+    </header>
+
+    <!-- VIEW 1: DASHBOARD -->
+    <section id="view-dashboard" class="view-section active">
+      <!-- WELCOME OPERATIONAL BANNER -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2 id="welcome-greeting-title">Good Day, Nune Venkata Yasasvi</h2>
+          <p data-i18n="banner_subtext">Guntur Municipal Central Operations • All telemetry nodes reporting online.</p>
+        </div>
+        <div class="flex-row gap-4 text-sm">
+          <div><strong>259</strong> <span class="text-muted" data-i18n="banner_bins">Bins</span></div>
+          <div><strong>14</strong> <span class="text-muted" data-i18n="banner_trucks">Trucks</span></div>
+          <div><strong>18</strong> <span class="text-muted" data-i18n="banner_workers">Field Workers</span></div>
+        </div>
+      </div>
+
+      <!-- MULTI-FACTOR FILTERS -->
+      <div class="filter-bar-container tour-filters-target">
+        <strong class="text-main"><i data-feather="filter" style="width: 14px; height: 14px;"></i> <span data-i18n="lbl_filters">Filters</span>:</strong>
+        <label class="align-center gap-1"><input type="checkbox" id="filter-overflow" checked /> <span data-i18n="flt_overflow">Overflow</span></label>
+        <label class="align-center gap-1"><input type="checkbox" id="filter-normal" checked /> <span data-i18n="flt_normal">Normal</span></label>
+        <label class="align-center gap-1"><input type="checkbox" id="filter-empty" checked /> <span data-i18n="flt_empty">Empty</span></label>
+        <div style="height: 12px; width: 1px; background: var(--border-color); margin: 0 4px;"></div>
+        <span data-i18n="lbl_zone_area">Zone Area:</span>
+        <select class="form-control" id="filter-area" style="width: auto; padding: 2px 6px; font-size: 0.75rem;" aria-label="Zone Area Filter">
+          <option value="all" data-i18n="opt_all_zones">All Guntur Zones</option>
+          <option value="Brodipet">Brodipet</option>
+          <option value="Arundelpet">Arundelpet</option>
+          <option value="Lakshmipuram">Lakshmipuram</option>
+          <option value="Kothapet">Kothapet</option>
+        </select>
+      </div>
+
+      <div class="action-toolbar">
+        <div class="toolbar-title"><i data-feather="layers"></i> <span data-i18n="lbl_quick_controls">Quick Operational Controls</span></div>
+        <div class="toolbar-actions">
+          <button type="button" class="btn-action admin-only" id="add-bin-control-btn" data-action="openAddBinModal"><i data-feather="plus"></i> <span data-i18n="btn_add_bin">Add Bin</span> <span class="shortcut-tag" style="color:white; background:rgba(255,255,255,0.2)">Ctrl+B</span></button>
+          <button type="button" class="btn-secondary" data-action="generateRealPDF"><i data-feather="file-text"></i> <span data-i18n="btn_pdf_report">PDF Report</span> <span class="shortcut-tag">Ctrl+R</span></button>
+          <button type="button" class="btn-secondary" data-action="syncData"><i data-feather="refresh-cw"></i> <span data-i18n="btn_sync_data">Sync Data</span></button>
+        </div>
+      </div>
+
+      <!-- KPI METRIC CARDS GRID (GENERATED DYNAMICALLY VIA JS) -->
+      <div class="grid-stats tour-cards-target" id="kpi-cards-container"></div>
+
+      <div class="grid-main">
+        <div class="flex-col gap-5">
+          <div class="grid-top">
+            <div class="card tour-map-target">
+              <div class="card-header">
+                <div class="card-title" data-i18n="title_gis_map">Live Geospatial Fleet & IoT Map (Guntur)</div>
+                <div class="text-xs text-muted" id="truck-live-status-text">Truck T01 Active (32 km/h)</div>
+              </div>
+              <div id="leaflet-map"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title" data-i18n="title_waste_comp">Waste Composition</div></div>
+              <div style="height: 220px;" class="flex-center"><canvas id="chart-donut"></canvas></div>
+            </div>
+          </div>
+
+          <div class="grid-bottom">
+            <div class="card">
+              <div class="card-header"><div class="card-title" data-i18n="title_priority_bins">Priority Overflow Bins</div></div>
+              <div class="flex-col gap-2" id="priority-bins-container"></div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(0,163,255,0.08), rgba(157,80,187,0.08));">
+              <div class="card-header"><div class="card-title"><i data-feather="cpu" class="text-blue"></i> <span data-i18n="title_ai_insights">AI Daily Insights</span></div></div>
+              <div class="flex-col gap-2 text-sm">
+                <div><span data-i18n="lbl_overflow_pred">Overflow Prediction</span>: <strong class="text-red" id="ai-calculated-risk-text">93%</strong></div>
+                <div><span data-i18n="lbl_sugg_truck">Suggested Truck</span>: <strong id="ai-calculated-action-text">Truck-02 (Brodipet)</strong></div>
+                <div><span data-i18n="lbl_confidence">Confidence Score</span>: <strong class="text-green">97%</strong></div>
+                <div style="height: 50px;"><canvas id="chart-ai-predict"></canvas></div>
+              </div>
+            </div>
+
+            <!-- ANIMATED ROUTE PROGRESS BAR -->
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i data-feather="navigation" class="text-green"></i> <span data-i18n="title_route_opt">Route Optimization</span></div></div>
+              <div class="flex-col gap-2 text-xs">
+                <div><strong>Truck-01 (Ravi Kumar)</strong></div>
+                <div class="text-muted">Brodipet ➔ Arundelpet ➔ Lakshmipuram</div>
+                <div>ETA Next Node: <strong id="truck-eta-display">8 Mins</strong></div>
+                <div class="flex-between text-xs text-muted">
+                  <span data-i18n="lbl_progress">Progress</span>
+                  <span id="route-progress-pct-text">0%</span>
+                </div>
+                <div class="w-full bg-card rounded-sm overflow-hidden" style="height:6px;">
+                  <div id="route-progress-bar-fill" style="width: 0%; height:100%; background: var(--accent-green); transition: width 1s ease-in-out;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HEATMAP ACTIVITY DENSITY CARD -->
+          <div class="card">
+            <div class="card-header"><div class="card-title" data-i18n="title_heatmap">Collection Density Heatmap (Weekly Load)</div></div>
+            <div class="heatmap-grid" id="heatmap-grid-container"></div>
+          </div>
+        </div>
+
+        <!-- LIVE TIMELINE FEED -->
+        <div class="flex-col gap-5">
+          <div class="card">
+            <div class="card-header"><div class="card-title" data-i18n="title_activity_stream">Live Activity Stream</div></div>
+            <div class="timeline" id="live-timeline"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: SMART BINS -->
+    <section id="view-bins" class="view-section">
+      <div class="action-toolbar">
+        <div class="toolbar-title"><i data-feather="trash"></i> <span data-i18n="title_manage_bins">Manage Smart Bins (Guntur Zone)</span></div>
+        <div class="toolbar-actions">
+          <button type="button" class="btn-action admin-only" data-action="openAddBinModal"><i data-feather="plus"></i> <span data-i18n="btn_add_bin">Add Bin</span></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="grid-3col" id="smart-bins-grid"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: COLLECTION LOG -->
+    <section id="view-collection" class="view-section">
+      <div class="action-toolbar">
+        <div class="toolbar-title"><i data-feather="truck"></i> <span data-i18n="title_fleet_ops">Fleet Operations</span></div>
+        <div class="toolbar-actions">
+          <button type="button" class="btn-action" data-action="exportToExcel"><i data-feather="download"></i> Excel</button>
+          <button type="button" class="btn-secondary" data-action="exportToCSV"><i data-feather="database"></i> CSV</button>
+          <button type="button" class="btn-secondary" data-action="exportToJSON"><i data-feather="code"></i> JSON</button>
+          <button type="button" class="btn-secondary" data-action="printPage"><i data-feather="printer"></i> Print</button>
+        </div>
+      </div>
+      <div class="card">
+        <table id="collection-table">
+          <thead>
+            <tr>
+              <th data-i18n="tbl_truck_id">Truck ID</th>
+              <th data-i18n="tbl_driver_name">Driver Name</th>
+              <th data-i18n="tbl_area">Assigned Area</th>
+              <th data-i18n="tbl_status">Status</th>
+              <th data-i18n="tbl_fuel_speed">Fuel / Speed</th>
+              <th data-i18n="tbl_action">Action</th>
+            </tr>
+          </thead>
+          <tbody id="fleet-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 4: ANALYTICS -->
+    <section id="view-analytics" class="view-section">
+      <div class="action-toolbar">
+        <div class="toolbar-title"><i data-feather="pie-chart"></i> <span data-i18n="title_analytics_ctrl">Analytics Controls</span></div>
+        <div class="toolbar-actions">
+          <button type="button" class="btn-secondary" data-action="filterAnalytics" data-range="today" data-i18n="btn_today">Today</button>
+          <button type="button" class="btn-secondary" data-action="filterAnalytics" data-range="week" data-i18n="btn_this_week">This Week</button>
+          <button type="button" class="btn-secondary" data-action="filterAnalytics" data-range="month" data-i18n="btn_this_month">This Month</button>
+          <button type="button" class="btn-action" data-action="exportChartPNG"><i data-feather="image"></i> Export PNG</button>
+        </div>
+      </div>
+      <div class="grid-2col">
+        <div class="card" id="card-chart-bar">
+          <div class="card-header"><div class="card-title" data-i18n="title_waste_vol">Waste Volume Breakdown (Guntur)</div></div>
+          <div style="height: 250px;" id="chart-bar-container"><canvas id="chart-bar"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title" data-i18n="title_fill_trend">Fill % Trend Analytics</div></div>
+          <div style="height: 250px;" id="chart-line-container"><canvas id="chart-line"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: MAP -->
+    <section id="view-map" class="view-section">
+      <div class="card" style="position: relative;">
+        <div id="leaflet-map-full" style="height: 520px; width: 100%;"></div>
+        <div class="map-legend">
+          <span>🟢 Empty (&lt;30%)</span>
+          <span>🟡 Normal (30-80%)</span>
+          <span>🔴 Overflow (&gt;80%)</span>
+          <span>🚛 Moving Fleet Truck</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 6: REPORTS -->
+    <section id="view-reports" class="view-section">
+      <div class="card">
+        <div class="card-header"><div class="card-title" data-i18n="title_export_hub">Multi-Format Audit Export Hub</div></div>
+        <div class="flex-row gap-3" style="flex-wrap:wrap; margin-top:12px;">
+          <button type="button" class="btn-action" data-action="generateRealPDF"><i data-feather="file"></i> Export PDF Report</button>
+          <button type="button" class="btn-secondary" data-action="exportToExcel"><i data-feather="download"></i> Export Excel Workbook</button>
+          <button type="button" class="btn-secondary" data-action="exportToCSV"><i data-feather="database"></i> Export CSV Data</button>
+          <button type="button" class="btn-secondary" data-action="exportToJSON"><i data-feather="code"></i> Export JSON Data</button>
+          <button type="button" class="btn-secondary" data-action="printPage"><i data-feather="printer"></i> Print Summary</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title" data-i18n="title_report_archive">Historical Report Archive</div></div>
+        <div class="flex-col gap-2" id="reports-archive-list"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 7: SETTINGS -->
+    <section id="view-settings" class="view-section">
+      <div class="card">
+        <div class="card-header"><div class="card-title" data-i18n="title_sys_prefs">System Preferences & Theme Palette</div></div>
+        <div class="grid-2col">
+          <div class="form-group">
+            <label for="settings-theme-select" data-i18n="lbl_theme_palette">Dashboard Theme Palette</label>
+            <select class="form-control" id="settings-theme-select">
+              <option value="midnight">🩶 Midnight</option>
+              <option value="dark">🌙 Dark Theme</option>
+              <option value="ocean">🌊 Ocean</option>
+              <option value="emerald">🌿 Emerald</option>
+              <option value="purple">🟣 Cyber Purple</option>
+              <option value="light">☀ Light</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_refresh_rate">Telemetry Auto-Refresh Interval</label>
+            <select class="form-control" id="settings-refresh-select" aria-label="Refresh Interval">
+              <option>5 Seconds (Real-time)</option>
+              <option>15 Seconds</option>
+              <option>30 Seconds</option>
+            </select>
+          </div>
+        </div>
+        <div class="border-top" style="margin-top:16px; padding-top:16px;">
+          <button type="button" class="btn-secondary text-red" data-action="resetSystemSettings" data-i18n="btn_reset_settings">Reset Settings to Default</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI COPILOT -->
+    <div class="ai-widget tour-copilot-target">
+      <div class="ai-box" id="ai-box">
+        <div class="ai-header">
+          <span>🤖 TrashOut Copilot AI</span>
+          <i data-feather="x" class="cursor-pointer" data-action="toggleAI"></i>
+        </div>
+        <div class="ai-chat" id="ai-chat">
+          <div class="chat-msg bot" id="ai-welcome-msg">
+            👋 Welcome Operator<br/><br/>
+            <strong>Guntur Systems Online</strong><br/>
+            Click a suggestion pill below or type a query.
+          </div>
+        </div>
+
+        <div class="ai-pills-container">
+          <div class="ai-pill" data-action="triggerAIPill" data-pill-text="Show Overflow Bins">[Overflow]</div>
+          <div class="ai-pill" data-action="triggerAIPill" data-pill-text="Show Fleet Status">[Truck Status]</div>
+          <div class="ai-pill" data-action="triggerAIPill" data-pill-text="Show Analytics">[Analytics]</div>
+          <div class="ai-pill" data-action="triggerAIPill" data-pill-text="Export Audit Report">[Today's Report]</div>
+          <div class="ai-pill" data-action="triggerAIPill" data-pill-text="Get Live Weather">[Weather]</div>
+        </div>
+
+        <div class="ai-input">
+          <input type="text" id="ai-msg-input" class="form-control" placeholder="Ask AI Copilot..." aria-label="AI Message Input" />
+          <button type="button" class="btn-action" data-action="sendAICopilotMsg"><i data-feather="send"></i></button>
+        </div>
+      </div>
+      <button type="button" class="ai-btn" data-action="toggleAI" aria-label="Open AI Copilot"><i data-feather="message-square"></i></button>
+    </div>
+
+    <!-- ENTERPRISE FOOTER -->
+    <footer>
+      <div>© 2026 TrashOut Enterprise • Version 2.4.1 • Build 2026.08 • Server: Singapore • Uptime: 99.98%</div>
+      <div class="footer-status">
+        <span class="status-indicator"></span> 
+        <span>● Online</span> | 
+        <span>API v3 Connected</span> | 
+        <span>Latency: <strong id="footer-latency">12 ms</strong></span> |
+        <span class="p-1 bg-card rounded-sm" style="font-family: monospace;">RAM: <strong id="stat-ram" class="text-main">42%</strong> | CPU: <strong id="stat-cpu" class="text-main">18%</strong> | FPS: <strong id="stat-fps" class="text-main">60</strong></span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- MOBILE BOTTOM APP BAR NAVIGATION -->
+  <div class="mobile-bottom-nav">
+    <button type="button" class="mobile-nav-btn active" id="mob-nav-dashboard" data-action="switchTab" data-target-view="dashboard"><i data-feather="grid"></i><span>Home</span></button>
+    <button type="button" class="mobile-nav-btn" id="mob-nav-bins" data-action="switchTab" data-target-view="bins"><i data-feather="trash"></i><span>Bins</span></button>
+    <button type="button" class="mobile-nav-btn" id="mob-nav-fleet" data-action="switchTab" data-target-view="collection"><i data-feather="truck"></i><span>Fleet</span></button>
+    <button type="button" class="mobile-nav-btn" id="mob-nav-analytics" data-action="switchTab" data-target-view="analytics"><i data-feather="pie-chart"></i><span>Analytics</span></button>
+    <button type="button" class="mobile-nav-btn" id="mob-nav-settings" data-action="switchTab" data-target-view="settings"><i data-feather="settings"></i><span>Settings</span></button>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       ENTERPRISE REFACTORED JAVASCRIPT ENGINE
+       ========================================================================== */
+
+    const rolesMap = {
+      admin: "System Administrator",
+      manager: "Municipal Manager",
+      driver: "Fleet Driver"
+    };
+
+    const translations = {
+      en: {
+        nav_dashboard: "Dashboard", nav_bins: "Smart Bins", nav_fleet: "Collection Log", nav_analytics: "Analytics", nav_map: "Map", nav_reports: "Reports", nav_settings: "Settings",
+        title_dashboard: "Smart Waste Management Dashboard", login_subheading: "Guntur Municipal Operations Authentication", lbl_role: "Select Role Permissions",
+        lbl_operator: "Operator Name", lbl_remember: "Remember this device", lbl_last_login: "Last Login", btn_login: "Authenticate & Launch",
+        drawer_notif_title: "Live Notification Center", drawer_notif_subtitle: "Real-Time Operational Alerts", btn_mark_read: "Mark Read", btn_clear_all: "Clear All",
+        drawer_profile_title: "Operator Profile & Security", menu_profile: "My Profile", menu_settings: "Account Settings", menu_hotkeys: "Security & Hotkeys", btn_logout: "Logout",
+        lbl_next_sync: "Next Sync", lbl_sync: "Sync", banner_subtext: "Guntur Municipal Central Operations • All telemetry nodes reporting online.", banner_bins: "Bins",
+        banner_trucks: "Trucks", banner_workers: "Field Workers", lbl_filters: "Filters", flt_overflow: "Overflow", flt_normal: "Normal", flt_empty: "Empty",
+        lbl_zone_area: "Zone Area", opt_all_zones: "All Guntur Zones", lbl_quick_controls: "Quick Operational Controls", btn_add_bin: "Add Bin", btn_pdf_report: "PDF Report",
+        btn_sync_data: "Sync Data", title_gis_map: "Live Geospatial Fleet & IoT Map (Guntur)", title_waste_comp: "Waste Composition", title_priority_bins: "Priority Overflow Bins",
+        title_ai_insights: "AI Daily Insights", lbl_overflow_pred: "Overflow Prediction", lbl_sugg_truck: "Suggested Truck", lbl_confidence: "Confidence Score",
+        title_route_opt: "Route Optimization", lbl_progress: "Progress", title_heatmap: "Collection Density Heatmap (Weekly Load)", title_activity_stream: "Live Activity Stream",
+        title_manage_bins: "Manage Smart Bins (Guntur Zone)", title_fleet_ops: "Fleet Operations", tbl_truck_id: "Truck ID", tbl_driver_name: "Driver Name",
+        tbl_area: "Assigned Area", tbl_status: "Status", tbl_fuel_speed: "Fuel / Speed", tbl_action: "Action", title_analytics_ctrl: "Analytics Controls",
+        btn_today: "Today", btn_this_week: "This Week", btn_this_month: "This Month", title_waste_vol: "Waste Volume Breakdown (Guntur)", title_fill_trend: "Fill % Trend Analytics",
+        title_export_hub: "Multi-Format Audit Export Hub", title_report_archive: "Historical Report Archive", title_sys_prefs: "System Preferences & Theme Palette",
+        lbl_theme_palette: "Dashboard Theme Palette", lbl_refresh_rate: "Telemetry Auto-Refresh Interval", btn_reset_settings: "Reset Settings to Default", btn_tour: "Tour",
+        btn_close: "Close", btn_confirm: "Confirm Action"
+      },
+      te: {
+        nav_dashboard: "డాష్‌బోర్డ్", nav_bins: "స్మార్ట్ బిన్లు", nav_fleet: "కలెక్షన్ లాగ్", nav_analytics: "అనలిటిక్స్", nav_map: "మ్యాప్", nav_reports: "రిపోర్టులు", nav_settings: "సెట్టింగ్‌లు",
+        title_dashboard: "స్మార్ట్ వేస్ట్ మేనేజ్‌మెంట్ డాష్‌బోర్డ్", login_subheading: "గుంటూరు మునిసిపల్ ఆపరేషన్స్ లాగిన్", lbl_role: "రోల్ ఎంచుకోండి",
+        lbl_operator: "ఆపరేటర్ పేరు", lbl_remember: "గుర్తుంచుకో", lbl_last_login: "చివరి లాగిన్", btn_login: "లాగిన్ అవ్వండి",
+        drawer_notif_title: "లైవ్ నోటిఫికేషన్‌లు", drawer_notif_subtitle: "ఆపరేషనల్ హెచ్చరికలు", btn_mark_read: "చదివినట్లు మార్క్ చేయి", btn_clear_all: "అన్నీ తొలగించు",
+        drawer_profile_title: "ఆపరేటర్ ప్రొఫైల్", menu_profile: "నా ప్రొఫైల్", menu_settings: "ఖాతా సెట్టింగ్‌లు", menu_hotkeys: "సెక్యూరిటీ & హాట్‌కీలు", btn_logout: "లాగౌట్",
+        lbl_next_sync: "తదుపరి సింక్", lbl_sync: "సింక్", banner_subtext: "గుంటూరు మున్సిపల్ కార్యకలాపాలు • అన్నీ ఆన్‌లైన్‌లో ఉన్నాయి.", banner_bins: "బిన్లు",
+        banner_trucks: "ట్రక్కులు", banner_workers: "సిబ్బంది", lbl_filters: "ఫిల్టర్లు", flt_overflow: "నిండినవి", flt_normal: "సాధారణం", flt_empty: "ఖాళీ",
+        lbl_zone_area: "జోన్ ప్రాంతం", opt_all_zones: "అన్ని జోన్లు", lbl_quick_controls: "త్వరిత నియంత్రణలు", btn_add_bin: "బిన్ జోడించు", btn_pdf_report: "PDF నివేదిక",
+        btn_sync_data: "డేటా సింక్", title_gis_map: "లైవ్ జియోస్పేషియల్ మ్యాప్", title_waste_comp: "చెత్త రకాలు", title_priority_bins: "ప్రాధాన్యత నిండిన బిన్లు",
+        title_ai_insights: "AI ముందస్తు అంచనాలు", lbl_overflow_pred: "ఓవర్‌ఫ్లో అంచనా", lbl_sugg_truck: "సూచించిన ట్రక్", lbl_confidence: "నమ్మకం స్కోరు",
+        title_route_opt: "రూట్ ఆప్టిమైజేషన్", lbl_progress: "పురోగతి", title_heatmap: "కలెక్షన్ డెన్సిటీ హీట్‌మ్యాప్", title_activity_stream: "లైవ్ యాక్టివిటీ స్ట్రీమ్",
+        title_manage_bins: "స్మార్ట్ బిన్ల నిర్వహణ", title_fleet_ops: "ఫ్లీట్ ఆపరేషన్స్", tbl_truck_id: "ట్రక్ ID", tbl_driver_name: "డ్రైవర్ పేరు",
+        tbl_area: "కేటాయించిన ప్రాంతం", tbl_status: "స్థితి", tbl_fuel_speed: "ఇంధనం / వేగం", tbl_action: "చర్య", title_analytics_ctrl: "అనలిటిక్స్ కంట్రోల్స్",
+        btn_today: "ఈ రోజు", btn_this_week: "ఈ వారం", btn_this_month: "ఈ నెల", title_waste_vol: "చెత్త పరిమాణం బ్రేక్‌డౌన్", title_fill_trend: "ఫిల్ % ట్రెండ్",
+        title_export_hub: "ఎగుమతి కేంద్రం", title_report_archive: "పాత నివేదికలు", title_sys_prefs: "సిస్టమ్ సెట్టింగ్‌లు",
+        lbl_theme_palette: "థీమ్ రంగులు", lbl_refresh_rate: "ఆటో-రిఫ్రెష్ వ్యవధి", btn_reset_settings: "రీసెట్ చేయండి", btn_tour: "టూర్",
+        btn_close: "మూసివేయి", btn_confirm: "సరే"
+      },
+      hi: {
+        nav_dashboard: "डैशबोर्ड", nav_bins: "स्मार्ट बिन", nav_fleet: "संग्रह लॉग", nav_analytics: "एनालिटिक्स", nav_map: "मानचित्र", nav_reports: "रिपोर्ट", nav_settings: "सेटिंग्स",
+        title_dashboard: "स्मार्ट कचरा प्रबंधन डैशबोर्ड", login_subheading: "गुंटूर नगर निगम प्रमाणीकरण", lbl_role: "भूमिका चुनें",
+        lbl_operator: "ऑपरेटर का नाम", lbl_remember: "इस डिवाइस को याद रखें", lbl_last_login: "अंतिम लॉगिन", btn_login: "प्रवेश करें",
+        drawer_notif_title: "लाइव सूचनाएं", drawer_notif_subtitle: "संचालन अलर्ट", btn_mark_read: "पढ़ा हुआ मानें", btn_clear_all: "सभी साफ करें",
+        drawer_profile_title: "ऑपरेटर प्रोफ़ाइल", menu_profile: "मेरी प्रोफ़ाइल", menu_settings: "खाता सेटिंग्स", menu_hotkeys: "सुरक्षा और शॉर्टकट", btn_logout: "लॉगआउट",
+        lbl_next_sync: "अगला सिंक", lbl_sync: "सिंक", banner_subtext: "गुंटूर नगर निगम संचालन • सभी नोड्स ऑनलाइन हैं।", banner_bins: "बिन",
+        banner_trucks: "ट्रक", banner_workers: "कर्मचारी", lbl_filters: "फ़िल्टर", flt_overflow: "भरा हुआ", flt_normal: "सामान्य", flt_empty: "खाली",
+        lbl_zone_area: "जोन क्षेत्र", opt_all_zones: "सभी क्षेत्र", lbl_quick_controls: "त्वरित नियंत्रण", btn_add_bin: "बिन जोड़ें", btn_pdf_report: "PDF रिपोर्ट",
+        btn_sync_data: "डेटा सिंक", title_gis_map: "लाइव नक्शा", title_waste_comp: "कचरा संरचना", title_priority_bins: "प्राथमिकता ओवरफ्लो बिन",
+        title_ai_insights: "AI दैनिक विश्लेषण", lbl_overflow_pred: "ओवरफ्लो पूर्वानुमान", lbl_sugg_truck: "सुझाया गया ट्रक", lbl_confidence: "विश्वास स्कोर",
+        title_route_opt: "मार्ग अनुकूलन", lbl_progress: "प्रगति", title_heatmap: "संग्रह घनत्व हीटमैप", title_activity_stream: "लाइव गतिविधियां",
+        title_manage_bins: "स्मार्ट बिन प्रबंधन", title_fleet_ops: "वाहन संचालन", tbl_truck_id: "ट्रक ID", tbl_driver_name: "चालक का नाम",
+        tbl_area: "आवंटित क्षेत्र", tbl_status: "स्थिति", tbl_fuel_speed: "ईंधन / गति", tbl_action: "कार्रवाई", title_analytics_ctrl: "विश्लेषण नियंत्रण",
+        btn_today: "आज", btn_this_week: "इस सप्ताह", btn_this_month: "इस महीने", title_waste_vol: "कचरा मात्रा विश्लेषण", title_fill_trend: "भरने का रुझान",
+        title_export_hub: "निर्यात केंद्र", title_report_archive: "पुराने रिकॉर्ड", title_sys_prefs: "सिस्टम प्राथमिकताओं",
+        lbl_theme_palette: "थीम का रंग", lbl_refresh_rate: "ताज़ा करने का अंतराल", btn_reset_settings: "मूल स्थिति में लाएं", btn_tour: "दौरा",
+        btn_close: "बंद करें", btn_confirm: "पुष्टि करें"
+      }
+    };
+
+    let bins = [
+      { id: "GNT-101", loc: "Brodipet", lat: 16.3067, lng: 80.4365, fill: 95, status: "Overflow", temp: 32, batt: 88, gas: "High", lastPickup: "Yesterday 04:30 PM" },
+      { id: "GNT-102", loc: "Arundelpet", lat: 16.3122, lng: 80.4300, fill: 65, status: "Normal", temp: 29, batt: 94, gas: "Low", lastPickup: "Today 06:15 AM" },
+      { id: "GNT-103", loc: "Lakshmipuram", lat: 16.2995, lng: 80.4428, fill: 22, status: "Empty", temp: 27, batt: 76, gas: "Low", lastPickup: "Today 07:00 AM" },
+      { id: "GNT-104", loc: "Pattabhipuram", lat: 16.3010, lng: 80.4200, fill: 45, status: "Normal", temp: 28, batt: 82, gas: "Normal", lastPickup: "Yesterday 08:20 PM" },
+      { id: "GNT-105", loc: "Kothapet", lat: 16.3180, lng: 80.4450, fill: 18, status: "Empty", temp: 26, batt: 90, gas: "Low", lastPickup: "Today 05:45 AM" },
+      { id: "GNT-106", loc: "Auto Nagar", lat: 16.2880, lng: 80.4600, fill: 52, status: "Normal", temp: 30, batt: 85, gas: "Normal", lastPickup: "Yesterday 02:10 PM" }
+    ];
+
+    let trucks = [
+      { id: "T01", driver: "Ravi Kumar", area: "Brodipet", status: "Collecting", speed: "32 km/h", eta: "8 Mins", fuel: "84%" },
+      { id: "T02", driver: "Arun Sharma", area: "Arundelpet", status: "Returning", speed: "28 km/h", eta: "15 Mins", fuel: "62%" },
+      { id: "T03", driver: "Kiran V.", area: "Lakshmipuram", status: "Offline", speed: "0 km/h", eta: "N/A", fuel: "15%" }
+    ];
+
+    let notifications = [
+      { id: 1, type: "red", text: "Bin GNT-101 Overflow (95%) in Brodipet", time: "2 min ago", read: false },
+      { id: 2, type: "amber", text: "Truck T03 Route Delayed by Traffic", time: "5 min ago", read: false },
+      { id: 3, type: "green", text: "Arundelpet Node Collection Completed", time: "10 min ago", read: false },
+      { id: 4, type: "blue", text: "Heavy Rain Forecasted for Guntur Circle", time: "30 min ago", read: false }
+    ];
+
+    let reports = [
+      { id: "REP-801", name: "Audit_Report_Aug_2026.pdf", date: "04 Aug 2026", type: "PDF" },
+      { id: "REP-802", name: "Waste_Analytics_July.xlsx", date: "01 Aug 2026", type: "XLSX" },
+      { id: "REP-803", name: "Fleet_Log_Week32.csv", date: "28 Jul 2026", type: "CSV" }
+    ];
+
+    let currentUser = { name: "Nune Venkata Yasasvi", role: "admin" };
+
+    /* --- DYNAMIC COMPONENT INJECTION --- */
+    function injectDynamicLayoutComponents() {
+      // 1. KPI Cards
+      const kpiContainer = document.getElementById('kpi-cards-container');
+      const kpiData = [
+        { icon: 'trash-2', color: 'var(--accent-blue)', change: '🟢 243 Online', subtitle: 'TOTAL SMART BINS', id: 'val-bins', target: '259', view: 'bins', path: 'M0,20 Q25,5 50,15 T100,5' },
+        { icon: 'truck', color: 'var(--accent-green)', change: '+8.4%', subtitle: 'WASTE COLLECTED', id: 'val-waste', target: '15.2', unit: 'Tons', view: 'collection', path: 'M0,15 Q25,22 50,8 T100,2' },
+        { icon: 'refresh-cw', color: 'var(--accent-purple)', change: '+3.2%', subtitle: 'RECYCLING RATE', id: 'val-rate', target: '82', unit: '%', view: 'analytics', path: 'M0,22 Q25,10 50,18 T100,6' },
+        { icon: 'cloud-off', color: 'var(--accent-green)', change: '+15%', subtitle: 'CO₂ SAVED', id: 'val-co2', target: '28.6', unit: 'Tons', view: 'analytics', path: 'M0,18 Q25,12 50,20 T100,4' }
+      ];
+
+      kpiContainer.innerHTML = kpiData.map(k => `
+        <div class="card clickable" data-action="switchTab" data-target-view="${k.view}" tabindex="0" role="button">
+          <div class="card-header"><i data-feather="${k.icon}" class="card-icon" style="color: ${k.color};"></i><span class="metric-change">${k.change}</span></div>
+          <div class="card-subtitle">${k.subtitle}</div>
+          <div class="metric-value"><span class="count-up" id="${k.id}" data-target="${k.target}">0</span> ${k.unit ? `<span class="text-xs text-muted">${k.unit}</span>` : ''}</div>
+          <svg class="sparkline-svg" viewBox="0 0 100 25"><path d="${k.path}" fill="none" stroke="${k.color}" stroke-width="2"/></svg>
+        </div>
+      `).join('');
+
+      // 2. Heatmap Cells
+      const heatmapContainer = document.getElementById('heatmap-grid-container');
+      const heatmapDays = [
+        { day: 'Mon', alpha: '0.4' }, { day: 'Tue', alpha: '0.7' }, { day: 'Wed', alpha: '0.3' },
+        { day: 'Thu', alpha: '0.9' }, { day: 'Fri', alpha: '0.8' }, { day: 'Sat', alpha: '0.5' }, { day: 'Sun', alpha: '0.2' }
+      ];
+      heatmapContainer.innerHTML = heatmapDays.map(h => `<div class="heatmap-cell" style="background:rgba(0,163,255,${h.alpha});">${h.day}</div>`).join('');
+
+      // 3. FAB Speed Dial Actions
+      const fabMenu = document.getElementById('fab-menu');
+      fabMenu.innerHTML = `
+        <div class="fab-item" data-action="openAddBinModal" tabindex="0" role="button"><i data-feather="trash-2" style="width:14px;height:14px;"></i> Add Smart Bin</div>
+        <div class="fab-item" data-action="triggerEmergencyDispatch" tabindex="0" role="button"><i data-feather="alert-triangle" style="width:14px;height:14px;color:var(--accent-red);"></i> Emergency Dispatch</div>
+        <div class="fab-item" data-action="generateRealPDF" tabindex="0" role="button"><i data-feather="file-text" style="width:14px;height:14px;"></i> Audit Report</div>
+        <div class="fab-item" data-action="toggleAI" tabindex="0" role="button"><i data-feather="message-square" style="width:14px;height:14px;"></i> AI Copilot</div>
+      `;
+    }
+
+    /* --- AUTHENTICATION ENGINE --- */
+    function executeLogin() {
+      const selectedRole = document.getElementById('login-role').value;
+      const username = document.getElementById('login-username').value.trim() || "User";
+      const remember = document.getElementById('login-remember').checked;
+
+      document.getElementById('login-form-body').style.display = 'none';
+      const progressContainer = document.getElementById('login-progress-container');
+      const stageText = document.getElementById('login-stage-text');
+      const stageBar = document.getElementById('login-stage-bar');
+      progressContainer.style.display = 'flex';
+
+      const steps = [
+        { pct: "20%", text: "Authenticating Credentials..." },
+        { pct: "40%", text: "✔ Credentials Verified" },
+        { pct: "60%", text: "✔ Checking Role Permissions" },
+        { pct: "80%", text: "✔ Loading Dashboard Telemetry" },
+        { pct: "90%", text: "✔ Connected to Server" },
+        { pct: "100%", text: `Launching... Welcome ${rolesMap[selectedRole] || "Operator"}` }
+      ];
+
+      steps.forEach((st, idx) => {
+        setTimeout(() => {
+          stageBar.style.width = st.pct;
+          stageText.textContent = st.text;
+          
+          if (idx === steps.length - 1) {
+            setTimeout(() => {
+              currentUser = { name: username, role: selectedRole };
+              if (remember) localStorage.setItem('trashout_user', JSON.stringify(currentUser));
+              else sessionStorage.setItem('trashout_user', JSON.stringify(currentUser));
+
+              document.getElementById('login-overlay').style.display = 'none';
+              document.getElementById('dashboard-loader').style.display = 'flex';
+
+              applyRolePermissions(selectedRole);
+              updateUserAvatarInitials(username);
+              
+              const mappedRole = rolesMap[selectedRole] || "Smart Waste Operator";
+              document.getElementById("sidebar-profile-role").textContent = mappedRole;
+              document.getElementById("sidebar-profile-name").textContent = username;
+              document.getElementById("drawer-user-name").textContent = username;
+              document.getElementById("drawer-user-role").textContent = mappedRole;
+              document.getElementById("welcome-greeting-title").textContent = `Good Day, ${username}`;
+
+              document.getElementById("ai-welcome-msg").innerHTML = `
+                👋 Welcome ${username}<br/><br/>
+                <strong>Guntur Systems Online (${mappedRole})</strong><br/>
+                Click a suggestion pill below or type a query.
+              `;
+
+              runStartupLoader();
+              triggerCountUpAnimations();
+              triggerNotificationToast(`Authenticated as ${mappedRole}`);
+              startSessionTimeoutTracker();
+            }, 500);
+          }
+        }, idx * 350);
+      });
+    }
+
+    function updateUserAvatarInitials(name) {
+      const parts = name.split(' ');
+      let initials = parts[0].charAt(0).toUpperCase();
+      if (parts.length > 1) initials += parts[parts.length - 1].charAt(0).toUpperCase();
+      
+      document.getElementById('sidebar-avatar-initials').childNodes[0].nodeValue = initials;
+      document.getElementById('drawer-avatar-initials').textContent = initials;
+    }
+
+    function toggleProfileDropdown(event) {
+      if (event) event.stopPropagation();
+      const card = document.getElementById('sidebar-profile-card');
+      const menu = document.getElementById('profile-context-menu');
+      const isShow = menu.classList.toggle('show');
+      card.setAttribute('aria-expanded', isShow ? 'true' : 'false');
+    }
+
+    function applyRolePermissions(role) {
+      const navReports = document.querySelector('.nav-reports-item');
+      const navSettings = document.querySelector('.nav-settings-item');
+      const navAnalytics = document.querySelector('.nav-analytics-item');
+      const addBinBtn = document.getElementById('add-bin-control-btn');
+      const drawerPerm = document.getElementById('drawer-perm-scope');
+
+      if (role === 'driver') {
+        if(navReports) navReports.style.display = 'none';
+        if(navSettings) navSettings.style.display = 'none';
+        if(navAnalytics) navAnalytics.style.display = 'none';
+        if(addBinBtn) addBinBtn.style.display = 'none';
+        if(drawerPerm) drawerPerm.textContent = "Fleet Operations Only";
+        switchTab('dashboard');
+      } else if (role === 'manager') {
+        if(navReports) navReports.style.display = 'flex';
+        if(navAnalytics) navAnalytics.style.display = 'flex';
+        if(navSettings) navSettings.style.display = 'none';
+        if(addBinBtn) {
+          addBinBtn.style.display = 'inline-flex';
+          addBinBtn.disabled = true;
+          addBinBtn.style.opacity = '0.5';
+          addBinBtn.style.cursor = 'not-allowed';
+        }
+        if(drawerPerm) drawerPerm.textContent = "Municipal Manager Scope";
+      } else {
+        if(navReports) navReports.style.display = 'flex';
+        if(navSettings) navSettings.style.display = 'flex';
+        if(navAnalytics) navAnalytics.style.display = 'flex';
+        if(addBinBtn) {
+          addBinBtn.style.display = 'inline-flex';
+          addBinBtn.disabled = false;
+          addBinBtn.style.opacity = '1';
+          addBinBtn.style.cursor = 'pointer';
+        }
+        if(drawerPerm) drawerPerm.textContent = "Full Administrative Control";
+      }
+    }
+
+    function logoutSession() {
+      localStorage.removeItem('trashout_user');
+      sessionStorage.removeItem('trashout_user');
+      location.reload();
+    }
+
+    let sessionTimeoutTimer;
+    function startSessionTimeoutTracker() {
+      clearTimeout(sessionTimeoutTimer);
+      sessionTimeoutTimer = setTimeout(() => {
+        promptConfirm('Session Expiring Soon', 'Your operational session will expire in 60 seconds due to inactivity. Would you like to extend your session?', () => {
+          startSessionTimeoutTracker();
+          triggerNotificationToast('Session Extended Successfully');
+        });
+      }, 300000);
+    }
+    window.addEventListener('mousemove', () => startSessionTimeoutTracker());
+    window.addEventListener('keydown', () => startSessionTimeoutTracker());
+
+    function runStartupLoader() {
+      const loader = document.getElementById('dashboard-loader');
+      const bar = document.getElementById('loader-progress-bar');
+      const txt = document.getElementById('loader-text');
+
+      const stages = [
+        { pct: '20%', label: "Connecting API..." },
+        { pct: '45%', label: "Loading GIS Maps..." },
+        { pct: '70%', label: "Loading Charts..." },
+        { pct: '90%', label: "Loading AI Engine..." },
+        { pct: '100%', label: "Ready ✓" }
+      ];
+
+      stages.forEach((st, idx) => {
+        setTimeout(() => {
+          bar.style.width = st.pct;
+          txt.textContent = st.label;
+          if (idx === stages.length - 1) {
+            setTimeout(() => {
+              loader.style.opacity = '0';
+              setTimeout(() => loader.style.display = 'none', 400);
+            }, 300);
+          }
+        }, idx * 220);
+      });
+    }
+
+    let refreshSeconds = 5;
+    function startRefreshCountdownEngine() {
+      setInterval(() => {
+        refreshSeconds--;
+        if(refreshSeconds <= 0) refreshSeconds = 5;
+        document.getElementById('refresh-countdown-text').textContent = `00:0${refreshSeconds}`;
+      }, 1000);
+    }
+
+    function triggerCountUpAnimations() {
+      const counters = document.querySelectorAll('.count-up');
+      counters.forEach(counter => {
+        const target = parseFloat(counter.getAttribute('data-target'));
+        const isDecimal = target % 1 !== 0;
+        const duration = 1200;
+        const startTime = performance.now();
+
+        function update(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const current = progress * target;
+          
+          counter.textContent = isDecimal ? current.toFixed(1) : Math.floor(current);
+
+          if (progress < 1) requestAnimationFrame(update);
+          else counter.textContent = target;
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    function switchTab(viewId) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+      
+      const target = document.getElementById('view-' + viewId);
+      if(target) target.classList.add('active');
+      
+      const navItem = document.querySelector(`.nav-${viewId === 'collection' ? 'fleet' : viewId}-item`);
+      if(navItem) navItem.classList.add('active');
+
+      const mobItem = document.getElementById(`mob-nav-${viewId === 'collection' ? 'fleet' : viewId}`);
+      if(mobItem) mobItem.classList.add('active');
+
+      document.getElementById('crumb-active').textContent = viewId;
+
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('active');
+
+      if(viewId === 'map') setTimeout(() => mapFull.invalidateSize(), 200);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    function toggleDrawer(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    function toggleFAB() {
+      document.getElementById('fab-menu').classList.toggle('show');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    }
+
+    function changeTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('trashout_theme', theme);
+      document.getElementById('settings-theme-select').value = theme;
+      triggerNotificationToast(`Theme Changed to ${theme.toUpperCase()}`);
+    }
+
+    function resetSystemSettings() {
+      localStorage.removeItem('trashout_theme');
+      localStorage.removeItem('trashout_lang');
+      changeTheme('midnight');
+      triggerNotificationToast('Settings reset to factory default');
+    }
+
+    function setLanguage(lang) {
+      const dict = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      localStorage.setItem('trashout_lang', lang);
+      triggerNotificationToast(`Language Set: ${lang.toUpperCase()}`);
+    }
+
+    function triggerNotificationToast(msg) {
+      const area = document.getElementById('notification-toast-area');
+      const toast = document.createElement('div');
+      toast.className = 'live-toast';
+      toast.innerHTML = `<i data-feather="info" class="text-blue"></i> <span>${msg}</span>`;
+      area.appendChild(toast);
+      feather.replace();
+      setTimeout(() => toast.remove(), 3500);
+    }
+
+    function renderNotificationsDrawer() {
+      const container = document.getElementById('drawer-notif-list');
+      container.innerHTML = '';
+      const unreadCount = notifications.filter(n => !n.read).length;
+
+      if (notifications.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">🔔</div>
+            <strong class="text-main">No Notifications</strong>
+            <span class="text-xs">You are all caught up with system events.</span>
+          </div>
+        `;
+      } else {
+        notifications.forEach(n => {
+          container.innerHTML += `
+            <div class="dropdown-item flex-col" style="align-items: flex-start; padding:8px; border-bottom:1px solid var(--border-color); opacity: ${n.read ? '0.5' : '1'};">
+              <div class="flex-between w-full">
+                <span style="color:var(--accent-${n.type}); font-weight:600;">● ${n.text}</span>
+                <span class="text-xs text-muted">${n.time}</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      const badge = document.getElementById('notif-badge-count');
+      badge.textContent = unreadCount;
+      badge.setAttribute('data-count', unreadCount);
+    }
+
+    function markAllNotificationsRead() {
+      notifications.forEach(n => n.read = true);
+      renderNotificationsDrawer();
+      triggerNotificationToast('All notifications marked as read');
+    }
+
+    function clearAllNotifications() {
+      notifications = [];
+      renderNotificationsDrawer();
+      triggerNotificationToast('Notification list cleared');
+    }
+
+    function startLiveNotificationLoop() {
+      setInterval(() => {
+        const randomEvents = [
+          { type: "red", text: "Overflow Warning: Bin GNT-106 at " + Math.floor(88 + Math.random()*8) + "%" },
+          { type: "green", text: "Truck T02 Cleared Arundelpet Node" },
+          { type: "amber", text: "Sensors Re-calibrating in Kothapet Zone" },
+          { type: "blue", text: "Telemetry Batch Synchronized" }
+        ];
+        const evt = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+        notifications.unshift({ id: Date.now(), type: evt.type, text: evt.text, time: "Just Now", read: false });
+        if(notifications.length > 10) notifications.pop();
+        renderNotificationsDrawer();
+        triggerNotificationToast(evt.text);
+      }, 18000);
+    }
+
+    function handleSearchInput() {
+      const query = document.getElementById('global-search').value.toLowerCase().trim();
+      const drop = document.getElementById('search-dropdown');
+      drop.innerHTML = '';
+
+      if (!query) { drop.classList.remove('show'); return; }
+
+      const pages = [
+        { name: "Dashboard Overview", tab: "dashboard" },
+        { name: "Smart Bins Grid", tab: "bins" },
+        { name: "Collection Fleet Log", tab: "collection" },
+        { name: "Analytics & Trends", tab: "analytics" },
+        { name: "Geospatial Map", tab: "map" },
+        { name: "Audit Reports Archive", tab: "reports" },
+        { name: "System Settings", tab: "settings" }
+      ];
+
+      const matchedPages = pages.filter(p => p.name.toLowerCase().includes(query));
+      const matchedBins = bins.filter(b => b.id.toLowerCase().includes(query) || b.loc.toLowerCase().includes(query));
+      const matchedTrucks = trucks.filter(t => t.id.toLowerCase().includes(query) || t.driver.toLowerCase().includes(query));
+
+      matchedPages.forEach(p => {
+        drop.innerHTML += `<div class="search-item" data-action="switchTab" data-target-view="${p.tab}"><span>📍 Navigate to <strong>${p.name}</strong></span><span class="text-muted">View</span></div>`;
+      });
+
+      matchedBins.forEach(b => {
+        drop.innerHTML += `<div class="search-item" data-action="openBinDetails" data-bin-id="${b.id}"><span>🗑 Bin <strong>${b.id}</strong> (${b.loc})</span><span class="text-blue">${b.fill}% Fill</span></div>`;
+      });
+
+      matchedTrucks.forEach(t => {
+        drop.innerHTML += `<div class="search-item" data-action="switchTab" data-target-view="collection"><span>🚛 Truck <strong>${t.id}</strong> (${t.driver})</span><span class="text-green">${t.status}</span></div>`;
+      });
+
+      if (drop.children.length === 0) {
+        drop.innerHTML = `<div class="search-item"><span>No matching telemetry or pages found</span></div>`;
+      }
+      drop.classList.add('show');
+    }
+
+    function renderDynamicComponents() {
+      const priorityContainer = document.getElementById('priority-bins-container');
+      priorityContainer.innerHTML = '';
+      
+      const priorityBins = bins.filter(b => b.fill > 60);
+
+      if (priorityBins.length === 0) {
+        priorityContainer.innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">📭</div>
+            <strong class="text-main text-sm">No Overflow Bins Found</strong>
+            <span class="text-xs">All monitored IoT bins are operating normally.</span>
+          </div>
+        `;
+      } else {
+        priorityBins.forEach(b => {
+          priorityContainer.innerHTML += `
+            <div class="dropdown-item flex-between p-2 cursor-pointer border-bottom" data-action="openBinDetails" data-bin-id="${b.id}">
+              <span>${b.id} (${b.loc})</span><span class="status-badge ${b.fill > 80 ? 'status-overflow' : 'status-normal'}">${b.fill}% Fill</span>
+            </div>
+          `;
+        });
+      }
+
+      renderBinsGrid(bins);
+
+      const fleetBody = document.getElementById('fleet-table-body');
+      fleetBody.innerHTML = '';
+      trucks.forEach(t => {
+        fleetBody.innerHTML += `
+          <tr>
+            <td><strong>${t.id}</strong></td><td>${t.driver}</td><td>${t.area}</td>
+            <td><span class="status-badge status-normal">${t.status}</span></td>
+            <td>${t.fuel} Fuel (${t.speed})</td>
+            <td><button type="button" class="btn-secondary text-xs" data-action="openDriverPopup" data-driver-name="${t.driver}" data-truck-id="${t.id}">Driver Profile</button></td>
+          </tr>
+        `;
+      });
+
+      const repContainer = document.getElementById('reports-archive-list');
+      repContainer.innerHTML = '';
+      if (reports.length === 0) {
+        repContainer.innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">📄</div>
+            <strong class="text-main">No Reports Available</strong>
+            <span class="text-xs">Generate your first operational report using the controls above.</span>
+            <button type="button" class="btn-action" style="margin-top:4px;" data-action="generateRealPDF">Generate PDF Report</button>
+          </div>
+        `;
+      } else {
+        reports.forEach(r => {
+          const fnAction = r.type === 'PDF' ? 'generateRealPDF' : (r.type === 'XLSX' ? 'exportToExcel' : 'exportToCSV');
+          repContainer.innerHTML += `
+            <div class="dropdown-item flex-between align-center p-2 border-bottom">
+              <div>
+                <div class="font-semi">📄 ${r.name}</div>
+                <div class="text-xs text-muted">Generated: ${r.date}</div>
+              </div>
+              <div><button type="button" class="btn-secondary p-1 text-xs" data-action="${fnAction}">Download</button></div>
+            </div>
+          `;
+        });
+      }
+
+      recalculateAIPredictions();
+    }
+
+    function renderSkeletonLoaders() {
+      const grid = document.getElementById('smart-bins-grid');
+      grid.innerHTML = '';
+      for(let i=0; i<6; i++) {
+        grid.innerHTML += `
+          <div class="card">
+            <div class="skeleton-box" style="height: 20px; width: 60%; margin-bottom: 12px;"></div>
+            <div class="skeleton-box" style="height: 14px; width: 85%;"></div>
+          </div>
+        `;
+      }
+    }
+
+    function renderBinsGrid(binList) {
+      const grid = document.getElementById('smart-bins-grid');
+      grid.innerHTML = '';
+      if(binList.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state-card" style="grid-column: 1/-1;">
+            <div class="empty-state-icon">📭</div>
+            <strong class="text-main">No Bins Match Filter Parameters</strong>
+            <span class="text-xs">Try adjusting your filter selection or zone options.</span>
+          </div>
+        `;
+        return;
+      }
+      binList.forEach(b => {
+        const badgeClass = b.fill > 80 ? 'status-overflow' : (b.fill > 30 ? 'status-normal' : 'status-empty');
+        grid.innerHTML += `
+          <div class="card clickable" data-action="openBinDetails" data-bin-id="${b.id}" tabindex="0" role="button">
+            <div class="card-header"><strong>Bin ${b.id}</strong><span class="status-badge ${badgeClass}">${b.status}</span></div>
+            <div class="text-sm text-muted">📍 ${b.loc} • Fill Level ${b.fill}%</div>
+          </div>
+        `;
+      });
+    }
+
+    function applyMultiFilters() {
+      const showOverflow = document.getElementById('filter-overflow').checked;
+      const showNormal = document.getElementById('filter-normal').checked;
+      const showEmpty = document.getElementById('filter-empty').checked;
+      const area = document.getElementById('filter-area').value;
+
+      const filtered = bins.filter(b => {
+        const matchStatus = (b.fill > 80 && showOverflow) || (b.fill <= 80 && b.fill >= 30 && showNormal) || (b.fill < 30 && showEmpty);
+        const matchArea = (area === 'all' || b.loc === area);
+        return matchStatus && matchArea;
+      });
+
+      renderBinsGrid(filtered);
+    }
+
+    let routeProgressPct = 0;
+    function startIoTDataSimulation() {
+      setInterval(() => {
+        bins.forEach(b => {
+          const delta = Math.floor(Math.random() * 5) - 2;
+          b.fill = Math.min(Math.max(b.fill + delta, 5), 99);
+          if (b.fill > 80) b.status = "Overflow";
+          else if (b.fill > 30) b.status = "Normal";
+          else b.status = "Empty";
+        });
+
+        trucks[0].speed = Math.floor(25 + Math.random() * 12) + " km/h";
+        trucks[1].speed = Math.floor(20 + Math.random() * 10) + " km/h";
+
+        routeProgressPct = (routeProgressPct + 15) % 100;
+        document.getElementById('route-progress-bar-fill').style.width = routeProgressPct + '%';
+        document.getElementById('route-progress-pct-text').textContent = routeProgressPct + '%';
+
+        renderDynamicComponents();
+        if (chartLineInstance) {
+          chartLineInstance.data.datasets[0].data = [
+            bins[0].fill, bins[1].fill, bins[2].fill, bins[3].fill
+          ];
+          chartLineInstance.update();
+        }
+      }, 5000);
+    }
+
+    function recalculateAIPredictions() {
+      const brodipetBins = bins.filter(b => b.loc === "Brodipet");
+      const avgFill = brodipetBins.reduce((acc, b) => acc + b.fill, 0) / (brodipetBins.length || 1);
+      const calculatedRisk = Math.min(Math.round(avgFill * 0.95 + 5), 99);
+
+      document.getElementById('ai-calculated-risk-text').textContent = calculatedRisk + "%";
+      document.getElementById('ai-calculated-action-text').textContent = calculatedRisk > 75 ? "Truck-02 (Brodipet)" : "Truck-01 (Arundelpet)";
+    }
+
+    function fetchGunturWeather() {
+      const textSpan = document.getElementById('weather-text-span');
+      const iconSpan = document.getElementById('weather-icon-span');
+      
+      fetch('https://api.openweathermap.org/data/2.5/weather?lat=16.3067&lon=80.4365&appid=b1b15e88fa797225412429c1c50c122a1&units=metric')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.main && data.weather) {
+            const temp = Math.round(data.main.temp);
+            const hum = data.main.humidity;
+            const wind = Math.round((data.wind ? data.wind.speed : 2.5) * 3.6);
+            const mainCond = data.weather[0].main.toLowerCase();
+            
+            textSpan.textContent = `${temp}°C • Humidity ${hum}% • Wind ${wind}km/h • AQI 42`;
+            
+            if (mainCond.includes('rain')) iconSpan.textContent = "🌧";
+            else if (mainCond.includes('cloud')) iconSpan.textContent = "☁";
+            else if (mainCond.includes('thunder')) iconSpan.textContent = "⛈";
+            else iconSpan.textContent = "☀";
+          } else { throw new Error(); }
+        })
+        .catch(() => {
+          iconSpan.textContent = "🌤";
+          textSpan.textContent = "34°C • Humidity 58% • Wind 9 km/h • AQI 42";
+        });
+    }
+
+    let mapOverview, mapFull, movingTruckMarker;
+    function initLeafletMapsAndFleetTracking() {
+      mapOverview = L.map('leaflet-map', { zoomControl: false }).setView([16.3067, 80.4365], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapOverview);
+
+      mapFull = L.map('leaflet-map-full').setView([16.3067, 80.4365], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapFull);
+
+      updateMapMarkers();
+
+      const routeCoords = [
+        [16.3067, 80.4365], [16.3095, 80.4330], [16.3122, 80.4300], [16.3050, 80.4380], [16.2995, 80.4428]
+      ];
+      L.polyline(routeCoords, { color: '#00a3ff', weight: 4, dashArray: '6, 8' }).addTo(mapOverview);
+      L.polyline(routeCoords, { color: '#00a3ff', weight: 4, dashArray: '6, 8' }).addTo(mapFull);
+
+      let routeIndex = 0;
+      movingTruckMarker = L.marker(routeCoords[0]).addTo(mapOverview).bindPopup("🚛 <b>Truck T01 (Ravi Kumar)</b>");
+
+      setInterval(() => {
+        routeIndex = (routeIndex + 1) % routeCoords.length;
+        movingTruckMarker.setLatLng(routeCoords[routeIndex]);
+        document.getElementById('truck-live-status-text').textContent = `Truck T01 Active (${Math.floor(28 + Math.random()*8)} km/h)`;
+        document.getElementById('truck-eta-display').textContent = `${Math.floor(5 + Math.random()*5)} Mins`;
+      }, 4000);
+    }
+
+    function updateMapMarkers() {
+      bins.forEach(b => {
+        const popup = `<b>Bin ${b.id}</b><br/>${b.loc}<br/>Fill: ${b.fill}%<br/><button type="button" class="text-xs cursor-pointer" data-action="openBinDetails" data-bin-id="${b.id}">Details</button>`;
+        
+        if (b.fill > 80) {
+          const pulseIcon = L.divIcon({ className: 'overflow-marker-pulse', iconSize: [16, 16] });
+          L.marker([b.lat, b.lng], { icon: pulseIcon }).addTo(mapOverview).bindPopup(popup);
+          L.marker([b.lat, b.lng], { icon: pulseIcon }).addTo(mapFull).bindPopup(popup);
+        } else {
+          L.marker([b.lat, b.lng]).addTo(mapOverview).bindPopup(popup);
+          L.marker([b.lat, b.lng]).addTo(mapFull).bindPopup(popup);
+        }
+      });
+    }
+
+    let chartBarInstance, chartLineInstance;
+    function initCharts() {
+      try {
+        new Chart(document.getElementById('chart-donut').getContext('2d'), {
+          type: 'doughnut',
+          data: { labels: ['Organic', 'Plastic', 'Paper'], datasets: [{ data: [40, 30, 30], backgroundColor: ['#00e699', '#00a3ff', '#f59e0b'], borderWidth: 0 }] },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        chartBarInstance = new Chart(document.getElementById('chart-bar').getContext('2d'), {
+          type: 'bar',
+          data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], datasets: [{ label: 'Tons Collected', data: [12, 19, 14, 22, 30], backgroundColor: '#00a3ff' }] },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        chartLineInstance = new Chart(document.getElementById('chart-line').getContext('2d'), {
+          type: 'line',
+          data: { labels: ['GNT-101', 'GNT-102', 'GNT-103', 'GNT-104'], datasets: [{ label: 'Live Fill %', data: [95, 65, 22, 45], borderColor: '#00e699', tension: 0.4 }] },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        new Chart(document.getElementById('chart-ai-predict').getContext('2d'), {
+          type: 'line',
+          data: { labels: ['M', 'T', 'W', 'T', 'F'], datasets: [{ label: 'Risk', data: [30, 45, 93, 60, 40], borderColor: '#ef4444', tension: 0.4 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+        });
+      } catch (err) {
+        document.getElementById('chart-bar-container').innerHTML = `
+          <div class="empty-state-card">
+            <div class="empty-state-icon">⚠️</div>
+            <strong class="text-main">Unable to load analytics</strong>
+            <button type="button" class="btn-secondary" data-action="reloadPage">Retry</button>
+          </div>
+        `;
+      }
+    }
+
+    function filterAnalytics(range) {
+      if(range === 'today') chartBarInstance.data.datasets[0].data = [5, 8, 12, 6, 9];
+      else if(range === 'week') chartBarInstance.data.datasets[0].data = [12, 19, 14, 22, 30];
+      else chartBarInstance.data.datasets[0].data = [45, 60, 80, 95, 110];
+      chartBarInstance.update();
+      triggerNotificationToast(`Analytics Range Updated: ${range.toUpperCase()}`);
+    }
+
+    function exportChartPNG() {
+      html2canvas(document.getElementById('card-chart-bar')).then(canvas => {
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = 'Guntur_Waste_Analytics.png';
+        a.click();
+        triggerNotificationToast('Chart PNG Exported Successfully');
+      });
+    }
+
+    function generateRealPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.text("TrashOut Guntur Enterprise Audit Report", 20, 20);
+      doc.setFont("helvetica", "normal");
+      doc.text("Generated: " + new Date().toLocaleString(), 20, 30);
+      doc.text("Zone: Guntur Municipal Corporation, AP", 20, 40);
+      doc.text("Active Bins Monitored: " + bins.length, 20, 50);
+      doc.save("Audit_Report_Aug_2026.pdf");
+
+      appendReportToArchive("Audit_Report_Aug_2026.pdf", "PDF");
+      triggerNotificationToast('PDF Export Complete & Archived');
+    }
+
+    function exportToExcel() {
+      const table = document.getElementById('collection-table');
+      const wb = XLSX.utils.table_to_book(table);
+      XLSX.writeFile(wb, 'Guntur_Fleet_Log.xlsx');
+
+      appendReportToArchive("Guntur_Fleet_Log.xlsx", "XLSX");
+      triggerNotificationToast('Excel Export Complete & Archived');
+    }
+
+    function exportToCSV() {
+      let csv = "Truck ID,Driver Name,Assigned Area,Status,Fuel/Speed\n";
+      trucks.forEach(t => { csv += `${t.id},${t.driver},${t.area},${t.status},${t.fuel}\n`; });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Guntur_Fleet_Data.csv';
+      a.click();
+
+      appendReportToArchive("Guntur_Fleet_Data.csv", "CSV");
+      triggerNotificationToast('CSV Export Complete & Archived');
+    }
+
+    function exportToJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bins, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = 'Guntur_System_Data.json';
+      a.click();
+      triggerNotificationToast('JSON Export Complete');
+    }
+
+    function appendReportToArchive(fileName, type) {
+      const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      reports.unshift({ id: "REP-" + Date.now(), name: fileName, date: dateStr, type: type });
+      renderDynamicComponents();
+    }
+
+    let tourStep = 0;
+    const tourSteps = [
+      { elementId: 'header-bar-tour', title: "1. Global Controls & Weather", body: "View real-time Guntur weather & AQI, toggle fullscreen, switch languages, and access global search here." },
+      { elementId: 'tour-sidebar-target', title: "2. Navigation & User Context", body: "Access your profile dropdown, switch operational views, or trigger logout commands." },
+      { elementId: 'tour-cards-target', title: "3. Operations KPI Panel", body: "Monitor total smart bins, collected waste, recycling rates, and dynamic CO2 savings." },
+      { elementId: 'tour-filters-target', title: "4. Multi-Factor Filters", body: "Filter live bin cards by status (Overflow/Normal/Empty) or specific Municipal Zones." },
+      { elementId: 'tour-map-target', title: "5. Geospatial GPS Tracking", body: "Track moving fleet trucks, route poly-lines, and pulsing overflow bin markers live." },
+      { elementId: 'tour-reports-target', title: "6. Reports & Export Hub", body: "Export live telemetry to PDF, XLSX, CSV, or JSON and browse historical archives." },
+      { elementId: 'tour-copilot-target', title: "7. AI Copilot Intelligence", body: "Ask natural questions or click suggestion pills like 'Overflow' or 'Report' for instant actions." }
+    ];
+
+    function startGuidedTour() {
+      tourStep = 0;
+      showTourStep();
+    }
+
+    function showTourStep() {
+      const step = tourSteps[tourStep];
+      const targetEl = document.querySelector('.' + step.elementId) || document.getElementById(step.elementId);
+      const popover = document.getElementById('tour-popover');
+
+      if (!targetEl) return;
+
+      const rect = targetEl.getBoundingClientRect();
+      popover.style.top = Math.min(rect.top + window.scrollY + 20, window.innerHeight - 220) + 'px';
+      popover.style.left = Math.min(rect.left + 20, window.innerWidth - 340) + 'px';
+      popover.style.display = 'flex';
+
+      document.getElementById('tour-popover-title').textContent = step.title;
+      document.getElementById('tour-popover-body').textContent = step.body;
+      document.getElementById('tour-step-counter').textContent = `Step ${tourStep + 1} of ${tourSteps.length}`;
+      document.getElementById('tour-progress-bar-fill').style.width = Math.round(((tourStep + 1) / tourSteps.length) * 100) + '%';
+    }
+
+    function nextTourStep() {
+      tourStep++;
+      if (tourStep >= tourSteps.length) skipTour();
+      else showTourStep();
+    }
+
+    function skipTour() {
+      document.getElementById('tour-popover').style.display = 'none';
+    }
+
+    function promptConfirm(title, message, onConfirmCallback) {
+      const backdrop = document.getElementById('modal-backdrop');
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = `
+        <div class="flex-col gap-2 text-sm">
+          <p>${message}</p>
+        </div>
+      `;
+      const submitBtn = document.getElementById('modal-submit-btn');
+      submitBtn.textContent = "Confirm";
+      submitBtn.onclick = () => {
+        onConfirmCallback();
+        closeModal();
+      };
+      backdrop.classList.add('show');
+      trapModalFocus();
+    }
+
+    function openBinDetails(id) {
+      const b = bins.find(x => x.id === id) || bins[0];
+      const backdrop = document.getElementById('modal-backdrop');
+      document.getElementById('modal-title').textContent = `Bin Telemetry: ${b.id}`;
+      
+      document.getElementById('modal-body').innerHTML = `
+        <div class="modal-tabs">
+          <div class="modal-tab active" data-action="switchModalTab" data-tab-id="tab-telemetry">Telemetry</div>
+          <div class="modal-tab" data-action="switchModalTab" data-tab-id="tab-history">History Logs</div>
+          <div class="modal-tab" data-action="switchModalTab" data-tab-id="tab-photos">Sensor Capture</div>
+        </div>
+
+        <div id="tab-telemetry" class="modal-tab-content">
+          <div class="flex-col gap-2 text-sm">
+            <div>📍 <strong>Location Zone:</strong> ${b.loc}, Guntur Municipal Corp</div>
+            <div>📊 <strong>Fill Level:</strong> ${b.fill}%</div>
+            <div>🌡️ <strong>Temperature:</strong> ${b.temp}°C</div>
+            <div>💨 <strong>Methane/Gas Sensor:</strong> ${b.gas}</div>
+            <div>🔋 <strong>Battery Status:</strong> ${b.batt}%</div>
+            <div>🚚 <strong>Last Pickup:</strong> ${b.lastPickup || 'Today 06:00 AM'}</div>
+            <div>📶 <strong>Gateway:</strong> LoRaWAN Node Active (SNR: +12 dB)</div>
+            <button type="button" class="btn-action admin-only" style="margin-top:8px;" data-action="dispatchPickup" data-bin-id="${b.id}">Dispatch Immediate Pickup</button>
+          </div>
+        </div>
+
+        <div id="tab-history" class="modal-tab-content text-sm" style="display:none;">
+          <div class="flex-between border-bottom" style="padding:6px 0;"><span>Today</span><strong>${b.fill}%</strong></div>
+          <div class="flex-between border-bottom" style="padding:6px 0;"><span>Yesterday</span><strong>70%</strong></div>
+          <div class="flex-between border-bottom" style="padding:6px 0;"><span>Monday</span><strong>63%</strong></div>
+        </div>
+
+        <div id="tab-photos" class="modal-tab-content text-center" style="display:none;">
+          <div class="p-4 bg-card rounded-sm text-muted text-sm">
+            📷 [ Optical Sensor Capture Image ]<br/>Last Snapshot: Today 10:30 AM
+          </div>
+        </div>
+      `;
+      backdrop.classList.add('show');
+      feather.replace();
+      applyRolePermissions(currentUser.role);
+      trapModalFocus();
+    }
+
+    function openDriverPopup(driverName, truckId) {
+      const backdrop = document.getElementById('modal-backdrop');
+      document.getElementById('modal-title').textContent = `Driver Profile: ${driverName}`;
+      document.getElementById('modal-body').innerHTML = `
+        <div class="flex-col gap-2 text-sm">
+          <div>👤 <strong>Driver:</strong> ${driverName}</div>
+          <div>🚛 <strong>Assigned Fleet Unit:</strong> ${truckId}</div>
+          <div>📱 <strong>Contact:</strong> +91 98765 12345</div>
+          <div>⭐ <strong>Performance Rating:</strong> 4.9 / 5.0</div>
+          <div>🟢 <strong>Status:</strong> Active On Route</div>
+        </div>
+      `;
+      backdrop.classList.add('show');
+      trapModalFocus();
+    }
+
+    function openModal(action) {
+      const backdrop = document.getElementById('modal-backdrop');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+
+      if(action === 'hotkeys') {
+        title.textContent = "Keyboard Shortcuts Reference";
+        body.innerHTML = `
+          <div class="flex-col gap-2 text-sm">
+            <div><kbd>Ctrl + /</kbd> Focus Global Search Input</div>
+            <div><kbd>Ctrl + B</kbd> Open Add Smart Bin Form</div>
+            <div><kbd>Ctrl + R</kbd> Trigger PDF Audit Export</div>
+            <div><kbd>Alt + 1-7</kbd> Switch View Sections Rapidly</div>
+            <div><kbd>ESC</kbd> Close Active Modals or Search</div>
+            <div><kbd>F11</kbd> Toggle Dashboard Fullscreen</div>
+          </div>
+        `;
+      } else {
+        title.textContent = "Add Smart Bin (Guntur Zone)";
+        body.innerHTML = `<input type="text" class="form-control" id="new-bin-id" placeholder="Bin Identifier (e.g. GNT-107)" />`;
+      }
+      backdrop.classList.add('show');
+      trapModalFocus();
+    }
+
+    function switchModalTab(tabId, el) {
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.modal-tab-content').forEach(c => c.style.display = 'none');
+      if(el) el.classList.add('active');
+      document.getElementById(tabId).style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('show');
+    }
+
+    function submitModal() {
+      const newIdInput = document.getElementById('new-bin-id');
+      if (newIdInput && newIdInput.value.trim()) {
+        const idVal = newIdInput.value.trim().toUpperCase();
+        bins.push({ id: idVal, loc: "Guntur Central", lat: 16.3100, lng: 80.4350, fill: 10, status: "Empty", temp: 28, batt: 100, gas: "Low", lastPickup: "Just Added" });
+        renderDynamicComponents();
+        triggerNotificationToast(`Bin ${idVal} Added Successfully`);
+      }
+      closeModal();
+    }
+
+    function trapModalFocus() {
+      const modal = document.getElementById('active-modal-box');
+      if (modal) {
+        const focusables = modal.querySelectorAll('button, input, select, [tabindex="0"]');
+        if (focusables.length > 0) focusables[0].focus();
+      }
+    }
+
+    function toggleAI() {
+      document.getElementById('ai-box').classList.toggle('show');
+    }
+
+    function triggerAIPill(commandText) {
+      document.getElementById('ai-msg-input').value = commandText;
+      sendAICopilotMsg();
+    }
+
+    function sendAICopilotMsg() {
+      const input = document.getElementById('ai-msg-input');
+      const chat = document.getElementById('ai-chat');
+      const text = input.value.toLowerCase().trim();
+      if (!text) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg user';
+      userMsg.textContent = input.value;
+      chat.appendChild(userMsg);
+      input.value = '';
+
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'ai-typing-indicator';
+      typingIndicator.id = 'ai-typing-temp';
+      typingIndicator.innerHTML = `<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>`;
+      chat.appendChild(typingIndicator);
+      chat.scrollTop = chat.scrollHeight;
+
+      setTimeout(() => {
+        const temp = document.getElementById('ai-typing-temp');
+        if(temp) temp.remove();
+
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chat-msg bot';
+
+        if (text.includes('overflow')) {
+          const overflowList = bins.filter(b => b.fill > 80);
+          let cardsHtml = `<div class="ai-card-response"><strong>Critical Overflow Bins:</strong>`;
+          overflowList.forEach(ob => {
+            cardsHtml += `<div class="flex-between"><span>${ob.id} (${ob.loc})</span><strong class="text-red">${ob.fill}%</strong></div>`;
+          });
+          cardsHtml += `<button type="button" class="btn-action p-1 text-xs" style="margin-top:4px;" data-action="switchTab" data-target-view="map">Open Map View</button></div>`;
+          
+          botMsg.innerHTML = `Copilot: Located ${overflowList.length} critical overflow nodes in Guntur.${cardsHtml}`;
+          document.getElementById('filter-overflow').checked = true;
+          applyMultiFilters();
+        } else if (text.includes('report') || text.includes('download')) {
+          botMsg.textContent = "Copilot: Generating and exporting PDF audit report now...";
+          generateRealPDF();
+        } else if (text.includes('truck') || text.includes('fleet') || text.includes('driver')) {
+          botMsg.textContent = `Copilot: Active Fleet Status - 3 Trucks Online. Truck T01 (Ravi Kumar) currently in Brodipet.`;
+          switchTab('collection');
+        } else if (text.includes('analytics') || text.includes('recycling')) {
+          botMsg.textContent = `Copilot: Current Recycling Rate is 82%. Opening Analytics View...`;
+          switchTab('analytics');
+        } else if (text.includes('weather')) {
+          botMsg.textContent = `Copilot: Fetching live OpenWeather & AQI telemetry for Guntur Circle...`;
+          fetchGunturWeather();
+        } else {
+          botMsg.textContent = "Copilot: All Guntur Municipal sensors operating within normal parameters.";
+        }
+
+        chat.appendChild(botMsg);
+        chat.scrollTop = chat.scrollHeight;
+      }, 1000);
+    }
+
+    function startDynamicStream() {
+      const timeline = document.getElementById('live-timeline');
+      const events = [
+        "Bin GNT-101 Overflow Alert in Brodipet",
+        "Truck T02 Assigned to Arundelpet Node",
+        "Battery Replaced on GNT-105 Kothapet",
+        "Driver Ravi Checked in at Brodipet Sector 4"
+      ];
+      setInterval(() => {
+        const text = events[Math.floor(Math.random() * events.length)];
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = `<div class="timeline-icon"></div><div><strong>${time}</strong><br/><span class="text-muted">${text}</span></div>`;
+        timeline.prepend(item);
+        if(timeline.children.length > 5) timeline.removeChild(timeline.lastChild);
+        document.getElementById('last-sync-time').textContent = time;
+      }, 7000);
+    }
+
+    function setupNetworkListeners() {
+      window.addEventListener('offline', () => {
+        document.getElementById('offline-banner').style.display = 'block';
+        triggerNotificationToast('Network Disconnected - Offline Mode');
+      });
+      window.addEventListener('online', () => {
+        document.getElementById('offline-banner').style.display = 'none';
+        triggerNotificationToast('Network Connection Restored');
+      });
+    }
+
+    function setupKeyboardShortcuts() {
+      window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === '/') { e.preventDefault(); document.getElementById('global-search').focus(); }
+        else if (e.ctrlKey && e.key === 'b') { e.preventDefault(); if(currentUser.role === 'admin') openModal('addBin'); }
+        else if (e.ctrlKey && e.key === 'r') { e.preventDefault(); generateRealPDF(); }
+        else if (e.altKey && e.key === '1') switchTab('dashboard');
+        else if (e.altKey && e.key === '2') switchTab('bins');
+        else if (e.altKey && e.key === '3') switchTab('collection');
+        else if (e.altKey && e.key === '4') switchTab('analytics');
+        else if (e.altKey && e.key === '5') switchTab('map');
+        else if (e.altKey && e.key === '6') switchTab('reports');
+        else if (e.altKey && e.key === '7') switchTab('settings');
+        else if (e.key === 'Escape') { 
+          closeModal(); 
+          document.getElementById('search-dropdown').classList.remove('show'); 
+          skipTour(); 
+          document.getElementById('profile-context-menu').classList.remove('show');
+          document.getElementById('fab-menu').classList.remove('show');
+        }
+      });
+    }
+
+    function startPerformanceMetrics() {
+      setInterval(() => {
+        const latencyVal = Math.floor(11 + Math.random() * 5);
+        document.getElementById('footer-latency').textContent = latencyVal + ' ms';
+        document.getElementById('stat-ram').textContent = Math.floor(40 + Math.random() * 6) + '%';
+        document.getElementById('stat-cpu').textContent = Math.floor(15 + Math.random() * 10) + '%';
+        document.getElementById('stat-fps').textContent = Math.floor(58 + Math.random() * 3);
+      }, 1000);
+    }
+
+    /* --- DECLARATIVE EVENT DELEGATION SYSTEM --- */
+    function setupGlobalEventDelegation() {
+      const handleAction = (target, event) => {
+        const action = target.getAttribute('data-action');
+        if (!action) return;
+
+        if (action === 'switchTab') {
+          const view = target.getAttribute('data-target-view');
+          if (view) switchTab(view);
+        } else if (action === 'toggleSidebar') {
+          toggleSidebar();
+        } else if (action === 'toggleNotifDrawer') {
+          toggleDrawer('notification-drawer');
+        } else if (action === 'toggleProfileDrawer') {
+          toggleDrawer('profile-drawer');
+        } else if (action === 'toggleProfileDropdown') {
+          toggleProfileDropdown(event);
+        } else if (action === 'toggleFAB') {
+          toggleFAB();
+        } else if (action === 'toggleFullscreen') {
+          toggleFullscreen();
+        } else if (action === 'executeLogin') {
+          executeLogin();
+        } else if (action === 'closeModal') {
+          closeModal();
+        } else if (action === 'closeModalBackdrop') {
+          if (event.target.id === 'modal-backdrop') closeModal();
+        } else if (action === 'submitModal') {
+          submitModal();
+        } else if (action === 'openAddBinModal') {
+          openModal('addBin');
+        } else if (action === 'openHotkeysModal') {
+          openModal('hotkeys');
+        } else if (action === 'generateRealPDF') {
+          generateRealPDF();
+        } else if (action === 'exportToExcel') {
+          exportToExcel();
+        } else if (action === 'exportToCSV') {
+          exportToCSV();
+        } else if (action === 'exportToJSON') {
+          exportToJSON();
+        } else if (action === 'printPage') {
+          window.print();
+        } else if (action === 'syncData') {
+          triggerNotificationToast('Guntur Telemetry Synchronized');
+        } else if (action === 'markAllNotificationsRead') {
+          markAllNotificationsRead();
+        } else if (action === 'clearAllNotifications') {
+          clearAllNotifications();
+        } else if (action === 'logoutSession') {
+          promptConfirm('Logout Session', 'Are you sure you want to terminate your current operational session?', () => logoutSession());
+        } else if (action === 'resetSystemSettings') {
+          promptConfirm('Reset System Settings', 'Are you sure you want to reset all local preferences to factory defaults?', () => resetSystemSettings());
+        } else if (action === 'navSettings') {
+          switchTab('settings');
+        } else if (action === 'startGuidedTour') {
+          startGuidedTour();
+        } else if (action === 'nextTourStep') {
+          nextTourStep();
+        } else if (action === 'skipTour') {
+          skipTour();
+        } else if (action === 'openBinDetails') {
+          const binId = target.getAttribute('data-bin-id');
+          if (binId) openBinDetails(binId);
+        } else if (action === 'openDriverPopup') {
+          const dName = target.getAttribute('data-driver-name');
+          const tId = target.getAttribute('data-truck-id');
+          if (dName && tId) openDriverPopup(dName, tId);
+        } else if (action === 'switchModalTab') {
+          const tabId = target.getAttribute('data-tab-id');
+          if (tabId) switchModalTab(tabId, target);
+        } else if (action === 'dispatchPickup') {
+          const bId = target.getAttribute('data-bin-id');
+          triggerNotificationToast(`Truck Dispatched for ${bId}`);
+          closeModal();
+        } else if (action === 'exportChartPNG') {
+          exportChartPNG();
+        } else if (action === 'filterAnalytics') {
+          const range = target.getAttribute('data-range');
+          if (range) filterAnalytics(range);
+        } else if (action === 'toggleAI') {
+          toggleAI();
+        } else if (action === 'triggerAIPill') {
+          const pillText = target.getAttribute('data-pill-text');
+          if (pillText) triggerAIPill(pillText);
+        } else if (action === 'sendAICopilotMsg') {
+          sendAICopilotMsg();
+        } else if (action === 'triggerEmergencyDispatch') {
+          promptConfirm('Emergency Alert', 'Dispatch emergency cleanup team to all Brodipet overflow nodes?', () => triggerNotificationToast('Emergency Dispatch Triggered'));
+        } else if (action === 'reloadPage') {
+          location.reload();
+        }
+      };
+
+      // Click event handler
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (target) handleAction(target, e);
+        
+        // Context menu dismissals
+        const profileCard = document.getElementById('sidebar-profile-card');
+        const contextMenu = document.getElementById('profile-context-menu');
+        if (contextMenu && !profileCard.contains(e.target)) {
+          contextMenu.classList.remove('show');
+          profileCard.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Keyboard event handler for Enter and Space keys
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const target = e.target.closest('[data-action]');
+          if (target && target.tagName !== 'INPUT' && target.tagName !== 'SELECT' && target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            handleAction(target, e);
+          }
+        }
+      });
+
+      // Change and Input event handlers
+      document.getElementById('lang-selector').addEventListener('change', (e) => setLanguage(e.target.value));
+      document.getElementById('settings-theme-select').addEventListener('change', (e) => changeTheme(e.target.value));
+      document.getElementById('settings-refresh-select').addEventListener('change', () => triggerNotificationToast('Telemetry Refresh Interval Saved'));
+      
+      const globalSearch = document.getElementById('global-search');
+      globalSearch.addEventListener('keyup', handleSearchInput);
+
+      const aiInput = document.getElementById('ai-msg-input');
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendAICopilotMsg();
+      });
+
+      ['filter-overflow', 'filter-normal', 'filter-empty', 'filter-area'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', applyMultiFilters);
+      });
+    }
+
+    /* --- MASTER BOOT SEQUENCE --- */
+    window.addEventListener('DOMContentLoaded', () => {
+      injectDynamicLayoutComponents();
+      setupGlobalEventDelegation();
+
+      const loginTimeStr = new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
+      document.getElementById('last-login-time-display').textContent = loginTimeStr;
+      document.getElementById('drawer-last-login-time').textContent = loginTimeStr;
+
+      renderSkeletonLoaders();
+
+      const savedTheme = localStorage.getItem('trashout_theme') || 'midnight';
+      changeTheme(savedTheme);
+
+      const savedLang = localStorage.getItem('trashout_lang') || 'en';
+      document.getElementById('lang-selector').value = savedLang;
+      setLanguage(savedLang);
+
+      const savedUserStr = localStorage.getItem('trashout_user') || sessionStorage.getItem('trashout_user');
+      if (savedUserStr) {
+        currentUser = JSON.parse(savedUserStr);
+        document.getElementById('login-overlay').style.display = 'none';
+        applyRolePermissions(currentUser.role);
+        updateUserAvatarInitials(currentUser.name);
+        
+        const mappedRole = rolesMap[currentUser.role] || "Smart Waste Operator";
+        document.getElementById("sidebar-profile-role").textContent = mappedRole;
+        document.getElementById("sidebar-profile-name").textContent = currentUser.name;
+        document.getElementById("drawer-user-name").textContent = currentUser.name;
+        document.getElementById("drawer-user-role").textContent = mappedRole;
+        document.getElementById("welcome-greeting-title").textContent = `Good Day, ${currentUser.name}`;
+
+        document.getElementById("ai-welcome-msg").innerHTML = `
+          👋 Welcome ${currentUser.name}<br/><br/>
+          <strong>Guntur Systems Online (${mappedRole})</strong><br/>
+          Click a suggestion pill below or type a query.
+        `;
+
+        runStartupLoader();
+        triggerCountUpAnimations();
+        startSessionTimeoutTracker();
+      }
+
+      feather.replace();
+      fetchGunturWeather();
+      renderNotificationsDrawer();
+      setTimeout(renderDynamicComponents, 600);
+      initLeafletMapsAndFleetTracking();
+      initCharts();
+      setupKeyboardShortcuts();
+      setupNetworkListeners();
+      startDynamicStream();
+      startLiveNotificationLoop();
+      startIoTDataSimulation();
+      startPerformanceMetrics();
+      startRefreshCountdownEngine();
+    });
+
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('live-clock').textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString();
+    }, 1000);
+  </script>
+</body>
+</html>
