@@ -14,14 +14,6 @@ The application provides an easy way to calculate BMI using height and weight, v
 
 ---
 
-## 📂 GitHub Repository
-
-🔗 **GitHub Repository:**
-
-[Task 6 – BMI Calculator](https://github.com/Yasasvi2025/SpireX_Foundation_Frontend_Development_Internship_Tasks/tree/main/Task-6%20BMI%20Calculator)
-
----
-
 ## 📸 Project Preview
 
 The BMI Calculator features a clean **glassmorphism UI**, pastel fitness background, responsive layout, and light/dark theme support.
