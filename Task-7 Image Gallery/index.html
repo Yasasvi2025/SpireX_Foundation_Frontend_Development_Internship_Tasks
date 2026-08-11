@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Gallery</title>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ==========================================
+       1. CSS Variables & Theme Configuration
+    ========================================== */
+    :root {
+      --bg-image: url('Image/Background Image.jpg');
+      --app-bg: rgba(248, 245, 255, 0.38);
+      --card-bg: rgba(255, 255, 255, 0.45);
+      --card-border: rgba(255, 255, 255, 0.70);
+      --glass-shadow: 0 20px 50px rgba(76, 29, 149, 0.18);
+
+      --text-main: #2d1a47;
+      --text-muted: #6b5c82;
+      --accent-purple: #8b5cf6;
+      --accent-gradient: linear-gradient(135deg, #a855f7, #ec4899);
+
+      --pill-bg: rgba(255, 255, 255, 0.55);
+      --pill-active-bg: linear-gradient(135deg, #a855f7, #ec4899);
+      --pill-active-text: #ffffff;
+      --pill-text: #4c3a6e;
+    }
+
+    body.dark-theme {
+      --app-bg: rgba(20, 14, 38, 0.55);
+      --card-bg: rgba(30, 20, 55, 0.58);
+      --card-border: rgba(255, 255, 255, 0.18);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+
+      --text-main: #f5f3ff;
+      --text-muted: #c4b5fd;
+
+      --pill-bg: rgba(255, 255, 255, 0.12);
+      --pill-text: #e9d5ff;
+    }
+
+    /* ==========================================
+       2. Global Reset & Layout
+    ========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: #f5f0ff;
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      color: var(--text-main);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Outer Container */
+    .gallery-app {
+      width: 100%;
+      max-width: 1080px;
+      background: var(--app-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border);
+      border-radius: 32px;
+      padding: 2.5rem;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+    }
+
+    /* Header Section */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-gradient);
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.25rem;
+      box-shadow: 0 8px 16px rgba(168, 85, 247, 0.35);
+    }
+
+    .brand-text h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Sliding Sun/Moon Theme Toggle */
+    .theme-toggle {
+      width: 64px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: background 0.3s ease;
+    }
+
+    .theme-toggle i {
+      font-size: 0.85rem;
+      z-index: 1;
+      width: 24px;
+      text-align: center;
+    }
+
+    .theme-toggle .fa-sun {
+      color: #f59e0b;
+    }
+
+    .theme-toggle .fa-moon {
+      color: #a855f7;
+    }
+
+    .toggle-ball {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      box-shadow: 0 2px 6px rgba(168, 85, 247, 0.4);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2;
+    }
+
+    body.dark-theme .toggle-ball {
+      transform: translateX(32px);
+    }
+
+    /* Categories Bar */
+    .categories-bar {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      scrollbar-width: none;
+    }
+
+    .categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-pill {
+      border: 1px solid var(--card-border);
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      padding: 0.6rem 1.2rem;
+      border-radius: 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cat-pill:hover {
+      transform: translateY(-2px);
+    }
+
+    .cat-pill.active {
+      background: var(--pill-active-bg);
+      color: var(--pill-active-text);
+      border-color: transparent;
+      box-shadow: 0 6px 15px rgba(168, 85, 247, 0.35);
+    }
+
+    /* ==========================================
+       3. Carousel & Cards Layout
+    ========================================== */
+    .carousel-section {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .gallery-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 1.25rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-card:hover img {
+      transform: scale(1.04);
+    }
+
+    /* Image Preview Button (On Top of Image) */
+    .image-preview-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, background 0.2s ease;
+      z-index: 2;
+    }
+
+    .image-preview-btn:hover {
+      transform: scale(1.1);
+      background: #ffffff;
+      color: var(--accent-purple);
+    }
+
+    /* Favorite Button */
+    .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, background 0.2s ease;
+      z-index: 2;
+    }
+
+    .favorite-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .card-tag {
+      background: var(--pill-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.3rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--pill-text);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Launch Icon Button */
+    .launch-action-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.2rem;
+      transition: color 0.2s ease, transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .launch-action-btn:hover {
+      color: var(--accent-purple);
+      transform: scale(1.1);
+    }
+
+    /* Carousel Arrow Nav Buttons */
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      z-index: 10;
+      transition: all 0.25s ease;
+    }
+
+    .nav-arrow:hover {
+      background: var(--pill-active-bg);
+      color: white;
+      border-color: transparent;
+    }
+
+    .nav-arrow.prev { left: -22px; }
+    .nav-arrow.next { right: -22px; }
+
+    /* Pagination Indicator */
+    .pagination-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .dots-container {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      width: 24px;
+      border-radius: 10px;
+      background: var(--accent-purple);
+    }
+
+    .page-counter {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================
+       4. Bottom Feature Cards Grid
+    ========================================== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .feature-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--pill-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.1rem;
+      color: var(--accent-purple);
+      flex-shrink: 0;
+    }
+
+    .feature-info h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .feature-info p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .footer-quote {
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .copyright-footer {
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      opacity: 0.85;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* ==========================================
+       5. Modal Popups (Preview Landscape & Launch Vertical)
+    ========================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 10, 30, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    /* 1. Landscape Preview Modal Box */
+    .preview-modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 1.5rem;
+      max-width: 820px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .landscape-img-container {
+      position: relative;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+
+    .landscape-img-container img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-close-overlay {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.65);
+      border: none;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.2s ease, background 0.2s ease;
+      z-index: 5;
+    }
+
+    .modal-close-overlay:hover {
+      transform: scale(1.1);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .preview-modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    /* 2. Vertical Launch Detail Modal Box */
+    .launch-modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .vertical-img-container {
+      width: 100%;
+      max-width: 320px;
+      height: 480px;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .vertical-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .launch-modal-close {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      color: #000;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      z-index: 10;
+    }
+
+    /* ==========================================
+       6. Responsive Media Queries
+    ========================================== */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-arrow.prev { left: -10px; }
+      .nav-arrow.next { right: -10px; }
+      .gallery-app {
+        padding: 1.5rem 1rem;
+      }
+      .landscape-img-container img {
+        height: 250px;
+      }
+      .vertical-img-container {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gallery Outer App -->
+  <div class="gallery-app">
+
+    <!-- Header Bar -->
+    <div class="header-bar">
+      <div class="brand-title">
+        <div class="brand-icon">🖼️</div>
+        <div class="brand-text">
+          <h1>Image Gallery ✨</h1>
+          <p>Discover beautiful moments captured in pixels</p>
+        </div>
+      </div>
+
+      <!-- Sliding Theme Toggle -->
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
+        <div class="toggle-ball"></div>
+      </div>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="categories-bar" id="category-bar">
+      <button class="cat-pill active" onclick="filterCategory('All', this)"><span>㗊</span> All</button>
+      <button class="cat-pill" onclick="filterCategory('Nature', this)"><span>🌱</span> Nature</button>
+      <button class="cat-pill" onclick="filterCategory('City', this)"><span>🏙️</span> City</button>
+      <button class="cat-pill" onclick="filterCategory('Sunset', this)"><span>🌅</span> Sunset</button>
+      <button class="cat-pill" onclick="filterCategory('Ocean', this)"><span>🌊</span> Ocean</button>
+      <button class="cat-pill" onclick="filterCategory('Forest', this)"><span>🌲</span> Forest</button>
+      <button class="cat-pill" onclick="filterCategory('Architecture', this)"><span>🏛️</span> Architecture</button>
+      <button class="cat-pill" onclick="filterCategory('Flowers', this)"><span>🌸</span> Flowers</button>
+      <button class="cat-pill" onclick="filterCategory('Adventure', this)"><span>🏞️</span> Adventure</button>
+      <button class="cat-pill" onclick="filterCategory('Night', this)"><span>🌃</span> Night</button>
+      <button class="cat-pill" onclick="filterCategory('Travel', this)"><span>🧳</span> Travel</button>
+      <button class="cat-pill" onclick="filterCategory('Favorites', this)"><span>💜</span> Favorites</button>
+    </div>
+
+    <!-- 2-Card Carousel Section -->
+    <div class="carousel-section">
+      <button class="nav-arrow prev" onclick="prevSlide()">‹</button>
+      
+      <div class="cards-container" id="cards-container">
+        <!-- Dynamic Cards Injected via JS -->
+      </div>
+
+      <button class="nav-arrow next" onclick="nextSlide()">›</button>
+    </div>
+
+    <!-- Pagination Dots & Counter -->
+    <div class="pagination-bar">
+      <div class="dots-container" id="dots-container"></div>
+      <div class="page-counter" id="page-counter">01 / 05</div>
+    </div>
+
+    <!-- Feature Cards Section -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-box">🔍</div>
+        <div class="feature-info">
+          <h4>Click to Preview</h4>
+          <p>View the full image in a beautiful popup.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-box">💜</div>
+        <div class="feature-info">
+          <h4>Add to Favorites</h4>
+          <p>Save your favorite images for later.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-box">⚙️</div>
+        <div class="feature-info">
+          <h4>Filter Gallery</h4>
+          <p>Explore images by different categories.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-box">🖼️</div>
+        <div class="feature-info">
+          <h4>Enjoy Moments</h4>
+          <p>Every picture tells a unique story.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Quote -->
+    <div class="footer-quote">
+      💜 Every picture tells a story 📸 💜
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="copyright-footer">
+      © 2026 Nune Venkata Yasasvi
+    </div>
+
+  </div>
+
+  <!-- 1. LANDSCAPE PREVIEW POPUP MODAL (Triggered by ⤢ Preview Button) -->
+  <div class="modal-overlay" id="preview-modal" onclick="closePreview()">
+    <div class="preview-modal-box" onclick="event.stopPropagation()">
+      <div class="landscape-img-container">
+        <button class="modal-close-overlay" onclick="closePreview()">✕</button>
+        <img id="modal-img" src="" alt="Preview" />
+      </div>
+      <div class="preview-modal-footer">
+        <div>
+          <h2 class="card-title" id="modal-title">Mountain Lake</h2>
+          <p class="card-desc" id="modal-desc" style="margin-top: 0.3rem;">A peaceful morning at the lakeside with stunning mountains.</p>
+        </div>
+        <span class="card-tag" id="modal-tag">🌱 Nature</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. VERTICAL LAUNCH DETAIL MODAL (Triggered by Launch/Open Icon) -->
+  <div class="modal-overlay" id="launch-modal" onclick="closeLaunchModal()">
+    <div class="launch-modal-box" onclick="event.stopPropagation()">
+      <button class="launch-modal-close" onclick="closeLaunchModal()">✕</button>
+      <div class="vertical-img-container">
+        <img id="launch-modal-img" src="" alt="Detail View" />
+      </div>
+      <div style="width: 100%; text-align: left;">
+        <h2 class="card-title" id="launch-modal-title">Mountain Lake</h2>
+        <p class="card-desc" id="launch-modal-desc" style="margin-top: 0.3rem;">A peaceful morning at the lakeside with mountains.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    /* ==========================================
+       Data: 10 Gallery Images
+    ========================================== */
+    const galleryData = [
+      {
+        id: 1,
+        title: "Mountain Lake",
+        desc: "A peaceful morning at the lakeside with stunning mountains.",
+        category: "Nature",
+        icon: "🌱",
+        src: "Image/Nature.jpg",
+        favorite: false
+      },
+      {
+        id: 2,
+        title: "City Lights",
+        desc: "The city shines brightly at night with beautiful vibrant reflections.",
+        category: "City",
+        icon: "🏙️",
+        src: "Image/City.jpg",
+        favorite: false
+      },
+      {
+        id: 3,
+        title: "Golden Hour",
+        desc: "A breathtaking sunset painting the sky with warm golden hues.",
+        category: "Sunset",
+        icon: "🌅",
+        src: "Image/Sunset.jpg",
+        favorite: false
+      },
+      {
+        id: 4,
+        title: "Deep Ocean",
+        desc: "Crystal clear blue ocean waters stretching beyond the horizon.",
+        category: "Ocean",
+        icon: "🌊",
+        src: "Image/Ocean.jpg",
+        favorite: false
+      },
+      {
+        id: 5,
+        title: "Misty Forest",
+        desc: "Sunlight filtering through dense ancient woodland trees.",
+        category: "Forest",
+        icon: "🌲",
+        src: "Image/Forest.jpg",
+        favorite: false
+      },
+      {
+        id: 6,
+        title: "Classic Structure",
+        desc: "Grand historic architectural beauty captured in full detail.",
+        category: "Architecture",
+        icon: "🏛️",
+        src: "Image/Architecture.jpg",
+        favorite: false
+      },
+      {
+        id: 7,
+        title: "Blooming Petals",
+        desc: "Vibrant flower field blooming in full color during springtime.",
+        category: "Flowers",
+        icon: "🌸",
+        src: "Image/Flowers.jpg",
+        favorite: false
+      },
+      {
+        id: 8,
+        title: "Mountain Trail",
+        desc: "An adventurous trekking trail reaching towards high peaks.",
+        category: "Adventure",
+        icon: "🏞️",
+        src: "Image/Adventure.jpg",
+        favorite: false
+      },
+      {
+        id: 9,
+        title: "Night Horizon",
+        desc: "A calm night backdrop featuring glowing atmospheric tones.",
+        category: "Night",
+        icon: "🌃",
+        src: "Image/Night.jpg",
+        favorite: false
+      },
+      {
+        id: 10,
+        title: "Scenic Voyage",
+        desc: "Discovering iconic landmarks and scenic views around the world.",
+        category: "Travel",
+        icon: "🧳",
+        src: "Image/Travel.jpg",
+        favorite: false
+      }
+    ];
+
+    let filteredItems = [...galleryData];
+    let currentIndex = 0;
+    const cardsPerPage = 2;
+
+    /* ==========================================
+       Render Functions
+    ========================================== */
+    function renderGallery() {
+      const container = document.getElementById("cards-container");
+      container.innerHTML = "";
+
+      if (filteredItems.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">No images found in this category.</div>`;
+        updatePagination(0);
+        return;
+      }
+
+      // Slice current 2 visible cards
+      const visibleItems = filteredItems.slice(currentIndex, currentIndex + cardsPerPage);
+
+      visibleItems.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "gallery-card";
+        card.innerHTML = `
+          <div class="image-wrapper" onclick="openPreview(${item.id})">
+            <img src="${item.src}" alt="${item.title}" />
+            <button class="image-preview-btn" onclick="event.stopPropagation(); openPreview(${item.id})" title="Preview">
+              ⤢
+            </button>
+            <button class="favorite-btn" onclick="event.stopPropagation(); toggleFavorite(${item.id})" title="Favorite">
+              ${item.favorite ? '💜' : '🤍'}
+            </button>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-desc">${item.desc}</p>
+            <div class="card-footer">
+              <span class="card-tag"><span>${item.icon}</span> ${item.category}</span>
+              <button class="launch-action-btn" onclick="openLaunchModal(${item.id})" title="Launch Detail View">
+                <i class="fa-solid fa-up-right-from-square"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      updatePagination(Math.ceil(filteredItems.length / cardsPerPage));
+    }
+
+    function updatePagination(totalPages) {
+      const dotsContainer = document.getElementById("dots-container");
+      const counter = document.getElementById("page-counter");
+      dotsContainer.innerHTML = "";
+
+      if (totalPages === 0) {
+        counter.innerText = "00 / 00";
+        return;
+      }
+
+      const currentPage = Math.floor(currentIndex / cardsPerPage) + 1;
+
+      for (let i = 1; i <= totalPages; i++) {
+        const dot = document.createElement("div");
+        dot.className = `dot ${i === currentPage ? "active" : ""}`;
+        dotsContainer.appendChild(dot);
+      }
+
+      const formattedCurrent = String(currentPage).padStart(2, "0");
+      const formattedTotal = String(totalPages).padStart(2, "0");
+      counter.innerText = `${formattedCurrent} / ${formattedTotal}`;
+    }
+
+    /* ==========================================
+       Carousel Controls
+    ========================================== */
+    function nextSlide() {
+      if (filteredItems.length <= cardsPerPage) return;
+      if (currentIndex + cardsPerPage < filteredItems.length) {
+        currentIndex += cardsPerPage;
+      } else {
+        currentIndex = 0; // Loop back to start
+      }
+      renderGallery();
+    }
+
+    function prevSlide() {
+      if (filteredItems.length <= cardsPerPage) return;
+      if (currentIndex - cardsPerPage >= 0) {
+        currentIndex -= cardsPerPage;
+      } else {
+        // Loop to last page
+        const totalPages = Math.ceil(filteredItems.length / cardsPerPage);
+        currentIndex = (totalPages - 1) * cardsPerPage;
+      }
+      renderGallery();
+    }
+
+    /* ==========================================
+       Category Filtering & Favorites
+    ========================================== */
+    function filterCategory(cat, buttonElement) {
+      const pills = document.querySelectorAll(".cat-pill");
+      pills.forEach((pill) => pill.classList.remove("active"));
+      if (buttonElement) {
+        buttonElement.classList.add("active");
+      }
+
+      if (cat === "All") {
+        filteredItems = [...galleryData];
+      } else if (cat === "Favorites") {
+        filteredItems = galleryData.filter((item) => item.favorite);
+      } else {
+        filteredItems = galleryData.filter((item) => item.category === cat);
+      }
+
+      currentIndex = 0;
+      renderGallery();
+    }
+
+    function toggleFavorite(id) {
+      const item = galleryData.find((img) => img.id === id);
+      if (item) {
+        item.favorite = !item.favorite;
+        renderGallery();
+      }
+    }
+
+    /* ==========================================
+       1. Landscape Preview Popup Modal Logic
+    ========================================== */
+    function openPreview(id) {
+      const item = galleryData.find((img) => img.id === id);
+      if (!item) return;
+
+      document.getElementById("modal-img").src = item.src;
+      document.getElementById("modal-title").innerText = item.title;
+      document.getElementById("modal-tag").innerHTML = `${item.icon} ${item.category}`;
+      document.getElementById("modal-desc").innerText = item.desc;
+
+      document.getElementById("preview-modal").classList.add("open");
+    }
+
+    function closePreview() {
+      document.getElementById("preview-modal").classList.remove("open");
+    }
+
+    /* ==========================================
+       2. Vertical Launch Detail Modal Logic
+    ========================================== */
+    function openLaunchModal(id) {
+      const item = galleryData.find((img) => img.id === id);
+      if (!item) return;
+
+      document.getElementById("launch-modal-img").src = item.src;
+      document.getElementById("launch-modal-title").innerText = item.title;
+      document.getElementById("launch-modal-desc").innerText = item.desc;
+
+      document.getElementById("launch-modal").classList.add("open");
+    }
+
+    function closeLaunchModal() {
+      document.getElementById("launch-modal").classList.remove("open");
+    }
+
+    /* ==========================================
+       Single Theme Toggle Logic
+    ========================================== */
+    function toggleTheme() {
+      document.body.classList.toggle("dark-theme");
+    }
+
+    /* ==========================================
+       Keyboard Navigation
+    ========================================== */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        nextSlide();
+      } else if (e.key === "ArrowLeft") {
+        prevSlide();
+      } else if (e.key === "Escape") {
+        closePreview();
+        closeLaunchModal();
+      }
+    });
+
+    /* Initial Load */
+    window.onload = () => {
+      renderGallery();
+    };
+  </script>
+</body>
+</html>
