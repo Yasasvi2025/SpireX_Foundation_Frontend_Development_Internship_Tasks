@@ -201,7 +201,7 @@ The interface uses:
 
 ## 💜 Quote
 
-> Every picture tells a story 📸 💜
+> 💜 Every picture tells a story 📸 💜
 
 ---
 
