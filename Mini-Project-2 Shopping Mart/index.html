@@ -1,0 +1,440 @@
+<!-- index.html (Updated footer with exact Contact Us details matching Nune Venkata Yasasvi's requirements) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopMart - Shop More, Save More!</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="brand-logo">
+                <div class="brand-bag">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Shop<span>Mart</span></h1>
+                    <p>Shop More, Save More!</p>
+                </div>
+            </div>
+            <div class="category-dropdown">
+                <select id="categorySelect">
+                    <option value="all">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Home & Kitchen">Home & Kitchen</option>
+                    <option value="Beauty">Beauty & Health</option>
+                    <option value="Sports">Sports & Outdoors</option>
+                    <option value="Books">Books & Stationery</option>
+                    <option value="Toys">Toys & Games</option>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Grocery">Grocery</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for products, brands and more...">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-icon-badge" id="wishlistTrigger">
+                <i class="fa-regular fa-heart"></i>
+                <span>Wishlist</span>
+                <span class="badge" id="wishlistCount">0</span>
+            </div>
+            <div class="nav-icon-badge" id="cartTrigger">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Cart</span>
+                <span class="badge" id="cartCount">0</span>
+            </div>
+
+            <!-- THEME TOGGLE -->
+            <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <!-- PROFILE DROPDOWN WRAPPER -->
+            <div class="profile-dropdown-container">
+                <div class="user-profile" id="profileTrigger">
+                    <img src="assets/User.jpg" alt="User Profile" class="user-img">
+                    <div class="user-info">
+                        <span class="greeting">Hi, Nune Venkata Yasasvi</span>
+                        <span class="welcome">My Account <i class="fa-solid fa-chevron-down" style="font-size: 9px;"></i></span>
+                    </div>
+                </div>
+
+                <!-- PROFILE DROPDOWN MENU -->
+                <div class="profile-menu" id="profileMenu">
+                    <div class="profile-menu-header">
+                        <strong>Nune Venkata Yasasvi</strong>
+                        <span>Welcome to ShopMart</span>
+                    </div>
+                    <ul>
+                        <li id="menuProfile"><i class="fa-solid fa-user"></i> My Profile</li>
+                        <li id="menuOrders"><i class="fa-solid fa-box"></i> My Orders</li>
+                        <li id="menuWishlist"><i class="fa-solid fa-heart"></i> Wishlist</li>
+                        <li id="menuCart"><i class="fa-solid fa-cart-shopping"></i> Cart</li>
+                        <li class="menu-divider"></li>
+                        <li id="menuLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="active" data-cat="all"><i class="fa-solid fa-house"></i> Home</li>
+                <li data-cat="Electronics"><i class="fa-solid fa-laptop"></i> Electronics</li>
+                <li data-cat="Fashion"><i class="fa-solid fa-shirt"></i> Fashion</li>
+                <li data-cat="Home & Kitchen"><i class="fa-solid fa-couch"></i> Home & Kitchen</li>
+                <li data-cat="Beauty"><i class="fa-solid fa-pump-soap"></i> Beauty & Health</li>
+                <li data-cat="Sports"><i class="fa-solid fa-basketball"></i> Sports & Outdoors</li>
+                <li data-cat="Books"><i class="fa-solid fa-book"></i> Books & Stationery</li>
+                <li data-cat="Toys"><i class="fa-solid fa-chess-rook"></i> Toys & Games</li>
+                <li data-cat="Automotive"><i class="fa-solid fa-car"></i> Automotive</li>
+                <li data-cat="Grocery"><i class="fa-solid fa-basket-shopping"></i> Grocery</li>
+                <li data-cat="Deals"><i class="fa-solid fa-tags"></i> Deals & Offers</li>
+            </ul>
+
+            <!-- Mega Deal Promo Box Inside Sidebar -->
+            <div class="sidebar-mega-deal">
+                <span class="tag-alert">Mega Deal!</span>
+                <h4>Up to <br><strong>70% OFF</strong></h4>
+                <p>On Top Brands</p>
+                <button class="btn-shop-now" id="sidebarShopNowBtn">Shop Now</button>
+                <img src="assets/shopping-cart.png" alt="Promo Bag" class="promo-bag-img">
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="content-area">
+            
+            <!-- STATIC HERO BANNER -->
+            <section class="hero-section">
+                <div class="hero-slide">
+                    <div class="hero-badge">Limited Time Offer</div>
+                    <h2>Best Deals.<br>Best Finds.<br><span>Just for You!</span></h2>
+                    <p>Discover amazing products at unbeatable prices.</p>
+                    <button class="hero-btn" id="heroShopNowBtn">
+                        Shop Now <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="hero-image-container">
+                    <img src="assets/shopping-cart.png" alt="Shopping Cart">
+                </div>
+            </section>
+
+            <!-- CATEGORY PILLS / ICONS -->
+            <section class="category-icons-grid">
+                <div class="cat-pill" data-cat="Electronics">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-headphones"></i></div>
+                    <span>Electronics</span>
+                </div>
+                <div class="cat-pill" data-cat="Fashion">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-shirt"></i></div>
+                    <span>Fashion</span>
+                </div>
+                <div class="cat-pill" data-cat="Home & Kitchen">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-couch"></i></div>
+                    <span>Home & Kitchen</span>
+                </div>
+                <div class="cat-pill" data-cat="Beauty">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-spray-can-sparkles"></i></div>
+                    <span>Beauty</span>
+                </div>
+                <div class="cat-pill" data-cat="Sports">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-basketball"></i></div>
+                    <span>Sports</span>
+                </div>
+                <div class="cat-pill" data-cat="Books">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-book-open"></i></div>
+                    <span>Books</span>
+                </div>
+                <div class="cat-pill" data-cat="Toys">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-robot"></i></div>
+                    <span>Toys</span>
+                </div>
+                <div class="cat-pill" data-cat="Automotive">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-car"></i></div>
+                    <span>Automotive</span>
+                </div>
+                <div class="cat-pill" data-cat="Grocery">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <span>Grocery</span>
+                </div>
+                <div class="cat-pill" id="viewMoreCats">
+                    <div class="cat-icon-bg"><i class="fa-solid fa-ellipsis"></i></div>
+                    <span>View More</span>
+                </div>
+            </section>
+
+            <!-- POPULAR PRODUCTS SECTION -->
+            <section class="products-section">
+                <div class="section-header">
+                    <h3>Popular Products</h3>
+                    <button id="viewAllBtn" class="view-all-btn">View All</button>
+                </div>
+
+                <div class="product-grid" id="productGrid">
+                    <!-- Dynamic Product Cards will be injected via JS -->
+                </div>
+            </section>
+
+            <!-- VALUE PROPOSITIONS / BENEFITS BAR -->
+            <section class="benefits-bar">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-award"></i></div>
+                    <div>
+                        <h4>Best Quality</h4>
+                        <p>Top quality products</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-tags"></i></div>
+                    <div>
+                        <h4>Best Price</h4>
+                        <p>Unbeatable prices</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h4>Trusted Brand</h4>
+                        <p>Trusted by millions</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div>
+                        <h4>Fast Delivery</h4>
+                        <p>Quick delivery at your door</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- RIGHT SIDEBAR WIDGETS -->
+        <aside class="right-widgets">
+            
+            <!-- Super Saver Countdown Widget -->
+            <div class="widget super-saver-widget">
+                <div class="widget-title">
+                    <i class="fa-solid fa-bolt icon-yellow"></i>
+                    <div>
+                        <h4>Super Saver</h4>
+                        <span>Offer Ends In</span>
+                    </div>
+                </div>
+                <div class="countdown-timers">
+                    <div class="time-box"><span id="hours">02</span><small>Hrs</small></div>
+                    <span class="colon">:</span>
+                    <div class="time-box"><span id="mins">46</span><small>Mins</small></div>
+                    <span class="colon">:</span>
+                    <div class="time-box"><span id="secs">18</span><small>Secs</small></div>
+                </div>
+                <button class="btn-deals" id="viewDealsBtn">View All Deals</button>
+            </div>
+
+            <!-- Free Delivery Info Widget -->
+            <div class="widget info-widget">
+                <div class="info-text">
+                    <h4>Free Delivery</h4>
+                    <p>On orders above ₹499</p>
+                </div>
+                <div class="info-graphic">
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+                </div>
+            </div>
+
+            <!-- Easy Returns Widget -->
+            <div class="widget info-widget">
+                <div class="info-text">
+                    <h4>Easy Returns</h4>
+                    <p>30 days return policy</p>
+                </div>
+                <div class="info-graphic">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
+            </div>
+
+            <!-- Secure Payments Widget -->
+            <div class="widget info-widget">
+                <div class="info-text">
+                    <h4>Secure Payments</h4>
+                    <p>100% safe & secure</p>
+                </div>
+                <div class="info-graphic">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+
+            <!-- Promo Banner Bottom Right -->
+            <div class="widget promo-gradient-widget">
+                <span class="badge-new">New Arrivals</span>
+                <h3>Fresh Styles<br>New Vibes</h3>
+                <p>Explore the latest collection</p>
+                <button class="btn-shop-gradient" id="shopNowBtn">Shop Now <i class="fa-solid fa-arrow-right"></i></button>
+                <div class="shopping-model-container">
+                    <img src="assets/womens-dress.jpg" alt="Model" class="model-img">
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- CART SIDEBAR DRAWER -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3><i class="fa-solid fa-cart-shopping"></i> Shopping Cart</h3>
+            <button id="closeCart" class="close-btn">&times;</button>
+        </div>
+        <div class="cart-items-container" id="cartItemsContainer">
+            <!-- Cart items populated by JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total Amount:</span>
+                <span id="cartTotalPrice">₹0</span>
+            </div>
+            
+            <!-- CHECKOUT INPUT FIELDS & PAYMENT OPTIONS -->
+            <div class="checkout-form-fields" style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;">
+                <div class="checkout-field">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 2px;">Full Name</label>
+                    <input type="text" id="checkoutName" placeholder="Enter your full name" required style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-light); color: var(--text-dark); font-size: 12px; outline: none;">
+                </div>
+
+                <div class="checkout-field">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 2px;">Phone Number</label>
+                    <input type="tel" id="checkoutPhone" placeholder="Enter phone number" maxlength="10" required style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-light); color: var(--text-dark); font-size: 12px; outline: none;">
+                </div>
+
+                <div class="checkout-field">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 2px;">City</label>
+                    <input type="text" id="checkoutCity" placeholder="Enter your city" required style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-light); color: var(--text-dark); font-size: 12px; outline: none;">
+                </div>
+
+                <div class="checkout-field">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 4px;">Payment Method</label>
+                    <div class="payment-options" style="display: flex; gap: 15px; font-size: 12px;">
+                        <label class="payment-option" style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="radio" name="paymentMethod" value="Cash on Delivery" required>
+                            <span><i class="fa-solid fa-money-bill-wave"></i> COD</span>
+                        </label>
+                        <label class="payment-option" style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="radio" name="paymentMethod" value="UPI">
+                            <span><i class="fa-solid fa-mobile-screen-button"></i> UPI</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ORDER SUCCESS MODAL -->
+    <div class="order-modal-overlay" id="orderModal">
+        <div class="order-success-modal">
+            <div class="success-icon">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2>🎉 Order Placed Successfully!</h2>
+            <p class="success-message">Thank you for shopping with ShopMart.</p>
+            <div class="order-id-box">
+                <span>Order ID</span>
+                <strong id="successOrderId">#SM2026XXXX</strong>
+            </div>
+            <div class="order-total">
+                Total Amount: <strong id="successOrderTotal">₹0</strong>
+            </div>
+            <button class="continue-shopping-btn" id="continueShopping">
+                Continue Shopping <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MY ORDERS MODAL -->
+    <div class="orders-modal-overlay" id="ordersModal">
+        <div class="orders-modal">
+            <div class="orders-header">
+                <div>
+                    <h2>My Orders</h2>
+                    <p>Nune Venkata Yasasvi</p>
+                </div>
+                <button id="closeOrders" class="close-orders">&times;</button>
+            </div>
+            <div class="orders-actions-bar" id="ordersActionsBar" style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
+                <button id="clearAllOrdersBtn" class="clear-all-btn" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">Clear All Orders</button>
+            </div>
+            <div id="ordersContainer"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER WITH DETAILED CONTACT US SECTION -->
+    <footer class="shopmart-footer">
+        <div class="footer-content" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 30px;">
+            <div class="footer-brand">
+                <div class="footer-brand-logo">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <div>
+                        <h2>Shop<span>Mart</span></h2>
+                        <p>Shop More, Save More!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACT US SECTION -->
+            <div class="footer-contact" style="display: flex; flex-direction: column; gap: 8px;">
+                <h3 style="font-size: 15px; margin-bottom: 4px; color: var(--text-dark);">Contact Us</h3>
+                <p style="font-size: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-user" style="color: var(--primary-purple);"></i>
+                    <strong>Full Name:</strong> Nune Venkata Yasasvi
+                </p>
+                <p style="font-size: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-phone" style="color: var(--primary-purple);"></i>
+                    <strong>Contact:</strong> 9494414404
+                </p>
+                <p style="font-size: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-envelope" style="color: var(--primary-purple);"></i>
+                    <strong>Gmail:</strong> <a href="mailto:shopmart@gmail.com" style="color: var(--primary-purple); text-decoration: none;">shopmart@gmail.com</a>
+                </p>
+                <p style="font-size: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-location-dot" style="color: var(--primary-purple);"></i>
+                    <strong>City:</strong> India
+                </p>
+            </div>
+
+            <div class="footer-links" style="display: flex; gap: 25px;">
+                <a href="#">About</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Nune Venkata Yasasvi. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
