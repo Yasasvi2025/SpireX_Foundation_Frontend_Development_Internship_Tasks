@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Typing Speed Test - Test your typing speed and accuracy."
+    >
+
+    <title>Typing Speed Test | Nune Venkata Yasasvi</title>
+
+
+    <!-- Google Font -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Font Awesome -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         MAIN BACKGROUND
+    ====================================================== -->
+
+    <div class="page">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="header">
+
+            <div class="header-content">
+
+                <h1>
+                    <span class="title-icon">⚡</span>
+                    Typing Speed Test
+                </h1>
+
+                <p>
+                    Test your typing speed and accuracy
+                </p>
+
+            </div>
+
+
+            <!-- THEME SWITCH -->
+
+            <button
+                class="theme-toggle"
+                id="themeToggle"
+                aria-label="Toggle theme"
+                aria-pressed="false"
+                type="button"
+            >
+
+                <span class="theme-sun">
+                    <i class="fa-solid fa-sun"></i>
+                </span>
+
+                <span class="theme-moon">
+                    <i class="fa-solid fa-moon"></i>
+                </span>
+
+            </button>
+
+        </header>
+
+
+        <!-- =================================================
+             DIFFICULTY SELECTOR
+        ================================================== -->
+
+        <section class="difficulty-section">
+
+            <div
+                class="difficulty-selector"
+                id="difficultySelector"
+            >
+
+                <button
+                    class="difficulty-btn"
+                    data-level="easy"
+                    type="button"
+                >
+                    Easy
+                </button>
+
+
+                <button
+                    class="difficulty-btn active"
+                    data-level="medium"
+                    type="button"
+                >
+                    Medium
+                </button>
+
+
+                <button
+                    class="difficulty-btn"
+                    data-level="hard"
+                    type="button"
+                >
+                    Hard
+                </button>
+
+                <span
+                    class="difficulty-slider"
+                    id="difficultySlider"
+                ></span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
+
+        <section class="stats-grid">
+
+
+            <!-- WPM -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon purple">
+
+                    <i class="fa-solid fa-gauge-high"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>WPM</span>
+
+                    <strong id="wpm">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCURACY -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon pink">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>ACCURACY</span>
+
+                    <strong id="accuracy">
+                        100%
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- TIME -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+
+                    <i class="fa-regular fa-clock"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span id="timeLabel">
+                        TIME LEFT
+                    </span>
+
+                    <strong id="time">
+                        01:00
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHARACTERS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon violet">
+
+                    <i class="fa-solid fa-font"></i>
+
+                </div>
+
+                <div class="stat-content">
+
+                    <span>
+                        CHARACTERS
+                    </span>
+
+                    <strong id="characters">
+                        0/0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
+
+        <section class="progress-section">
+
+            <div class="progress-header">
+
+                <span>
+                    Typing Progress
+                </span>
+
+                <strong id="progressPercent">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-track">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main-container">
+
+
+            <!-- =================================================
+                 TYPING AREA
+            ================================================== -->
+
+            <section class="typing-panel">
+
+
+                <h2>
+                    Type the paragraph below
+                </h2>
+
+
+                <!-- PARAGRAPH -->
+
+                <div
+                    class="paragraph-box"
+                    id="paragraphBox"
+                ></div>
+
+
+                <!-- TEXT INPUT -->
+
+                <textarea
+                    id="typingInput"
+                    placeholder="Start typing here..."
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                ></textarea>
+
+
+                <!-- BUTTONS -->
+
+                <div class="action-buttons">
+
+
+                    <button
+                        class="action-btn restart-btn"
+                        id="restartBtn"
+                        type="button"
+                    >
+
+                        <i class="fa-solid fa-rotate-left"></i>
+
+                        Restart
+
+                    </button>
+
+
+                    <button
+                        class="action-btn start-btn"
+                        id="startBtn"
+                        type="button"
+                    >
+
+                        <i class="fa-solid fa-play"></i>
+
+                        Start Test
+
+                    </button>
+
+
+                    <button
+                        class="action-btn reset-btn"
+                        id="resetBtn"
+                        type="button"
+                    >
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Reset
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RESULT PANEL
+            ================================================== -->
+
+            <aside class="result-panel">
+
+
+                <h2>
+                    Your Result
+                </h2>
+
+
+                <!-- TROPHY WITH STAR -->
+
+                <div class="trophy">
+
+                    <i class="fa-solid fa-trophy"></i>
+
+                    <span class="trophy-star">
+                        <i class="fa-solid fa-star"></i>
+                    </span>
+
+                </div>
+
+
+                <!-- RESULT MESSAGE -->
+
+                <div
+                    class="result-message"
+                    id="resultMessage"
+                >
+
+                    🎯 Ready?
+
+                </div>
+
+
+                <p
+                    class="result-subtitle"
+                    id="resultSubtitle"
+                >
+                    Start typing to see your result.
+
+                </p>
+
+
+                <!-- RESULT SUMMARY -->
+
+                <div class="result-summary">
+
+
+                    <div class="result-row">
+
+                        <span>
+                            WPM
+                        </span>
+
+                        <strong id="resultWpm">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="result-row">
+
+                        <span>
+                            Accuracy
+                        </span>
+
+                        <strong id="resultAccuracy">
+                            100%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="result-row">
+
+                        <span>
+                            Time Taken
+                        </span>
+
+                        <strong id="resultTime">
+                            00:00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="result-row">
+
+                        <span>
+                            Correct
+                        </span>
+
+                        <strong id="resultCorrect">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="result-row">
+
+                        <span>
+                            Incorrect
+                        </span>
+
+                        <strong id="resultIncorrect">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="result-row">
+
+                        <span>
+                            Performance
+                        </span>
+
+                        <strong id="resultPerformance">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- VIEW RESULT -->
+
+                <button
+                    class="view-result-btn"
+                    id="viewResultBtn"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    View Result
+
+                </button>
+
+
+                <p class="try-again">
+
+                    Try Again to Improve!
+
+                    <i class="fa-solid fa-arrow-turn-up"></i>
+
+                </p>
+
+            </aside>
+
+        </main>
+
+
+        <!-- =================================================
+             FOOTER FEATURES
+        ================================================== -->
+
+        <section class="features">
+
+
+            <!-- IMPROVE TEST -->
+
+            <div class="feature-item">
+
+                <div class="feature-icon yellow">
+
+                    <i class="fa-regular fa-lightbulb"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Improve Test
+                    </h3>
+
+                    <p>
+                        Get better with every test
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- BETTER ACCURACY -->
+
+            <div class="feature-item">
+
+                <div class="feature-icon pink">
+
+                    <i class="fa-solid fa-bullseye"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Better Accuracy
+                    </h3>
+
+                    <p>
+                        Focus on accuracy
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRACK PROGRESS -->
+
+            <div class="feature-item">
+
+                <div class="feature-icon blue">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Track Progress
+                    </h3>
+
+                    <p>
+                        View your improvement
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOOST PRODUCTIVITY -->
+
+            <div class="feature-item">
+
+                <div class="feature-icon rocket">
+
+                    <i class="fa-solid fa-rocket"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Boost Productivity
+                    </h3>
+
+                    <p>
+                        Type faster, work smarter
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            <p>
+                © 2026 Nune Venkata Yasasvi
+            </p>
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CONFETTI / WIN BLAST
+    ====================================================== -->
+
+    <div
+        class="confetti-container"
+        id="confettiContainer"
+    ></div>
+
+
+    <!-- =====================================================
+         RESULT POPUP
+    ====================================================== -->
+
+    <div
+        class="result-overlay"
+        id="resultOverlay"
+    >
+
+        <div class="result-modal">
+
+            <button
+                class="close-result"
+                id="closeResult"
+                type="button"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <!-- MODAL TROPHY WITH STAR -->
+
+            <div class="modal-trophy">
+
+                <i class="fa-solid fa-trophy"></i>
+
+                <span class="modal-trophy-star">
+                    <i class="fa-solid fa-star"></i>
+                </span>
+
+            </div>
+
+
+            <h2>
+                Your Typing Result
+            </h2>
+
+
+            <div class="modal-result-grid">
+
+
+                <div>
+
+                    <span>WPM</span>
+
+                    <strong id="modalWpm">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Accuracy</span>
+
+                    <strong id="modalAccuracy">
+                        100%
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Time</span>
+
+                    <strong id="modalTime">
+                        00:00
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Correct</span>
+
+                    <strong id="modalCorrect">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Incorrect</span>
+
+                    <strong id="modalIncorrect">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Performance</span>
+
+                    <strong id="modalPerformance">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="modal-restart"
+                id="modalRestart"
+                type="button"
+            >
+
+                <i class="fa-solid fa-rotate-right"></i>
+
+                Try Again
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
