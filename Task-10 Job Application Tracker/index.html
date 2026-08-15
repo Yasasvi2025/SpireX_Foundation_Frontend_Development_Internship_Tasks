@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="JobTrack - Personal Job Application Tracker"
+    >
+
+    <title>JobTrack - Application Tracker</title>
+
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+
+                <i class="fa-solid fa-briefcase logo-bag"></i>
+
+                <i class="fa-solid fa-magnifying-glass logo-search"></i>
+
+            </div>
+
+            <div>
+
+                <h1>
+                    Job<span>Track</span>
+                </h1>
+
+                <p>
+                    Application Tracker
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <button
+                class="nav-item active"
+                data-view="dashboard"
+                title="Dashboard"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-view="applications"
+                title="Applications"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </span>
+
+                <span>
+                    Applications
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-view="calendar"
+                title="Calendar"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-regular fa-calendar-days"></i>
+                </span>
+
+                <span>
+                    Calendar
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-view="statistics"
+                title="Statistics"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </span>
+
+                <span>
+                    Statistics
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-view="goals"
+                title="Goals"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-bullseye"></i>
+                </span>
+
+                <span>
+                    Goals
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-view="notes"
+                title="Notes"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-note-sticky"></i>
+                </span>
+
+                <span>
+                    Notes
+                </span>
+
+            </button>
+
+
+            <button
+                class="nav-item"
+                id="sidebarAdd"
+                title="Add Application"
+            >
+
+                <span class="nav-icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+
+                <span>
+                    Add Application
+                </span>
+
+            </button>
+
+        </nav>
+
+
+        <!-- =================================================
+             MOTIVATION CARD
+        ================================================== -->
+
+        <div class="motivation-card">
+
+            <div class="rocket-image">
+
+                <img
+                    src="Image/rocket.png"
+                    alt="Job search motivation"
+                    onerror="this.style.display='none'; this.parentElement.classList.add('rocket-fallback');"
+                >
+
+                <i class="fa-solid fa-rocket rocket-fallback-icon"></i>
+
+            </div>
+
+
+            <h3>
+                Keep Going!
+            </h3>
+
+            <p>
+                Every application brings you one step
+                closer to your next opportunity.
+            </p>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="top-header">
+
+            <div class="welcome">
+
+                <h2>
+                    Welcome back, Nune Venkata Yasasvi! 👋
+                </h2>
+
+                <p>
+                    Track your job search and stay organized.
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+
+                <!-- SEARCH -->
+
+                <div class="global-search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="globalSearch"
+                        placeholder="Search applications..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+
+                <!-- THEME -->
+
+                <button
+                    class="theme-toggle"
+                    id="themeToggle"
+                    type="button"
+                    title="Toggle dark/light mode"
+                    aria-label="Toggle dark/light mode"
+                >
+
+                    <span class="sun">
+                        <i class="fa-solid fa-sun"></i>
+                    </span>
+
+                    <span class="toggle-track">
+
+                        <span class="toggle-thumb">
+                            <i class="fa-solid fa-moon"></i>
+                        </span>
+
+                    </span>
+
+                </button>
+
+
+
+                <!-- NOTIFICATION -->
+
+                <div class="notification-wrapper">
+
+                    <button
+                        class="notification-btn"
+                        id="notificationBtn"
+                        type="button"
+                        title="Notifications"
+                        aria-label="Notifications"
+                    >
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span
+                            class="notification-dot"
+                            id="notificationDot"
+                        ></span>
+
+                    </button>
+
+
+                    <div
+                        class="notification-popup"
+                        id="notificationPopup"
+                    >
+
+                        <div class="notification-popup-header">
+
+                            <div>
+
+                                <h4>
+                                    Notifications
+                                </h4>
+
+                                <span id="notificationCount">
+                                    3 notifications
+                                </span>
+
+                            </div>
+
+                            <button
+                                id="clearNotifications"
+                                class="clear-notifications"
+                                type="button"
+                            >
+                                Clear All
+                            </button>
+
+                        </div>
+
+
+                        <div id="notificationList">
+
+                            <div class="notification-item">
+
+                                <span class="notification-icon green">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        Interview scheduled
+                                    </strong>
+
+                                    <p>
+                                        You have an upcoming interview.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="notification-item">
+
+                                <span class="notification-icon purple">
+                                    <i class="fa-solid fa-bullseye"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        Keep applying
+                                    </strong>
+
+                                    <p>
+                                        You are making progress toward your goal.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="notification-item">
+
+                                <span class="notification-icon orange">
+                                    <i class="fa-solid fa-clock"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        Follow-up reminder
+                                    </strong>
+
+                                    <p>
+                                        Review your pending applications.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="notification-empty"
+                            id="notificationEmpty"
+                        >
+
+                            <i class="fa-regular fa-bell-slash"></i>
+
+                            <span>
+                                No new notifications
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PROFILE -->
+
+                <div class="profile-wrapper">
+
+                    <button
+                        class="profile"
+                        id="profileBtn"
+                        type="button"
+                        title="Profile"
+                        aria-label="Open profile"
+                    >
+
+                        <img
+                            src="Image/Profile.jpg"
+                            alt="Profile"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('profile-fallback');"
+                        >
+
+                        <i class="fa-solid fa-user profile-fallback-icon"></i>
+
+                    </button>
+
+
+                    <div
+                        class="profile-menu"
+                        id="profileMenu"
+                    >
+
+                        <div class="profile-menu-top">
+
+                            <div class="profile-large">
+
+                                <img
+                                    src="Image/Profile.jpg"
+                                    alt="Profile"
+                                    onerror="this.style.display='none'; this.parentElement.classList.add('profile-fallback');"
+                                >
+
+                                <i class="fa-solid fa-user profile-fallback-icon"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Nune Venkata Yasasvi
+                                </strong>
+
+                                <span>
+                                    Job Seeker
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-details">
+
+                            <div class="profile-detail">
+
+                                <i class="fa-regular fa-envelope"></i>
+
+                                <span>
+                                    nunevenkatayasasvi@gmail
+                                </span>
+
+                            </div>
+
+
+                            <div class="profile-detail">
+
+                                <i class="fa-solid fa-phone"></i>
+
+                                <span>
+                                    9494414404
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-menu-divider"></div>
+
+
+                        <button
+                            class="profile-menu-item"
+                            id="profileAccount"
+                            type="button"
+                        >
+
+                            <i class="fa-regular fa-user"></i>
+
+                            <span>
+                                My Profile
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            class="profile-menu-item signout"
+                            id="signOutBtn"
+                            type="button"
+                        >
+
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                            <span>
+                                Sign Out
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             DASHBOARD VIEW
+        ================================================== -->
+
+        <section id="dashboardView">
+
+
+            <!-- =================================================
+                 STATS
+            ================================================== -->
+
+            <div class="stats-grid">
+
+
+                <!-- TOTAL -->
+
+                <div class="stat-card blue">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                    </div>
+
+                    <div class="stat-info">
+
+                        <p>
+                            Total Applications
+                        </p>
+
+                        <h3 id="totalApplications">
+                            0
+                        </h3>
+
+                        <span id="currentMonthLabel">
+                            This Month
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- INTERVIEW -->
+
+                <div class="stat-card green">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-comments"></i>
+
+                    </div>
+
+                    <div class="stat-info">
+
+                        <p>
+                            Interviews
+                        </p>
+
+                        <h3 id="interviewCount">
+                            0
+                        </h3>
+
+                        <span>
+                            Scheduled
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PENDING -->
+
+                <div class="stat-card orange">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-hourglass-half"></i>
+
+                    </div>
+
+                    <div class="stat-info">
+
+                        <p>
+                            Pending
+                        </p>
+
+                        <h3 id="pendingCount">
+                            0
+                        </h3>
+
+                        <span>
+                            Awaiting response
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- OFFER -->
+
+                <div class="stat-card offer">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-trophy"></i>
+
+                    </div>
+
+                    <div class="stat-info">
+
+                        <p>
+                            Offers
+                        </p>
+
+                        <h3 id="offerCount">
+                            0
+                        </h3>
+
+                        <span>
+                            Job offers
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REJECTED -->
+
+                <div class="stat-card purple">
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                    </div>
+
+                    <div class="stat-info">
+
+                        <p>
+                            Rejected
+                        </p>
+
+                        <h3 id="rejectedCount">
+                            0
+                        </h3>
+
+                        <span>
+                            Applications
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 DASHBOARD GRID
+            ================================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- =================================================
+                     APPLICATIONS
+                ================================================== -->
+
+                <div class="card applications-panel">
+
+                    <div class="panel-heading">
+
+                        <h3>
+                            Recent Applications
+                        </h3>
+
+                    </div>
+
+
+                    <div class="application-toolbar">
+
+
+                        <div class="table-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="applicationSearch"
+                                placeholder="Search company or role..."
+                            >
+
+                        </div>
+
+
+                        <select
+                            id="statusFilter"
+                            class="control-select"
+                        >
+
+                            <option value="all">
+                                All Status
+                            </option>
+
+                            <option value="Interview">
+                                Interview
+                            </option>
+
+                            <option value="Offer">
+                                Offer
+                            </option>
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+                            <option value="Rejected">
+                                Rejected
+                            </option>
+
+                            <option value="Withdrawn">
+                                Withdrawn
+                            </option>
+
+                        </select>
+
+
+                        <select
+                            id="sortSelect"
+                            class="control-select"
+                        >
+
+                            <option value="newest">
+                                Newest
+                            </option>
+
+                            <option value="oldest">
+                                Oldest
+                            </option>
+
+                            <option value="company">
+                                Company
+                            </option>
+
+                            <option value="status">
+                                Status
+                            </option>
+
+                        </select>
+
+
+                        <button
+                            class="add-button"
+                            id="addApplicationBtn"
+                            type="button"
+                        >
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Add Application
+
+                        </button>
+
+                    </div>
+
+
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Company
+                                    </th>
+
+                                    <th>
+                                        Role
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="applicationTableBody"
+                            ></tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="pagination-row">
+
+                        <span id="paginationInfo">
+                            Showing 0 applications
+                        </span>
+
+                        <div
+                            class="pagination"
+                            id="pagination"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     RIGHT COLUMN
+                ================================================== -->
+
+                <div class="right-column">
+
+
+                    <!-- =================================================
+                         APPLICATION OVERVIEW
+                    ================================================== -->
+
+                    <div class="card overview-card">
+
+                        <h3>
+                            Application Overview
+                        </h3>
+
+
+                        <div class="overview-content">
+
+                            <div class="donut-wrapper">
+
+                                <div
+                                    class="donut"
+                                    id="donutChart"
+                                >
+
+                                    <div class="donut-center">
+
+                                        <strong id="donutTotal">
+                                            0
+                                        </strong>
+
+                                        <span>
+                                            Applications
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="legend">
+
+
+                                <!-- INTERVIEW -->
+
+                                <div class="legend-item">
+
+                                    <span class="legend-dot interview"></span>
+
+                                    <span>
+                                        Interview
+                                    </span>
+
+                                    <strong id="interviewPercent">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+
+
+                                <!-- OFFER -->
+
+                                <div class="legend-item">
+
+                                    <span class="legend-dot offer"></span>
+
+                                    <span>
+                                        Offer
+                                    </span>
+
+                                    <strong id="offerPercent">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+
+
+                                <!-- PENDING -->
+
+                                <div class="legend-item">
+
+                                    <span class="legend-dot pending"></span>
+
+                                    <span>
+                                        Pending
+                                    </span>
+
+                                    <strong id="pendingPercent">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+
+
+                                <!-- REJECTED -->
+
+                                <div class="legend-item">
+
+                                    <span class="legend-dot rejected"></span>
+
+                                    <span>
+                                        Rejected
+                                    </span>
+
+                                    <strong id="rejectedPercent">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         MONTHLY PROGRESS
+                    ================================================== -->
+
+                    <div class="card progress-card">
+
+                        <div class="progress-title">
+
+                            <div>
+
+                                <h3>
+                                    Monthly Progress
+                                </h3>
+
+                                <span id="chartMonthTitle">
+                                    Applications this year
+                                </span>
+
+                            </div>
+
+                            <span class="chart-badge">
+
+                                <i class="fa-solid fa-chart-line"></i>
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="chart-area">
+
+                            <div class="y-labels">
+
+                                <span>
+                                    20
+                                </span>
+
+                                <span>
+                                    15
+                                </span>
+
+                                <span>
+                                    10
+                                </span>
+
+                                <span>
+                                    5
+                                </span>
+
+                                <span>
+                                    0
+                                </span>
+
+                            </div>
+
+
+                            <div class="line-chart">
+
+                                <svg
+                                    viewBox="0 0 400 180"
+                                    preserveAspectRatio="none"
+                                >
+
+                                    <defs>
+
+                                        <linearGradient
+                                            id="chartGradient"
+                                            x1="0"
+                                            y1="0"
+                                            x2="0"
+                                            y2="1"
+                                        >
+
+                                            <stop
+                                                offset="0%"
+                                                stop-opacity=".35"
+                                            />
+
+                                            <stop
+                                                offset="100%"
+                                                stop-opacity="0"
+                                            />
+
+                                        </linearGradient>
+
+                                    </defs>
+
+
+                                    <path
+                                        id="areaPath"
+                                        fill="url(#chartGradient)"
+                                        stroke="none"
+                                    ></path>
+
+
+                                    <path
+                                        id="progressPath"
+                                        fill="none"
+                                        stroke="#8f45ff"
+                                        stroke-width="4"
+                                        stroke-linecap="round"
+                                    ></path>
+
+                                </svg>
+
+
+                                <div class="chart-tooltip">
+
+                                    <strong id="chartTooltipMonth">
+                                        Aug
+                                    </strong>
+
+                                    <span id="chartTooltipValue">
+                                        This Month
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="months"
+                            id="chartMonths"
+                        >
+
+                            <span>Mar</span>
+                            <span>Apr</span>
+                            <span>May</span>
+                            <span>Jun</span>
+                            <span>Jul</span>
+                            <span>Aug</span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         GOALS
+                    ================================================== -->
+
+                    <div class="card goals-card">
+
+                        <div class="goal-heading">
+
+                            <h3>
+                                Goals
+                            </h3>
+
+                            <button
+                                id="editGoalsBtn"
+                                type="button"
+                            >
+
+                                <i class="fa-solid fa-pen"></i>
+
+                                Edit
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="goal">
+
+                            <div class="goal-top">
+
+                                <span>
+                                    Applications
+                                </span>
+
+                                <strong id="applicationGoalText">
+                                    0 / 50
+                                </strong>
+
+                            </div>
+
+
+                            <div class="goal-bar">
+
+                                <span
+                                    id="applicationGoalBar"
+                                    style="width:0%"
+                                ></span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="goal">
+
+                            <div class="goal-top">
+
+                                <span>
+                                    Interviews
+                                </span>
+
+                                <strong id="interviewGoalText">
+                                    0 / 5
+                                </strong>
+
+                            </div>
+
+
+                            <div class="goal-bar">
+
+                                <span
+                                    id="interviewGoalBar"
+                                    style="width:0%"
+                                ></span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             APPLICATIONS VIEW
+        ================================================== -->
+
+        <section
+            id="applicationsView"
+            class="card full-page-panel hidden-view"
+        >
+
+            <div class="page-title-row">
+
+                <div>
+
+                    <h2>
+                        All Applications
+                    </h2>
+
+                    <p>
+                        Manage all your job applications.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="add-button"
+                    id="addApplicationBtn2"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Application
+
+                </button>
+
+            </div>
+
+
+            <div id="applicationsFullList"></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CALENDAR VIEW
+        ================================================== -->
+
+        <section
+            id="calendarView"
+            class="card full-page-panel hidden-view"
+        >
+
+            <div class="page-title-row">
+
+                <div>
+
+                    <h2>
+                        Application Calendar
+                    </h2>
+
+                    <p>
+                        View your application dates.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="calendar"
+                id="calendar"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STATISTICS VIEW
+        ================================================== -->
+
+        <section
+            id="statisticsView"
+            class="card full-page-panel hidden-view"
+        >
+
+            <div class="page-title-row">
+
+                <div>
+
+                    <h2>
+                        Statistics
+                    </h2>
+
+                    <p>
+                        Detailed overview of your job search.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="big-stat-grid">
+
+
+                <!-- TOTAL -->
+
+                <div class="big-stat">
+
+                    <span>
+                        Total Applications
+                    </span>
+
+                    <strong id="statisticsTotal">
+                        0
+                    </strong>
+
+                </div>
+
+
+
+                <!-- INTERVIEW -->
+
+                <div class="big-stat">
+
+                    <span>
+                        Interviews
+                    </span>
+
+                    <strong id="statisticsInterview">
+                        0
+                    </strong>
+
+                </div>
+
+
+
+                <!-- OFFER -->
+
+                <div class="big-stat">
+
+                    <span>
+                        Offers
+                    </span>
+
+                    <strong id="statisticsOffer">
+                        0
+                    </strong>
+
+                </div>
+
+
+
+                <!-- PENDING -->
+
+                <div class="big-stat">
+
+                    <span>
+                        Pending
+                    </span>
+
+                    <strong id="statisticsPending">
+                        0
+                    </strong>
+
+                </div>
+
+
+
+                <!-- REJECTED -->
+
+                <div class="big-stat">
+
+                    <span>
+                        Rejected
+                    </span>
+
+                    <strong id="statisticsRejected">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="statistics-chart">
+
+                <h3>
+                    Application Status
+                </h3>
+
+
+                <div
+                    class="large-donut"
+                    id="largeDonut"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             GOALS VIEW
+        ================================================== -->
+
+        <section
+            id="goalsView"
+            class="card full-page-panel hidden-view"
+        >
+
+            <div class="page-title-row">
+
+                <div>
+
+                    <h2>
+                        Career Goals
+                    </h2>
+
+                    <p>
+                        Track your application and interview targets.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="add-button"
+                    id="goalsEdit2"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Edit Goals
+
+                </button>
+
+            </div>
+
+
+            <div class="goal-large">
+
+                <h3>
+                    Application Goal
+                </h3>
+
+                <p id="largeApplicationGoal">
+                    0 of 50 applications completed
+                </p>
+
+
+                <div class="large-progress">
+
+                    <span
+                        id="largeApplicationBar"
+                        style="width:0%"
+                    ></span>
+
+                </div>
+
+            </div>
+
+
+            <div class="goal-large">
+
+                <h3>
+                    Interview Goal
+                </h3>
+
+                <p id="largeInterviewGoal">
+                    0 of 5 interviews completed
+                </p>
+
+
+                <div class="large-progress">
+
+                    <span
+                        id="largeInterviewBar"
+                        style="width:0%"
+                    ></span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             NOTES VIEW
+        ================================================== -->
+
+        <section
+            id="notesView"
+            class="card full-page-panel hidden-view"
+        >
+
+            <div class="page-title-row">
+
+                <div>
+
+                    <h2>
+                        Notes
+                    </h2>
+
+                    <p>
+                        Keep important job-search notes here.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="add-button"
+                    id="addNoteBtn"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Note
+
+                </button>
+
+            </div>
+
+
+            <div id="notesList"></div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="footer">
+
+            <span class="footer-heart">
+
+                <i class="fa-regular fa-heart"></i>
+
+            </span>
+
+
+            <span class="footer-text">
+
+                JobTrack • Stay organized • Keep applying <br>
+
+                © 2026 Nune Venkata Yasasvi
+
+            </span>
+
+
+            <span class="footer-heart">
+
+                <i class="fa-regular fa-heart"></i>
+
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================================
+     ADD / EDIT MODAL
+========================================================== -->
+
+<div
+    class="modal-overlay"
+    id="applicationModal"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="modalTitle">
+                    Add Application
+                </h2>
+
+                <p>
+                    Add or update your application details.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-modal"
+                id="closeModal"
+                type="button"
+                title="Close"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <form id="applicationForm">
+
+            <input
+                type="hidden"
+                id="applicationId"
+            >
+
+
+            <div class="form-grid">
+
+
+                <!-- COMPANY -->
+
+                <div class="form-group">
+
+                    <label for="companyInput">
+                        Company
+                    </label>
+
+                    <input
+                        id="companyInput"
+                        type="text"
+                        placeholder="Company name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ROLE -->
+
+                <div class="form-group">
+
+                    <label for="roleInput">
+                        Role
+                    </label>
+
+                    <input
+                        id="roleInput"
+                        type="text"
+                        placeholder="Job role"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="dateInput">
+                        Application Date
+                    </label>
+
+                    <input
+                        id="dateInput"
+                        type="date"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="form-group">
+
+                    <label for="statusInput">
+                        Status
+                    </label>
+
+                    <select
+                        id="statusInput"
+                        required
+                    >
+
+                        <option value="Interview">
+                            Interview
+                        </option>
+
+                        <option value="Offer">
+                            Offer
+                        </option>
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                        <option value="Withdrawn">
+                            Withdrawn
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    class="cancel-button"
+                    id="cancelModal"
+                    type="button"
+                >
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    class="save-button"
+                    type="submit"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Application
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     TOAST
+========================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
