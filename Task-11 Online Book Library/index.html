@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1.0"
+    >
+
+    <title>BookLibrary</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+<header class="navbar">
+
+    <a
+        class="brand"
+        href="#home"
+    >
+        <i class="fa-solid fa-book-open"></i>
+        BookLibrary
+    </a>
+
+
+    <nav id="nav">
+
+        <a
+            class="active"
+            href="#home"
+        >
+            Home
+        </a>
+
+        <a href="#books">
+            Books
+        </a>
+
+        <a href="#categories">
+            Categories
+        </a>
+
+        <a href="#shelf">
+            My Shelf
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+        <div class="nav-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                id="topSearch"
+                placeholder="Search books..."
+            >
+
+        </div>
+
+
+        <!-- MY LIBRARY -->
+
+        <button
+            id="login"
+            title="Open My Library"
+            aria-label="Open My Library"
+        >
+
+            <i class="fa-solid fa-book-open-reader"></i>
+
+            <span>My Library</span>
+
+        </button>
+
+
+        <!-- THEME -->
+
+        <button
+            id="themeToggle"
+            class="theme-button"
+            type="button"
+            title="Toggle dark/light mode"
+            aria-label="Toggle dark/light mode"
+        >
+
+            <i
+                id="themeIcon"
+                class="fa-solid fa-moon"
+            ></i>
+
+        </button>
+
+
+        <button
+            id="menu"
+            title="Menu"
+            aria-label="Open menu"
+        >
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section
+        class="hero"
+        id="home"
+    >
+
+        <div class="hero-text">
+
+            <span class="label">
+                YOUR DIGITAL READING SPACE
+            </span>
+
+
+            <h1>
+                Welcome to<br>
+
+                <b>
+                    Online Book Library
+                </b>
+            </h1>
+
+
+            <p>
+                Discover great books, explore new genres,
+                and build your personal reading shelf.
+            </p>
+
+
+            <div class="hero-search">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    id="search"
+                    placeholder="Search by title, author or keyword..."
+                >
+
+                <button id="searchBtn">
+                    Search
+                </button>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div>
+
+                    <b id="count">
+                        0
+                    </b>
+
+                    <span>
+                        Books
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <b>
+                        6
+                    </b>
+
+                    <span>
+                        Categories
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <b id="savedCount">
+                        0
+                    </b>
+
+                    <span>
+                        My Shelf
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-art">
+
+            <img
+                src="Image/reading book.png"
+                alt="Reading book"
+            >
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CATEGORIES
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="categories"
+    >
+
+        <div class="heading">
+
+            <div>
+
+                <span class="label">
+                    EXPLORE
+                </span>
+
+                <h2>
+                    Browse Categories
+                </h2>
+
+            </div>
+
+
+            <button id="allCategories">
+
+                View All
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="categories"
+            id="categoriesBox"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         BOOKS
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="books"
+    >
+
+        <div class="heading">
+
+            <div>
+
+                <span class="label">
+                    DISCOVER
+                </span>
+
+                <h2>
+                    Featured Books
+                </h2>
+
+            </div>
+
+
+            <div class="filters">
+
+                <select id="filter">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option>
+                        Fiction
+                    </option>
+
+                    <option>
+                        Non-Fiction
+                    </option>
+
+                    <option>
+                        Science
+                    </option>
+
+                    <option>
+                        History
+                    </option>
+
+                    <option>
+                        Fantasy
+                    </option>
+
+                    <option>
+                        Self-Help
+                    </option>
+
+                </select>
+
+
+                <select id="sort">
+
+                    <option value="featured">
+                        Featured
+                    </option>
+
+                    <option value="rating">
+                        Highest Rated
+                    </option>
+
+                    <option value="title">
+                        Title A-Z
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <p
+            class="results"
+            id="results"
+        ></p>
+
+
+        <div
+            class="books"
+            id="booksBox"
+        ></div>
+
+
+        <div
+            class="empty hidden"
+            id="empty"
+        >
+
+            <i class="fa-solid fa-book-open"></i>
+
+            <h3>
+                No books found
+            </h3>
+
+            <p>
+                Try another search or category.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SHELF
+    ====================================================== -->
+
+    <section
+        class="shelf"
+        id="shelf"
+    >
+
+        <div>
+
+            <span class="label">
+                PERSONAL SPACE
+            </span>
+
+            <h2>
+                My Reading Shelf
+            </h2>
+
+            <p>
+                Save books you want to read later and
+                keep your reading list organized.
+            </p>
+
+        </div>
+
+
+        <button id="viewShelf">
+
+            <i class="fa-solid fa-book-open-reader"></i>
+
+            View My Shelf
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="about"
+    >
+
+        <div class="about">
+
+            <img
+                src="Image/books.png"
+                alt="Books"
+            >
+
+
+            <div>
+
+                <span class="label">
+                    ABOUT LIBRARY
+                </span>
+
+
+                <h2>
+                    A simple place for every reader.
+                </h2>
+
+
+                <p>
+                    Search books, explore categories,
+                    view details, and save your favorite
+                    books to your personal shelf.
+                </p>
+
+
+                <div class="points">
+
+                    <span>
+                        ✓ Easy discovery
+                    </span>
+
+                    <span>
+                        ✓ Quick search
+                    </span>
+
+                    <span>
+                        ✓ Personal shelf
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer>
+
+    <b>
+
+        <i class="fa-solid fa-book-open"></i>
+
+        BookLibrary
+
+    </b>
+
+
+    <span>
+        Read. Discover. Enjoy.
+    </span>
+
+
+    <span>
+        © 2026 Nune Venkata Yasasvi
+    </span>
+
+</footer>
+
+
+
+<!-- =====================================================
+     BOOK MODAL
+====================================================== -->
+
+<div
+    class="modal hidden"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            id="close"
+            title="Close"
+            aria-label="Close"
+        >
+            ×
+        </button>
+
+
+        <div id="modalContent"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
