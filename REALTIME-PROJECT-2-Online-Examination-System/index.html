@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Online Examination System</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<header class="navbar">
+
+    <div class="brand">
+
+        <i class="fa-solid fa-graduation-cap"></i>
+
+        <span>
+            Online Examination System
+        </span>
+
+    </div>
+
+
+    <nav id="nav">
+
+        <a
+            href="#dashboard"
+            class="active"
+        >
+            Dashboard
+        </a>
+
+        <a href="#exams">
+            Exams
+        </a>
+
+        <a href="#results">
+            Results
+        </a>
+
+        <a href="#profile">
+            Profile
+        </a>
+
+    </nav>
+
+
+    <div class="nav-actions">
+
+        <div class="timer-top">
+
+            <i class="fa-regular fa-clock"></i>
+
+            <span>
+                Time Left:
+            </span>
+
+            <b id="topTimer">
+                30:00
+            </b>
+
+        </div>
+
+
+        <button
+            id="themeToggle"
+            class="theme-btn"
+            type="button"
+            title="Toggle theme"
+        >
+
+            <i
+                id="themeIcon"
+                class="fa-solid fa-moon"
+            ></i>
+
+        </button>
+
+
+        <button
+            id="menu"
+            class="menu-btn"
+            type="button"
+            title="Menu"
+        >
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
+
+<section
+    class="section"
+    id="dashboard"
+>
+
+    <div class="welcome">
+
+        <div>
+
+            <span class="label">
+                ONLINE ASSESSMENT
+            </span>
+
+            <h1>
+                Welcome, Student!
+            </h1>
+
+            <p>
+                Choose an exam, test your knowledge,
+                and check your result instantly.
+            </p>
+
+        </div>
+
+
+        <div class="welcome-image">
+
+            <img
+                src="Image/exam.jpg"
+                alt="Online Examination"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+
+            <div>
+
+                <b>
+                    5
+                </b>
+
+                <span>
+                    Total Exams
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div>
+
+                <b id="completedCount">
+                    0
+                </b>
+
+                <span>
+                    Completed
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <div>
+
+                <b id="bestScore">
+                    0%
+                </b>
+
+                <span>
+                    Best Score
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     EXAM AREA
+========================================================= -->
+
+<section
+    class="section exam-section"
+    id="exams"
+>
+
+
+    <!-- EXAM LIST -->
+
+    <div class="exam-list">
+
+        <div class="section-title">
+
+            <span class="label">
+                AVAILABLE
+            </span>
+
+            <h2>
+                Available Exams
+            </h2>
+
+        </div>
+
+
+        <div
+            class="exam-card active-exam"
+            data-exam="html"
+        >
+
+            <div>
+
+                <h3>
+                    HTML Basics Test
+                </h3>
+
+                <p>
+                    10 Questions
+                    <span>•</span>
+                    10 Minutes
+                </p>
+
+            </div>
+
+            <button class="start-btn">
+                Start Exam
+            </button>
+
+        </div>
+
+
+        <div
+            class="exam-card"
+            data-exam="css"
+        >
+
+            <div>
+
+                <h3>
+                    CSS Fundamentals
+                </h3>
+
+                <p>
+                    10 Questions
+                    <span>•</span>
+                    10 Minutes
+                </p>
+
+            </div>
+
+            <button class="start-btn">
+                Start Exam
+            </button>
+
+        </div>
+
+
+        <div
+            class="exam-card"
+            data-exam="javascript"
+        >
+
+            <div>
+
+                <h3>
+                    JavaScript Basics
+                </h3>
+
+                <p>
+                    10 Questions
+                    <span>•</span>
+                    10 Minutes
+                </p>
+
+            </div>
+
+            <button class="start-btn">
+                Start Exam
+            </button>
+
+        </div>
+
+
+        <div
+            class="exam-card"
+            data-exam="web"
+        >
+
+            <div>
+
+                <h3>
+                    Web Development MCQ
+                </h3>
+
+                <p>
+                    10 Questions
+                    <span>•</span>
+                    10 Minutes
+                </p>
+
+            </div>
+
+            <button class="start-btn">
+                Start Exam
+            </button>
+
+        </div>
+
+
+        <div
+            class="exam-card"
+            data-exam="computer"
+        >
+
+            <div>
+
+                <h3>
+                    Computer Knowledge
+                </h3>
+
+                <p>
+                    10 Questions
+                    <span>•</span>
+                    10 Minutes
+                </p>
+
+            </div>
+
+            <button class="start-btn">
+                Start Exam
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         QUESTION PANEL
+    ====================================================== -->
+
+    <div class="question-panel">
+
+        <div class="question-header">
+
+            <div>
+
+                <span class="label">
+                    HTML BASICS TEST
+                </span>
+
+                <h2 id="examTitle">
+                    Start your examination
+                </h2>
+
+                <p id="questionNumber">
+                    Question 0 of 10
+                </p>
+
+            </div>
+
+
+            <div class="mobile-timer">
+
+                <i class="fa-regular fa-clock"></i>
+
+                <b id="mobileTimer">
+                    10:00
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress">
+
+            <div
+                class="progress-bar"
+                id="progressBar"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="question-content"
+            id="questionContent"
+        >
+
+            <div class="start-message">
+
+                <i class="fa-solid fa-pen-to-square"></i>
+
+                <h3>
+                    Ready to Begin?
+                </h3>
+
+                <p>
+                    Select an exam from the left and
+                    click Start Exam.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-actions">
+
+            <button
+                id="previousBtn"
+                class="secondary-btn"
+                disabled
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Previous
+
+            </button>
+
+
+            <button
+                id="nextBtn"
+                class="primary-btn"
+                disabled
+            >
+
+                Next
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         QUESTION PALETTE
+    ====================================================== -->
+
+    <aside class="palette">
+
+        <span class="label">
+            QUESTIONS
+        </span>
+
+        <h3>
+            Question Palette
+        </h3>
+
+
+        <div
+            class="question-grid"
+            id="questionGrid"
+        >
+
+            <!-- Generated by JavaScript -->
+
+        </div>
+
+
+        <div class="legend">
+
+            <div>
+                <span class="legend-box answered"></span>
+                Answered
+            </div>
+
+            <div>
+                <span class="legend-box current"></span>
+                Current
+            </div>
+
+            <div>
+                <span class="legend-box unanswered"></span>
+                Not Answered
+            </div>
+
+        </div>
+
+    </aside>
+
+</section>
+
+
+
+<!-- =========================================================
+     INFORMATION
+========================================================= -->
+
+<section class="section info-section">
+
+
+    <div class="instructions">
+
+        <div class="info-icon">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+        </div>
+
+
+        <div>
+
+            <span class="label">
+                EXAM INSTRUCTIONS
+            </span>
+
+            <h2>
+                Before You Start
+            </h2>
+
+            <ul>
+
+                <li>
+                    Read each question carefully.
+                </li>
+
+                <li>
+                    Select one answer for each question.
+                </li>
+
+                <li>
+                    Use the question palette to navigate.
+                </li>
+
+                <li>
+                    Submit the exam when you finish.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+
+    <div
+        class="profile-card"
+        id="profile"
+    >
+
+        <div class="profile-icon">
+
+            <i class="fa-solid fa-user"></i>
+
+        </div>
+
+
+        <div>
+
+            <span class="label">
+                STUDENT INFO
+            </span>
+
+            <h2>
+                Nune Venkata Yasasvi
+            </h2>
+
+            <p>
+                Name : Nune Venkata Yasasvi
+            </p>
+
+            <p>
+              Student Id : SXF-126AG-036
+            </p>
+
+            <p>
+                Course : Web Development
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     RESULTS
+========================================================= -->
+
+<section
+    class="section result-section hidden"
+    id="results"
+>
+
+    <div class="result-card">
+
+        <div class="result-icon">
+
+            <i class="fa-solid fa-trophy"></i>
+
+        </div>
+
+        <span class="label">
+            EXAM COMPLETED
+        </span>
+
+        <h2>
+            Your Result
+        </h2>
+
+        <div
+            class="score"
+            id="resultScore"
+        >
+            0%
+        </div>
+
+        <p id="resultMessage">
+            Complete an exam to see your result.
+        </p>
+
+
+        <div class="result-details">
+
+            <div>
+
+                <b id="correctAnswers">
+                    0
+                </b>
+
+                <span>
+                    Correct
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <b id="wrongAnswers">
+                    0
+                </b>
+
+                <span>
+                    Wrong
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <b id="totalAnswers">
+                    0
+                </b>
+
+                <span>
+                    Total
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="retakeBtn"
+            class="primary-btn"
+        >
+
+            <i class="fa-solid fa-rotate-right"></i>
+
+            Take Another Exam
+
+        </button>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+    <div class="footer-brand">
+
+        <i class="fa-solid fa-graduation-cap"></i>
+
+        <b>
+            Online Examination System
+        </b>
+
+    </div>
+
+
+    <p>
+        Learn. Practice. Achieve.
+    </p>
+
+
+    <p>
+        Name : Nune Venkata Yasasvi
+    </p>
+
+
+    <p>
+        © 2026 Nune Venkata Yasasvi
+    </p>
+
+</footer>
+
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
