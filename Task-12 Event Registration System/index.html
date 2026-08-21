@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Event Registration System</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <a
+                href="#home"
+                class="logo"
+            >
+
+                <i class="fa-regular fa-calendar-days"></i>
+
+                <span>
+                    Event Registration System
+                </span>
+
+            </a>
+
+
+            <nav id="nav">
+
+                <a
+                    href="#home"
+                    class="active"
+                >
+                    Home
+                </a>
+
+                <a href="#events">
+                    Events
+                </a>
+
+                <a href="#registrations">
+                    My Registrations
+                </a>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
+            </nav>
+
+
+            <div class="nav-actions">
+
+                <!-- Theme -->
+                <button
+                    id="themeToggle"
+                    class="icon-btn"
+                    title="Toggle Theme"
+                    aria-label="Toggle Theme"
+                >
+
+                    <i
+                        id="themeIcon"
+                        class="fa-solid fa-moon"
+                    ></i>
+
+                </button>
+
+
+                <!-- Profile -->
+                <button
+                    class="profile-btn"
+                    id="profileBtn"
+                >
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </button>
+
+
+                <!-- Mobile Menu -->
+                <button
+                    id="menu"
+                    class="menu-btn"
+                    aria-label="Open Menu"
+                >
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <main id="home">
+
+        <section class="hero">
+
+            <div class="hero-overlay"></div>
+
+            <div class="hero-content">
+
+                <span class="hero-small">
+                    ✦ Discover • Connect • Experience
+                </span>
+
+
+                <h1>
+                    Discover &amp; Register
+                    <br>
+                    for Amazing Events
+                </h1>
+
+
+                <p>
+                    Find events that inspire you
+                    and be a part of something great.
+                </p>
+
+
+                <button
+                    class="hero-btn"
+                    id="browseEvents"
+                >
+
+                    <i class="fa-regular fa-calendar-days"></i>
+
+                    Browse Events
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <section
+            class="main-section"
+            id="events"
+        >
+
+            <div class="content-wrapper">
+
+
+                <!-- =========================================
+                     LEFT CONTENT
+                ========================================== -->
+
+                <div class="events-area">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label">
+                                UPCOMING
+                            </span>
+
+                            <h2>
+                                Upcoming Events
+                            </h2>
+
+                        </div>
+
+
+                        <span
+                            class="event-count"
+                            id="eventCount"
+                        >
+                            3 Events
+                        </span>
+
+                    </div>
+
+
+                    <!-- EVENT CARDS -->
+
+                    <div
+                        class="event-grid"
+                        id="eventGrid"
+                    >
+
+
+                        <!-- Music Night -->
+
+                        <article
+                            class="event-card"
+                            data-event="music"
+                        >
+
+                            <div class="event-image">
+
+                                <img
+                                    src="Image/music night.jpg"
+                                    alt="Music Night"
+                                >
+
+                                <span class="event-badge">
+                                    Popular
+                                </span>
+
+                            </div>
+
+
+                            <div class="event-body">
+
+                                <h3>
+                                    Music Night 2026
+                                </h3>
+
+
+                                <p class="event-description">
+                                    An evening of live music,
+                                    fun and entertainment.
+                                </p>
+
+
+                                <div class="event-info">
+
+                                    <span>
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                        15 September 2026
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-location-dot"></i>
+
+                                        City Auditorium
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-users"></i>
+
+                                        <strong id="musicCount">
+                                            120
+                                        </strong>
+                                        / 200 Registered
+
+                                    </span>
+
+                                </div>
+
+
+                                <button
+                                    class="register-btn"
+                                    data-register="music"
+                                >
+
+                                    Register Now
+
+                                    <i class="fa-solid fa-arrow-right"></i>
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Tech Conference -->
+
+                        <article
+                            class="event-card"
+                            data-event="tech"
+                        >
+
+                            <div class="event-image">
+
+                                <img
+                                    src="Image/tech conference.jpeg"
+                                    alt="Tech Conference"
+                                >
+
+                                <span class="event-badge blue">
+                                    Featured
+                                </span>
+
+                            </div>
+
+
+                            <div class="event-body">
+
+                                <h3>
+                                    Tech Conference
+                                </h3>
+
+
+                                <p class="event-description">
+                                    Latest trends in technology
+                                    and digital innovations.
+                                </p>
+
+
+                                <div class="event-info">
+
+                                    <span>
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                        22 September 2026
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-location-dot"></i>
+
+                                        Tech Hub
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-users"></i>
+
+                                        <strong id="techCount">
+                                            95
+                                        </strong>
+                                        / 150 Registered
+
+                                    </span>
+
+                                </div>
+
+
+                                <button
+                                    class="register-btn"
+                                    data-register="tech"
+                                >
+
+                                    Register Now
+
+                                    <i class="fa-solid fa-arrow-right"></i>
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Food Festival -->
+
+                        <article
+                            class="event-card"
+                            data-event="food"
+                        >
+
+                            <div class="event-image">
+
+                                <img
+                                    src="Image/food festival.jpg"
+                                    alt="Food Festival"
+                                >
+
+                                <span class="event-badge orange">
+                                    New
+                                </span>
+
+                            </div>
+
+
+                            <div class="event-body">
+
+                                <h3>
+                                    Food Festival
+                                </h3>
+
+
+                                <p class="event-description">
+                                    A celebration of food,
+                                    culture and delicious cuisine.
+                                </p>
+
+
+                                <div class="event-info">
+
+                                    <span>
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                        30 September 2026
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-location-dot"></i>
+
+                                        Food Plaza
+
+                                    </span>
+
+
+                                    <span>
+
+                                        <i class="fa-solid fa-users"></i>
+
+                                        <strong id="foodCount">
+                                            80
+                                        </strong>
+                                        / 100 Registered
+
+                                    </span>
+
+                                </div>
+
+
+                                <button
+                                    class="register-btn"
+                                    data-register="food"
+                                >
+
+                                    Register Now
+
+                                    <i class="fa-solid fa-arrow-right"></i>
+
+                                </button>
+
+                            </div>
+
+                        </article>
+
+
+                    </div>
+
+
+
+                    <!-- =====================================
+                         MY REGISTRATIONS
+                    ====================================== -->
+
+                    <section
+                        class="registrations-card"
+                        id="registrations"
+                    >
+
+                        <div class="card-heading">
+
+                            <div>
+
+                                <span class="section-label">
+                                    YOUR EVENTS
+                                </span>
+
+                                <h2>
+                                    My Registrations
+                                </h2>
+
+                            </div>
+
+
+                            <span
+                                class="registration-total"
+                                id="registrationTotal"
+                            >
+                                0 Registered
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="registration-table-wrapper"
+                            id="registrationTable"
+                        >
+
+                            <div class="empty-registration">
+
+                                <i class="fa-regular fa-calendar-xmark"></i>
+
+                                <h3>
+                                    No registrations yet
+                                </h3>
+
+                                <p>
+                                    Register for an event
+                                    to see it here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     RIGHT SIDEBAR
+                ========================================== -->
+
+                <aside class="sidebar">
+
+
+                    <!-- Registration Form -->
+
+                    <section
+                        class="side-card registration-form-card"
+                        id="contact"
+                    >
+
+                        <div class="side-title">
+
+                            <span>
+                                <i class="fa-solid fa-ticket"></i>
+                                QUICK REGISTRATION
+                            </span>
+
+                            <h2>
+                                Registration Form
+                            </h2>
+
+                        </div>
+
+
+                        <form
+                            id="registrationForm"
+                            novalidate
+                        >
+
+                            <div class="input-group">
+
+                                <i class="fa-regular fa-user"></i>
+
+                                <input
+                                    type="text"
+                                    id="fullName"
+                                    placeholder="Full Name"
+                                    autocomplete="name"
+                                >
+
+                            </div>
+
+
+                            <div class="input-group">
+
+                                <i class="fa-regular fa-envelope"></i>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="Email Address"
+                                    autocomplete="email"
+                                >
+
+                            </div>
+
+
+                            <div class="input-group">
+
+                                <i class="fa-solid fa-phone"></i>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    placeholder="Phone Number"
+                                    autocomplete="tel"
+                                >
+
+                            </div>
+
+
+                            <div class="input-group select-group">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <select id="eventSelect">
+
+                                    <option value="">
+                                        Select Event
+                                    </option>
+
+                                    <option value="music">
+                                        Music Night 2026
+                                    </option>
+
+                                    <option value="tech">
+                                        Tech Conference
+                                    </option>
+
+                                    <option value="food">
+                                        Food Festival
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="submit-btn"
+                            >
+
+                                <i class="fa-solid fa-ticket"></i>
+
+                                Register
+
+                            </button>
+
+                        </form>
+
+                    </section>
+
+
+
+                    <!-- Why Register -->
+
+                    <section class="side-card benefits-card">
+
+                        <div class="side-title">
+
+                            <span>
+                                <i class="fa-solid fa-circle-check"></i>
+                                BENEFITS
+                            </span>
+
+                            <h2>
+                                Why Register?
+                            </h2>
+
+                        </div>
+
+
+                        <ul class="benefits-list">
+
+                            <li>
+
+                                <i class="fa-solid fa-check"></i>
+
+                                <span>
+                                    Secure your spot
+                                </span>
+
+                            </li>
+
+
+                            <li>
+
+                                <i class="fa-solid fa-check"></i>
+
+                                <span>
+                                    Get event updates
+                                </span>
+
+                            </li>
+
+
+                            <li>
+
+                                <i class="fa-solid fa-check"></i>
+
+                                <span>
+                                    Exclusive notifications
+                                </span>
+
+                            </li>
+
+
+                            <li>
+
+                                <i class="fa-solid fa-check"></i>
+
+                                <span>
+                                    Easy Check-in
+                                </span>
+
+                            </li>
+
+                        </ul>
+
+                    </section>
+
+
+                    <!-- Quick Stats -->
+
+                    <section class="side-card stats-card">
+
+                        <div class="mini-stat">
+
+                            <i class="fa-solid fa-calendar-check"></i>
+
+                            <div>
+
+                                <strong id="sideRegistered">
+                                    0
+                                </strong>
+
+                                <span>
+                                    My Events
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mini-stat">
+
+                            <i class="fa-solid fa-users"></i>
+
+                            <div>
+
+                                <strong>
+                                    450+
+                                </strong>
+
+                                <span>
+                                    Attendees
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mini-stat">
+
+                            <i class="fa-solid fa-star"></i>
+
+                            <div>
+
+                                <strong>
+                                    4.9
+                                </strong>
+
+                                <span>
+                                    Event Rating
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         EVENT DETAILS MODAL
+    ====================================================== -->
+
+    <div
+        class="modal hidden"
+        id="eventModal"
+    >
+
+        <div class="modal-box">
+
+            <button
+                class="modal-close"
+                id="modalClose"
+                aria-label="Close"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <div id="modalContent"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PROFILE MODAL
+    ====================================================== -->
+
+    <div
+        class="modal hidden"
+        id="profileModal"
+    >
+
+        <div class="modal-box profile-modal">
+
+            <button
+                class="modal-close"
+                id="profileClose"
+                aria-label="Close"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <div class="profile-icon">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+
+            <h2>
+                My Profile
+            </h2>
+
+
+            <p>
+                Welcome to the Event Registration System.
+            </p>
+
+
+            <div class="profile-info">
+
+                <div>
+                    <span>
+                        Registered Events
+                    </span>
+
+                    <strong id="profileEvents">
+                        0
+                    </strong>
+                </div>
+
+
+                <div>
+                    <span>
+                        Account Status
+                    </span>
+
+                    <strong class="status-active">
+                        Active
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        class="toast"
+        id="toast"
+    >
+
+        <i class="fa-solid fa-circle-check"></i>
+
+        <span id="toastMessage">
+            Registration successful.
+        </span>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <i class="fa-regular fa-calendar-days"></i>
+
+                <span>
+                    Event Registration System
+                </span>
+
+            </div>
+
+
+            <p>
+                Discover events. Connect with people.
+                Create memorable experiences.
+            </p>
+
+
+            <div class="footer-line"></div>
+
+
+            <p class="copyright">
+                © 2026 Nune Venkata Yasasvi
+            </p>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
