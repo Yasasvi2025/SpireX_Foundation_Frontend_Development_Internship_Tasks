@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Virtual Keyboard</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="nav-left">
+
+            <button class="nav-tab active" data-section="keyboard">
+                <i class="fa-solid fa-keyboard"></i>
+                <span>Keyboard</span>
+            </button>
+
+            <button class="nav-tab" data-section="shortcuts">
+                <i class="fa-solid fa-list"></i>
+                <span>Shortcuts</span>
+            </button>
+
+            <button class="nav-tab" data-section="settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </button>
+
+        </div>
+
+
+        <div class="brand">
+
+            <h1>Virtual Keyboard</h1>
+
+            <p>Click on the keys to type</p>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <button id="clearText" class="top-btn">
+                <i class="fa-regular fa-trash-can"></i>
+                <span>Clear Text</span>
+            </button>
+
+            <button id="copyText" class="top-btn">
+                <i class="fa-regular fa-copy"></i>
+                <span>Copy Text</span>
+            </button>
+
+            <button id="downloadText" class="top-btn">
+                <i class="fa-solid fa-download"></i>
+                <span>Download Text</span>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         THEME SWITCH
+    ========================== -->
+
+    <div class="theme-switch">
+
+        <button id="lightTheme" class="theme-option">
+            <i class="fa-solid fa-sun"></i>
+            Light
+        </button>
+
+        <button id="darkTheme" class="theme-option active">
+            <i class="fa-solid fa-moon"></i>
+            Dark
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+        <!-- =========================
+             TEXT AREA
+        ========================== -->
+
+        <section class="typing-area">
+
+            <textarea
+                id="textInput"
+                placeholder="Start typing using the virtual keyboard..."
+                spellcheck="false"
+            >Hello! This is a Virtual Keyboard.</textarea>
+
+            <div id="keyPreview" class="key-preview">
+                A
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             KEYBOARD
+        ========================== -->
+
+        <section class="keyboard-container">
+
+            <!-- Number Row -->
+
+            <div class="keyboard-row">
+
+                <button class="key" data-key="`">`</button>
+                <button class="key" data-key="1">1</button>
+                <button class="key" data-key="2">2</button>
+                <button class="key" data-key="3">3</button>
+                <button class="key" data-key="4">4</button>
+                <button class="key" data-key="5">5</button>
+                <button class="key" data-key="6">6</button>
+                <button class="key" data-key="7">7</button>
+                <button class="key" data-key="8">8</button>
+                <button class="key" data-key="9">9</button>
+                <button class="key" data-key="0">0</button>
+                <button class="key" data-key="-">-</button>
+
+                <button class="key key-wide danger" data-action="backspace">
+                    Backspace
+                </button>
+
+            </div>
+
+
+            <!-- QWERTY Row -->
+
+            <div class="keyboard-row">
+
+                <button class="key key-tab special-purple" data-action="tab">
+                    Tab
+                </button>
+
+                <button class="key" data-key="q">Q</button>
+                <button class="key" data-key="w">W</button>
+                <button class="key" data-key="e">E</button>
+                <button class="key" data-key="r">R</button>
+                <button class="key" data-key="t">T</button>
+                <button class="key" data-key="y">Y</button>
+                <button class="key" data-key="u">U</button>
+                <button class="key" data-key="i">I</button>
+                <button class="key" data-key="o">O</button>
+                <button class="key" data-key="p">P</button>
+                <button class="key" data-key="[">[</button>
+                <button class="key" data-key="]">]</button>
+                <button class="key" data-key="\">\</button>
+
+            </div>
+
+
+            <!-- Home Row -->
+
+            <div class="keyboard-row">
+
+                <button
+                    class="key key-caps special-purple"
+                    data-action="caps"
+                >
+                    Caps Lock
+                </button>
+
+                <button class="key" data-key="a">A</button>
+                <button class="key" data-key="s">S</button>
+                <button class="key" data-key="d">D</button>
+                <button class="key" data-key="f">F</button>
+                <button class="key" data-key="g">G</button>
+                <button class="key" data-key="h">H</button>
+                <button class="key" data-key="j">J</button>
+                <button class="key" data-key="k">K</button>
+                <button class="key" data-key="l">L</button>
+                <button class="key" data-key=";">;</button>
+                <button class="key" data-key="'">'</button>
+
+                <button class="key key-enter special-blue" data-action="enter">
+                    Enter
+                </button>
+
+            </div>
+
+
+            <!-- Shift Row -->
+
+            <div class="keyboard-row">
+
+                <button
+                    class="key key-shift special-green"
+                    data-action="shift"
+                >
+                    Shift
+                </button>
+
+                <button class="key" data-key="z">Z</button>
+                <button class="key" data-key="x">X</button>
+                <button class="key" data-key="c">C</button>
+                <button class="key" data-key="v">V</button>
+                <button class="key" data-key="b">B</button>
+                <button class="key" data-key="n">N</button>
+                <button class="key" data-key="m">M</button>
+                <button class="key" data-key=",">,</button>
+                <button class="key" data-key=".">.</button>
+                <button class="key" data-key="/">/</button>
+
+                <button
+                    class="key key-shift special-green"
+                    data-action="shift"
+                >
+                    Shift
+                </button>
+
+            </div>
+
+
+            <!-- Bottom Row -->
+
+            <div class="keyboard-row">
+
+                <button class="key key-control special-blue" data-action="ctrl">
+                    Ctrl
+                </button>
+
+                <button class="key key-alt special-yellow" data-action="alt">
+                    Alt
+                </button>
+
+                <button class="key key-space" data-action="space">
+                    Space
+                </button>
+
+                <button class="key key-alt special-yellow" data-action="alt">
+                    Alt
+                </button>
+
+                <button class="key key-control special-blue" data-action="ctrl">
+                    Ctrl
+                </button>
+
+                <button class="key danger" data-action="clear">
+                    Clear
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FEATURE CARDS
+        ========================== -->
+
+        <section class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    <span>Aa</span>
+                </div>
+
+                <div class="feature-info">
+
+                    <div class="feature-title">
+                        Auto Capitalize
+                        <span class="status on">ON</span>
+                    </div>
+
+                    <p>Capitalize first letter</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-volume-high"></i>
+                </div>
+
+                <div class="feature-info">
+
+                    <div class="feature-title">
+
+                        Sound
+
+                        <button
+                            id="soundToggle"
+                            class="status on status-button"
+                        >
+                            ON
+                        </button>
+
+                    </div>
+
+                    <p>Click sound on key press</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-a"></i>
+                </div>
+
+                <div class="feature-info">
+
+                    <div class="feature-title">
+
+                        Key Preview
+
+                        <button
+                            id="previewToggle"
+                            class="status on status-button"
+                        >
+                            ON
+                        </button>
+
+                    </div>
+
+                    <p>Show key when pressed</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-regular fa-lightbulb"></i>
+                </div>
+
+                <div class="feature-info">
+
+                    <div class="feature-title">
+
+                        Word Suggestion
+
+                        <button
+                            id="suggestionToggle"
+                            class="status on status-button"
+                        >
+                            ON
+                        </button>
+
+                    </div>
+
+                    <p>Suggest words as you type</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    <i class="fa-solid fa-desktop"></i>
+                </div>
+
+                <div class="feature-info">
+
+                    <div class="feature-title">
+
+                        Responsive
+
+                        <span class="status on">
+                            ON
+                        </span>
+
+                    </div>
+
+                    <p>Works on all devices</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SUGGESTIONS
+        ========================== -->
+
+        <div
+            id="suggestions"
+            class="suggestions hidden"
+        ></div>
+
+
+        <!-- =========================
+             SHORTCUT PANEL
+        ========================== -->
+
+        <section
+            id="shortcutsPanel"
+            class="info-panel hidden"
+        >
+
+            <h2>
+                <i class="fa-solid fa-list"></i>
+                Keyboard Shortcuts
+            </h2>
+
+            <div class="shortcut-list">
+
+                <div>
+                    <kbd>Ctrl</kbd> +
+                    <kbd>A</kbd>
+                    <span>Select all text</span>
+                </div>
+
+                <div>
+                    <kbd>Ctrl</kbd> +
+                    <kbd>C</kbd>
+                    <span>Copy text</span>
+                </div>
+
+                <div>
+                    <kbd>Ctrl</kbd> +
+                    <kbd>V</kbd>
+                    <span>Paste text</span>
+                </div>
+
+                <div>
+                    <kbd>Ctrl</kbd> +
+                    <kbd>Z</kbd>
+                    <span>Undo</span>
+                </div>
+
+                <div>
+                    <kbd>Backspace</kbd>
+                    <span>Delete previous character</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             SETTINGS PANEL
+        ========================== -->
+
+        <section
+            id="settingsPanel"
+            class="info-panel hidden"
+        >
+
+            <h2>
+                <i class="fa-solid fa-gear"></i>
+                Keyboard Settings
+            </h2>
+
+            <p>
+                Use the feature switches below to customize your
+                virtual keyboard experience.
+            </p>
+
+            <div class="settings-grid">
+
+                <button id="settingsSound">
+                    Sound
+                    <span>ON</span>
+                </button>
+
+                <button id="settingsPreview">
+                    Key Preview
+                    <span>ON</span>
+                </button>
+
+                <button id="settingsSuggestion">
+                    Word Suggestion
+                    <span>ON</span>
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         TOAST
+    ========================== -->
+
+    <div id="toast" class="toast">
+        Text copied successfully.
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-line"></div>
+
+        <p>
+            Made with
+            <span class="heart">❤</span>
+            using HTML, CSS &amp; JavaScript
+        </p>
+
+        <p class="copyright">
+            © 2026
+            <span>Nune Venkata Yasasvi</span>
+            &nbsp; | &nbsp;
+            All rights reserved
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
