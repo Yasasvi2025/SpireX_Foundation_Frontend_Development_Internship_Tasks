@@ -224,25 +224,261 @@ h2 {
     gap: 25px;
 }
 
+
+/* =========================================================
+   MODERN BRAND / LOGO
+   ========================================================= */
+
 .brand-logo {
-    display: flex;
+    position: relative;
+
+    display: inline-flex;
+
     align-items: center;
-    gap: 10px;
+
+    gap: 11px;
 
     text-decoration: none;
 
     color: var(--text-white);
 
-    font-size: 1.1rem;
     font-weight: 800;
 
     white-space: nowrap;
+
+    padding: 4px 8px 4px 4px;
+
+    border-radius: 14px;
+
+    transition:
+        transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        filter 0.35s ease,
+        background-color 0.35s ease;
 }
 
+
+/* Logo image container */
+
+.logo-wrap {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    isolation: isolate;
+}
+
+
+/* Actual logo */
+
 .logo-img {
+    position: relative;
+
     width: auto;
     height: 36px;
+
+    object-fit: contain;
+
+    z-index: 2;
+
+    transform-origin: center;
+
+    transition:
+        transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        filter 0.35s ease;
 }
+
+
+/* Decorative glowing ring */
+
+.logo-ring {
+    position: absolute;
+
+    inset: 2px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(129, 140, 248, 0.18);
+
+    opacity: 0;
+
+    transform: scale(0.75);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+
+    z-index: 1;
+}
+
+
+/* Brand text */
+
+.brand-content {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    line-height: 1;
+}
+
+.brand-name {
+    font-size: 1.05rem;
+
+    transition:
+        color 0.3s ease,
+        transform 0.35s ease;
+}
+
+
+/* Moto */
+
+.brand-motto {
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 0.55rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+
+    transition:
+        color 0.3s ease,
+        transform 0.35s ease,
+        letter-spacing 0.35s ease;
+}
+
+.brand-motto span {
+    color: var(--primary-light);
+
+    padding: 0 2px;
+}
+
+
+/* =========================================================
+   LOGO HOVER EFFECT
+   ========================================================= */
+
+.brand-logo.logo-hover {
+    transform:
+        translateY(-2px)
+        scale(1.035);
+
+    background:
+        rgba(99, 102, 241, 0.055);
+
+    filter:
+        drop-shadow(
+            0 8px 22px rgba(99, 102, 241, 0.18)
+        );
+}
+
+
+.brand-logo.logo-hover .logo-img {
+    transform:
+        scale(1.18)
+        rotate(-3deg);
+
+    filter:
+        drop-shadow(
+            0 0 7px rgba(129, 140, 248, 0.75)
+        )
+        drop-shadow(
+            0 0 18px rgba(99, 102, 241, 0.45)
+        );
+
+    animation:
+        logoMicroShake 0.55s ease-in-out;
+}
+
+
+.brand-logo.logo-hover .logo-ring {
+    opacity: 1;
+
+    transform:
+        scale(1.25);
+
+    box-shadow:
+        0 0 18px rgba(99, 102, 241, 0.22),
+        inset 0 0 15px rgba(99, 102, 241, 0.10);
+}
+
+
+.brand-logo.logo-hover .brand-name {
+    transform:
+        translateX(2px);
+
+    color: var(--primary-light);
+}
+
+
+.brand-logo.logo-hover .brand-motto {
+    transform:
+        translateX(3px);
+
+    color: var(--text-main);
+
+    letter-spacing: 2px;
+}
+
+
+@keyframes logoMicroShake {
+
+    0% {
+        transform:
+            scale(1.18)
+            rotate(0deg);
+    }
+
+    20% {
+        transform:
+            scale(1.22)
+            rotate(-4deg);
+    }
+
+    40% {
+        transform:
+            scale(1.18)
+            rotate(3deg);
+    }
+
+    60% {
+        transform:
+            scale(1.21)
+            rotate(-2deg);
+    }
+
+    80% {
+        transform:
+            scale(1.19)
+            rotate(1deg);
+    }
+
+    100% {
+        transform:
+            scale(1.18)
+            rotate(-3deg);
+    }
+}
+
+
+/* =========================================================
+   NAV LINKS
+   ========================================================= */
 
 .nav-links {
     display: flex;
@@ -291,6 +527,11 @@ h2 {
     width: 100%;
 }
 
+
+/* =========================================================
+   NAV ACTIONS
+   ========================================================= */
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -302,6 +543,7 @@ h2 {
     height: 42px;
 
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
@@ -317,7 +559,9 @@ h2 {
 }
 
 .theme-toggle:hover {
-    transform: rotate(15deg) scale(1.08);
+    transform:
+        rotate(15deg)
+        scale(1.08);
 
     background: var(--primary-gradient);
 
@@ -407,6 +651,7 @@ h2 {
 
 .btn-primary {
     background: var(--primary-gradient);
+
     color: #fff;
 
     border: 0;
@@ -506,6 +751,7 @@ h2 {
     display: inline-flex;
 
     align-items: center;
+
     gap: 8px;
 
     padding: 8px 17px;
@@ -524,10 +770,24 @@ h2 {
     font-weight: 700;
 
     margin-bottom: 22px;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.badge-tag:hover {
+    transform:
+        translateY(-2px)
+        scale(1.03);
+
+    box-shadow:
+        0 0 22px rgba(99,102,241,0.16);
 }
 
 .hero-title {
     max-width: 900px;
+
     margin: 0 auto 22px;
 
     font-size: clamp(2.6rem, 6vw, 4.5rem);
@@ -550,6 +810,7 @@ h2 {
 
 .hero-subtitle {
     max-width: 780px;
+
     margin: 0 auto;
 
     color: var(--text-muted);
@@ -619,10 +880,12 @@ h2 {
 }
 
 @keyframes energyMove {
+
     0% {
         transform:
             translateY(-220px)
             rotate(25deg);
+
         opacity: 0;
     }
 
@@ -642,6 +905,7 @@ h2 {
         transform:
             translateY(650px)
             rotate(25deg);
+
         opacity: 0;
     }
 }
@@ -682,11 +946,13 @@ h2 {
 }
 
 @keyframes orbFloat {
+
     0%,
     100% {
         transform:
             translateY(0)
             scale(1);
+
         opacity: 0.35;
     }
 
@@ -694,6 +960,7 @@ h2 {
         transform:
             translateY(-25px)
             scale(1.5);
+
         opacity: 1;
     }
 }
@@ -781,7 +1048,9 @@ h2 {
     min-height: 250px;
 
     display: flex;
+
     flex-direction: column;
+
     justify-content: center;
 }
 
@@ -790,6 +1059,7 @@ h2 {
     height: 65px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -836,6 +1106,7 @@ h2 {
     height: 58px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -856,6 +1127,7 @@ h2 {
 
 .mv-card p {
     color: var(--text-muted);
+
     margin-top: 15px;
 }
 
@@ -904,11 +1176,13 @@ h2 {
 
 .value-card h4 {
     font-size: 1.08rem;
+
     margin-bottom: 10px;
 }
 
 .value-card p {
     color: var(--text-muted);
+
     font-size: 0.88rem;
 }
 
@@ -982,6 +1256,7 @@ h2 {
 
 .feature-box p {
     color: var(--text-muted);
+
     font-size: 0.87rem;
 }
 
@@ -1097,11 +1372,13 @@ h2 {
 
 .timeline-item:nth-child(odd) {
     left: 0;
+
     text-align: right;
 }
 
 .timeline-item:nth-child(even) {
     left: 50%;
+
     text-align: left;
 }
 
@@ -1157,6 +1434,7 @@ h2 {
 
 .timeline-content p {
     color: var(--text-muted);
+
     font-size: 0.88rem;
 }
 
@@ -1187,16 +1465,12 @@ h2 {
     justify-content: center;
 }
 
-
-/* =========================================================
-   IMPACT ICONS
-   ========================================================= */
-
 .impact-icon {
     width: 70px;
     height: 70px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -1230,6 +1504,7 @@ h2 {
 
     font-weight: 600;
 }
+
 
 /* =========================================================
    ROADMAP
@@ -1295,6 +1570,7 @@ h2 {
 
 .roadmap-card p {
     color: var(--text-muted);
+
     font-size: 0.86rem;
 }
 
@@ -1403,8 +1679,13 @@ h2 {
     margin: 15px 0;
 }
 
+.footer-brand-logo {
+    display: inline-flex;
+}
+
 .social-links {
     display: flex;
+
     gap: 13px;
 }
 
@@ -1490,16 +1771,46 @@ h2 {
 
     margin: 40px auto 0;
 
-    padding-top: 22px;
+    padding: 22px 0;
 
     border-top:
         1px solid var(--border-color);
 
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
     color: var(--text-muted);
 
     font-size: 0.82rem;
+}
 
-    text-align: center;
+.footer-bottom p {
+    margin: 0;
+}
+
+.footer-legal {
+    display: flex;
+
+    align-items: center;
+
+    gap: 35px;
+}
+
+.footer-legal a {
+    color: var(--text-muted);
+
+    text-decoration: none;
+
+    transition: var(--transition);
+}
+
+.footer-legal a:hover {
+    color: var(--primary-light);
 }
 
 
@@ -1561,56 +1872,6 @@ h2 {
 }
 
 
-
-
-
-
-.footer-bottom {
-    width: min(1200px, calc(100% - 40px));
-    margin: 40px auto 0;
-    padding: 22px 0;
-    border-top: 1px solid var(--border-color);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-
-    color: var(--text-muted);
-    font-size: 0.82rem;
-}
-
-.footer-bottom p {
-    margin: 0;
-}
-
-.footer-legal {
-    display: flex;
-    align-items: center;
-    gap: 35px;
-}
-
-.footer-legal a {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.footer-legal a:hover {
-    color: var(--primary-light);
-}
-
-@media (max-width: 600px) {
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .footer-legal {
-        gap: 20px;
-    }
-}
-
 /* =========================================================
    POINTER GLOW
    ========================================================= */
@@ -1649,6 +1910,7 @@ h2 {
 
 body.light-mode {
     --bg-main: #f5f7fb;
+
     --bg-darker: #e9eef6;
 
     --bg-card: rgba(255,255,255,0.82);
@@ -1660,6 +1922,7 @@ body.light-mode {
         rgba(37,99,235,0.35);
 
     --primary-color: #2563eb;
+
     --primary-light: #4f46e5;
 
     --primary-gradient:
@@ -1673,7 +1936,9 @@ body.light-mode {
         rgba(37,99,235,0.12);
 
     --text-main: #172033;
+
     --text-muted: #64748b;
+
     --text-white: #0f172a;
 }
 
@@ -1765,25 +2030,31 @@ body.light-mode .lightning-overlay {
 
 .lightning-overlay span:nth-child(1) {
     height: 25%;
+
     left: 20%;
     top: 15%;
 }
 
 .lightning-overlay span:nth-child(2) {
     height: 30%;
+
     left: 70%;
     top: 5%;
+
     animation-delay: 2.5s;
 }
 
 .lightning-overlay span:nth-child(3) {
     height: 20%;
+
     left: 88%;
     top: 40%;
+
     animation-delay: 5s;
 }
 
 @keyframes lightningFlash {
+
     0%,
     86%,
     100% {
@@ -1979,6 +2250,7 @@ a:focus-visible {
     .timeline-item:nth-child(odd) .timeline-dot,
     .timeline-item:nth-child(even) .timeline-dot {
         left: 10px;
+
         right: auto;
     }
 
@@ -1996,10 +2268,41 @@ a:focus-visible {
 }
 
 
+@media (max-width: 600px) {
+
+    .footer-bottom {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .footer-legal {
+        gap: 20px;
+    }
+}
+
+
 @media (max-width: 480px) {
 
-    .brand-logo span {
-        font-size: 0.92rem;
+    .brand-logo {
+        gap: 8px;
+
+        padding-right: 4px;
+    }
+
+    .brand-name {
+        font-size: 0.88rem;
+    }
+
+    .brand-motto {
+        font-size: 0.47rem;
+
+        letter-spacing: 1.25px;
+    }
+
+    .logo-wrap {
+        width: 34px;
+        height: 34px;
     }
 
     .logo-img {
@@ -2042,6 +2345,7 @@ a:focus-visible {
         scroll-behavior: auto !important;
 
         animation-duration: 0.01ms !important;
+
         animation-iteration-count: 1 !important;
 
         transition-duration: 0.01ms !important;
