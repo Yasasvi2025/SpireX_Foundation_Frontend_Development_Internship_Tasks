@@ -2570,3 +2570,73 @@ a:focus-visible {
         display: none;
     }
 }
+
+
+/* =========================================================
+   NAVBAR BRAND
+   LOGO ONLY — NO MOTTO
+   ========================================================= */
+
+.navbar .brand-content {
+    display: none !important;
+}
+
+
+/* =========================================================
+   NAV ACTIONS
+   ========================================================= */
+
+.nav-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   LIGHT / DARK MODE TOGGLE
+   ========================================================= */
+
+.navbar .theme-toggle {
+    display: inline-flex;
+}
+
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 50%;
+
+    background: var(--bg-card);
+    color: var(--text-main);
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform:
+        rotate(15deg)
+        scale(1.08);
+
+    background: var(--primary-gradient);
+
+    color: #fff;
+
+    border-color: transparent;
+
+    box-shadow:
+        0 0 22px rgba(99, 102, 241, 0.45);
+}
