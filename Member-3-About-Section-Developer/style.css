@@ -350,6 +350,16 @@ h2 {
 
 
 /* =========================================================
+   REMOVE NAVBAR MOTTO / TEXT
+   KEEP LOGO ONLY
+   ========================================================= */
+
+.navbar .brand-content {
+    display: none !important;
+}
+
+
+/* =========================================================
    LOGO HOVER EFFECT
    ========================================================= */
 
@@ -655,14 +665,14 @@ h2 {
 
     border-radius: 999px;
 
-    background: #50c8f2;
+    background: var(--primary-gradient);
 
-    color: #07111d;
+    color: #fff;
 
     letter-spacing: 0.5px;
 
     box-shadow:
-        0 8px 24px rgba(80, 200, 242, 0.22);
+        0 8px 24px rgba(99, 102, 241, 0.32);
 }
 
 .navbar .btn-primary:hover {
@@ -670,11 +680,11 @@ h2 {
         translateY(-3px)
         scale(1.035);
 
-    background: #63d2f5;
+    background: var(--primary-gradient);
 
     box-shadow:
-        0 12px 30px rgba(80, 200, 242, 0.38),
-        0 0 22px rgba(80, 200, 242, 0.18);
+        0 12px 30px rgba(99, 102, 241, 0.45),
+        0 0 22px rgba(99, 102, 241, 0.20);
 }
 
 .btn-outline {
