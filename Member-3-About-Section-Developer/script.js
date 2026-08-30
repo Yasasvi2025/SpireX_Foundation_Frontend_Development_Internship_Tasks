@@ -2,6 +2,7 @@
    SPIREX FOUNDATION
    ABOUT PAGE
    COMPLETE FINAL JAVASCRIPT
+   MOBILE MENU + MOBILE SIZE FIXED
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,14 +37,506 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (menuToggle && navLinks) {
 
+        menuToggle.setAttribute(
+            "aria-controls",
+            "navLinks"
+        );
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+
+        /* =================================================
+           MOBILE MENU CSS FIX
+        ================================================= */
+
+        if (!document.getElementById("spirex-mobile-menu-fix")) {
+
+            const mobileMenuStyle =
+                document.createElement("style");
+
+            mobileMenuStyle.id =
+                "spirex-mobile-menu-fix";
+
+            mobileMenuStyle.textContent = `
+
+                /* =========================================
+                   DESKTOP
+                ========================================== */
+
+                @media (min-width: 851px) {
+
+                    #menuToggle {
+                        display: none !important;
+                    }
+
+                    #navLinks {
+                        display: flex !important;
+                        position: static !important;
+                        width: auto !important;
+                        height: auto !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        flex-direction: row !important;
+                    }
+
+                }
+
+
+                /* =========================================
+                   TABLET / MOBILE
+                ========================================== */
+
+                @media (max-width: 850px) {
+
+                    /* Navbar */
+
+                    .navbar {
+                        position: relative !important;
+                        min-height: 72px !important;
+                        height: 72px !important;
+                        width: 100% !important;
+                    }
+
+
+                    .nav-container {
+                        position: relative !important;
+
+                        min-height: 72px !important;
+                        height: 72px !important;
+
+                        width: 100% !important;
+
+                        padding-left: 16px !important;
+                        padding-right: 16px !important;
+
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+
+                        box-sizing: border-box !important;
+                    }
+
+
+                    /* Logo */
+
+                    #brandLogo {
+                        flex-shrink: 1 !important;
+                        min-width: 0 !important;
+                        height: 72px !important;
+                    }
+
+
+                    #brandLogo .logo-wrap {
+                        width: 120px !important;
+                        height: 52px !important;
+                    }
+
+
+                    #brandLogo .logo-img {
+                        width: 120px !important;
+                        height: 52px !important;
+
+                        max-width: 120px !important;
+                        max-height: 52px !important;
+                    }
+
+
+                    /* Navigation */
+
+                    #navLinks {
+                        display: none !important;
+
+                        position: absolute !important;
+
+                        top: 72px !important;
+                        left: 12px !important;
+                        right: 12px !important;
+
+                        width: auto !important;
+                        max-width: none !important;
+
+                        box-sizing: border-box !important;
+
+                        flex-direction: column !important;
+                        align-items: stretch !important;
+
+                        gap: 4px !important;
+
+                        padding: 10px !important;
+                        margin: 0 !important;
+
+                        border-radius: 14px !important;
+
+                        background:
+                            rgba(10, 12, 18, 0.98) !important;
+
+                        border:
+                            1px solid rgba(255,255,255,0.10) !important;
+
+                        backdrop-filter:
+                            blur(18px) !important;
+
+                        -webkit-backdrop-filter:
+                            blur(18px) !important;
+
+                        box-shadow:
+                            0 16px 40px rgba(0,0,0,0.30) !important;
+
+                        z-index: 9999 !important;
+                    }
+
+
+                    /* Open menu */
+
+                    #navLinks.nav-active {
+                        display: flex !important;
+                    }
+
+
+                    /* Menu links */
+
+                    #navLinks.nav-active a {
+                        display: flex !important;
+
+                        align-items: center !important;
+
+                        justify-content: flex-start !important;
+
+                        width: 100% !important;
+
+                        min-height: 44px !important;
+                        height: 44px !important;
+
+                        box-sizing: border-box !important;
+
+                        padding:
+                            8px 12px !important;
+
+                        margin: 0 !important;
+
+                        border-radius: 9px !important;
+
+                        font-size: 14px !important;
+
+                        line-height: 1.2 !important;
+
+                        white-space: nowrap !important;
+                    }
+
+
+                    #navLinks.nav-active a:hover {
+                        background:
+                            rgba(255,255,255,0.07) !important;
+                    }
+
+
+                    /* Navigation actions */
+
+                    .nav-actions {
+                        display: flex !important;
+
+                        align-items: center !important;
+
+                        justify-content: flex-end !important;
+
+                        gap: 8px !important;
+
+                        flex-shrink: 0 !important;
+                    }
+
+
+                    /* Theme button */
+
+                    #themeToggle {
+                        width: 40px !important;
+                        height: 40px !important;
+
+                        min-width: 40px !important;
+                        min-height: 40px !important;
+
+                        padding: 0 !important;
+
+                        display: inline-flex !important;
+
+                        align-items: center !important;
+                        justify-content: center !important;
+                    }
+
+
+                    /* Join Now */
+
+                    .nav-actions .btn-primary {
+                        min-height: 40px !important;
+                        height: 40px !important;
+
+                        padding:
+                            0 14px !important;
+
+                        font-size: 13px !important;
+
+                        white-space: nowrap !important;
+                    }
+
+
+                    /* Hamburger */
+
+                    #menuToggle {
+                        display: inline-flex !important;
+
+                        align-items: center !important;
+                        justify-content: center !important;
+
+                        width: 40px !important;
+                        height: 40px !important;
+
+                        min-width: 40px !important;
+                        min-height: 40px !important;
+
+                        padding: 0 !important;
+
+                        margin: 0 !important;
+
+                        border: 0 !important;
+
+                        cursor: pointer !important;
+
+                        position: relative !important;
+
+                        z-index: 10000 !important;
+                    }
+
+
+                    #menuToggle i {
+                        font-size: 18px !important;
+                    }
+
+                }
+
+
+                /* =========================================
+                   SMALL PHONES
+                ========================================== */
+
+                @media (max-width: 600px) {
+
+                    .nav-container {
+                        padding-left: 12px !important;
+                        padding-right: 12px !important;
+                    }
+
+
+                    #brandLogo .logo-wrap {
+                        width: 105px !important;
+                        height: 48px !important;
+                    }
+
+
+                    #brandLogo .logo-img {
+                        width: 105px !important;
+                        height: 48px !important;
+
+                        max-width: 105px !important;
+                        max-height: 48px !important;
+                    }
+
+
+                    .nav-actions {
+                        gap: 6px !important;
+                    }
+
+
+                    #themeToggle,
+                    #menuToggle {
+                        width: 38px !important;
+                        height: 38px !important;
+
+                        min-width: 38px !important;
+                        min-height: 38px !important;
+                    }
+
+
+                    .nav-actions .btn-primary {
+                        height: 38px !important;
+                        min-height: 38px !important;
+
+                        padding:
+                            0 11px !important;
+
+                        font-size: 12px !important;
+                    }
+
+
+                    #navLinks {
+                        left: 10px !important;
+                        right: 10px !important;
+
+                        top: 72px !important;
+
+                        padding: 8px !important;
+
+                        border-radius: 12px !important;
+                    }
+
+
+                    #navLinks.nav-active a {
+                        min-height: 42px !important;
+                        height: 42px !important;
+
+                        font-size: 13px !important;
+
+                        padding:
+                            8px 11px !important;
+                    }
+
+                }
+
+
+                /* =========================================
+                   VERY SMALL PHONES
+                ========================================== */
+
+                @media (max-width: 400px) {
+
+                    .nav-container {
+                        padding-left: 9px !important;
+                        padding-right: 9px !important;
+                    }
+
+
+                    #brandLogo .logo-wrap {
+                        width: 92px !important;
+                        height: 46px !important;
+                    }
+
+
+                    #brandLogo .logo-img {
+                        width: 92px !important;
+                        height: 46px !important;
+
+                        max-width: 92px !important;
+                        max-height: 46px !important;
+                    }
+
+
+                    .nav-actions {
+                        gap: 5px !important;
+                    }
+
+
+                    #themeToggle,
+                    #menuToggle {
+                        width: 36px !important;
+                        height: 36px !important;
+
+                        min-width: 36px !important;
+                        min-height: 36px !important;
+                    }
+
+
+                    #menuToggle i {
+                        font-size: 16px !important;
+                    }
+
+
+                    .nav-actions .btn-primary {
+                        height: 36px !important;
+                        min-height: 36px !important;
+
+                        padding:
+                            0 9px !important;
+
+                        font-size: 11px !important;
+                    }
+
+
+                    #navLinks {
+                        left: 8px !important;
+                        right: 8px !important;
+                    }
+
+                }
+
+            `;
+
+            document.head.appendChild(
+                mobileMenuStyle
+            );
+
+        }
+
+
+        /* =================================================
+           CLOSE MOBILE MENU
+        ================================================= */
+
+        const closeMobileMenu = () => {
+
+            navLinks.classList.remove(
+                "nav-active"
+            );
+
+
+            const icon =
+                menuToggle.querySelector("i");
+
+
+            if (icon) {
+
+                icon.classList.remove(
+                    "fa-xmark"
+                );
+
+                icon.classList.add(
+                    "fa-bars"
+                );
+
+            }
+
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        };
+
+
+        /* =================================================
+           TOGGLE MOBILE MENU
+        ================================================= */
+
         menuToggle.addEventListener(
             "click",
-            () => {
+            event => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
 
                 const opened =
-                    navLinks.classList.toggle(
+                    !navLinks.classList.contains(
                         "nav-active"
                     );
+
+
+                if (opened) {
+
+                    navLinks.classList.add(
+                        "nav-active"
+                    );
+
+                } else {
+
+                    navLinks.classList.remove(
+                        "nav-active"
+                    );
+
+                }
+
 
                 const icon =
                     menuToggle.querySelector("i");
@@ -73,6 +566,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        /* =================================================
+           CLOSE AFTER LINK CLICK
+        ================================================= */
+
         navLinks
             .querySelectorAll("a")
             .forEach(link => {
@@ -81,37 +578,99 @@ document.addEventListener("DOMContentLoaded", () => {
                     "click",
                     () => {
 
-                        navLinks.classList.remove(
-                            "nav-active"
-                        );
-
-
-                        const icon =
-                            menuToggle.querySelector("i");
-
-
-                        if (icon) {
-
-                            icon.classList.remove(
-                                "fa-xmark"
-                            );
-
-                            icon.classList.add(
-                                "fa-bars"
-                            );
-
-                        }
-
-
-                        menuToggle.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
+                        closeMobileMenu();
 
                     }
                 );
 
             });
+
+
+        /* =================================================
+           CLOSE WHEN CLICKING OUTSIDE
+        ================================================= */
+
+        document.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    !navLinks.classList.contains(
+                        "nav-active"
+                    )
+                ) {
+                    return;
+                }
+
+
+                const insideMenu =
+                    navLinks.contains(
+                        event.target
+                    );
+
+
+                const insideButton =
+                    menuToggle.contains(
+                        event.target
+                    );
+
+
+                if (
+                    !insideMenu &&
+                    !insideButton
+                ) {
+
+                    closeMobileMenu();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           ESCAPE KEY
+        ================================================= */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key === "Escape" &&
+                    navLinks.classList.contains(
+                        "nav-active"
+                    )
+                ) {
+
+                    closeMobileMenu();
+
+                    menuToggle.focus();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           RESIZE
+        ================================================= */
+
+        window.addEventListener(
+            "resize",
+            () => {
+
+                if (
+                    window.innerWidth > 850
+                ) {
+
+                    closeMobileMenu();
+
+                }
+
+            }
+        );
 
     }
 
@@ -185,7 +744,9 @@ document.addEventListener("DOMContentLoaded", () => {
         savedTheme === "dark"
     ) {
 
-        applyTheme(savedTheme);
+        applyTheme(
+            savedTheme
+        );
 
     } else {
 
@@ -222,7 +783,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         : "light";
 
 
-                applyTheme(nextTheme);
+                applyTheme(
+                    nextTheme
+                );
 
 
                 localStorage.setItem(
@@ -276,55 +839,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     }
-
-
-    /* =====================================================
-       CLOSE MOBILE NAV ON RESIZE
-       ===================================================== */
-
-    window.addEventListener(
-        "resize",
-        () => {
-
-            if (
-                window.innerWidth > 850 &&
-                navLinks &&
-                navLinks.classList.contains(
-                    "nav-active"
-                )
-            ) {
-
-                navLinks.classList.remove(
-                    "nav-active"
-                );
-
-
-                const icon =
-                    menuToggle?.querySelector("i");
-
-
-                if (icon) {
-
-                    icon.classList.remove(
-                        "fa-xmark"
-                    );
-
-                    icon.classList.add(
-                        "fa-bars"
-                    );
-
-                }
-
-
-                menuToggle?.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            }
-
-        }
-    );
 
 
     /* =====================================================
@@ -406,134 +920,141 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-    if (
-        counters.length &&
-        "IntersectionObserver" in window
-    ) {
+    if (counters.length) {
 
-        const counterObserver =
-            new IntersectionObserver(
-                (entries, observer) => {
+        const animateCounter =
+            counter => {
 
-                    entries.forEach(entry => {
-
-                        if (
-                            !entry.isIntersecting
-                        ) {
-                            return;
-                        }
+                const target =
+                    Number(
+                        counter.dataset.target
+                    );
 
 
-                        const counter =
-                            entry.target;
+                if (
+                    !Number.isFinite(target) ||
+                    target <= 0
+                ) {
+
+                    counter.textContent =
+                        "0";
+
+                    return;
+
+                }
 
 
-                        const target =
-                            Number(
-                                counter.dataset.target
-                            );
+                const duration =
+                    1500;
 
 
-                        /*
-                         * Current statistics are
-                         * intentionally 0 until
-                         * verified by Team Lead.
-                         */
-
-                        if (
-                            !Number.isFinite(target) ||
-                            target <= 0
-                        ) {
-
-                            counter.textContent =
-                                "0";
+                const start =
+                    performance.now();
 
 
-                            observer.unobserve(
-                                counter
-                            );
+                function animate(time) {
+
+                    const progress =
+                        Math.min(
+                            (time - start) /
+                            duration,
+                            1
+                        );
 
 
-                            return;
-
-                        }
-
-
-                        const duration =
-                            1500;
-
-
-                        const start =
-                            performance.now();
+                    const eased =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
 
 
-                        function animate(time) {
-
-                            const progress =
-                                Math.min(
-                                    (time - start) /
-                                    duration,
-                                    1
-                                );
+                    counter.textContent =
+                        Math.floor(
+                            target * eased
+                        ).toLocaleString();
 
 
-                            const eased =
-                                1 -
-                                Math.pow(
-                                    1 - progress,
-                                    3
-                                );
-
-
-                            counter.textContent =
-                                Math.floor(
-                                    target * eased
-                                ).toLocaleString();
-
-
-                            if (
-                                progress < 1
-                            ) {
-
-                                requestAnimationFrame(
-                                    animate
-                                );
-
-                            } else {
-
-                                counter.textContent =
-                                    target.toLocaleString();
-
-                            }
-
-                        }
-
+                    if (
+                        progress < 1
+                    ) {
 
                         requestAnimationFrame(
                             animate
                         );
 
+                    } else {
 
-                        observer.unobserve(
-                            counter
-                        );
+                        counter.textContent =
+                            target.toLocaleString();
 
-                    });
+                    }
 
-                },
-                {
-                    threshold: 0.5
                 }
-            );
 
 
-        counters.forEach(counter => {
+                requestAnimationFrame(
+                    animate
+                );
 
-            counterObserver.observe(
-                counter
-            );
+            };
 
-        });
+
+        if (
+            "IntersectionObserver" in window
+        ) {
+
+            const counterObserver =
+                new IntersectionObserver(
+                    (entries, observer) => {
+
+                        entries.forEach(entry => {
+
+                            if (
+                                !entry.isIntersecting
+                            ) {
+                                return;
+                            }
+
+
+                            animateCounter(
+                                entry.target
+                            );
+
+
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        });
+
+                    },
+                    {
+                        threshold: 0.5
+                    }
+                );
+
+
+            counters.forEach(counter => {
+
+                counterObserver.observe(
+                    counter
+                );
+
+            });
+
+        } else {
+
+            counters.forEach(counter => {
+
+                animateCounter(
+                    counter
+                );
+
+            });
+
+        }
 
     }
 
@@ -636,10 +1157,18 @@ document.addEventListener("DOMContentLoaded", () => {
        ACTIVE NAV LINK
        ===================================================== */
 
-    const currentPage =
+    let currentPage =
         window.location.pathname
             .split("/")
             .pop();
+
+
+    if (!currentPage) {
+
+        currentPage =
+            "index.html";
+
+    }
 
 
     document
@@ -652,8 +1181,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.getAttribute("href");
 
 
+            if (!href) {
+                return;
+            }
+
+
+            const cleanHref =
+                href
+                    .split("#")[0]
+                    .split("?")[0]
+                    .split("/")
+                    .pop();
+
+
             if (
-                href === currentPage
+                cleanHref === currentPage
             ) {
 
                 link.classList.add(
@@ -666,51 +1208,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       ESC KEY - CLOSE MOBILE MENU
+       INITIAL MOBILE MENU STATE
        ===================================================== */
 
-    document.addEventListener(
-        "keydown",
-        event => {
+    if (
+        menuToggle &&
+        navLinks
+    ) {
 
-            if (
-                event.key === "Escape" &&
-                navLinks &&
-                navLinks.classList.contains(
-                    "nav-active"
-                )
-            ) {
-
-                navLinks.classList.remove(
-                    "nav-active"
-                );
+        navLinks.classList.remove(
+            "nav-active"
+        );
 
 
-                const icon =
-                    menuToggle?.querySelector("i");
+        menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
 
 
-                if (icon) {
-
-                    icon.classList.remove(
-                        "fa-xmark"
-                    );
-
-                    icon.classList.add(
-                        "fa-bars"
-                    );
-
-                }
+        const icon =
+            menuToggle.querySelector("i");
 
 
-                menuToggle?.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
+        if (icon) {
 
-            }
+            icon.classList.remove(
+                "fa-xmark"
+            );
+
+            icon.classList.add(
+                "fa-bars"
+            );
 
         }
-    );
+
+    }
+
 
 });
